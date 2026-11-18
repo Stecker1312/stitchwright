@@ -41,7 +41,7 @@ Voraussetzung: Node.js 20 oder neuer. Keine Installation, keine
 Abhängigkeiten.
 
 ```bash
-git clone <repo>
+git clone https://github.com/Stecker1312/stitchwright.git
 cd stitchwright
 npm start
 ```
