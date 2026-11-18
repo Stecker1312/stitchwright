@@ -1,0 +1,85 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+
+import { addGroup, createChart, setCell, setColor } from "../src/core/chart.js";
+import { hasErrors, validateChart } from "../src/core/validate.js";
+
+test("a new chart has no errors", () => {
+  const chart = createChart({ width: 10, height: 8 });
+  const diagnostics = validateChart(chart);
+  assert.equal(hasErrors(diagnostics), false);
+});
+
+test("wrong schema is an error", () => {
+  const chart = createChart({ width: 10, height: 8 });
+  chart.schema = "nope/1";
+  const diagnostics = validateChart(chart);
+  assert.equal(diagnostics.some((item) => item.code === "E_SCHEMA"), true);
+});
+
+test("row and cell dimensions are checked", () => {
+  const chart = createChart({ width: 10, height: 8 });
+  chart.rows[0].pop();
+  chart.colors[1].push("A");
+  const diagnostics = validateChart(chart);
+  assert.equal(diagnostics.some((item) => item.code === "E_ROW_LENGTH"), true);
+  assert.equal(diagnostics.some((item) => item.code === "E_COLOR_ROW_LENGTH"), true);
+});
+
+test("unknown symbols and multi-cell cells are rejected", () => {
+  const chart = createChart({ width: 10, height: 8 });
+  chart.rows[0][0] = "nope";
+  chart.rows[0][1] = "k2tog";
+  const diagnostics = validateChart(chart);
+  assert.equal(diagnostics.some((item) => item.code === "E_CELL_SYMBOL"), true);
+  assert.equal(diagnostics.some((item) => item.code === "E_CELL_GROUP"), true);
+});
+
+test("groups must fit and may not overlap", () => {
+  const chart = createChart({ width: 10, height: 8 });
+  addGroup(chart, { row: 1, col: 1, symbol: "k2tog" });
+  chart.groups.push({ id: "g2", row: 1, col: 2, symbol: "ssk" });
+  const diagnostics = validateChart(chart);
+  assert.equal(diagnostics.some((item) => item.code === "E_GROUP_OVERLAP"), true);
+});
+
+test("group cells must be empty", () => {
+  const chart = createChart({ width: 10, height: 8 });
+  addGroup(chart, { row: 1, col: 1, symbol: "k2tog" });
+  chart.rows[0][0] = "p";
+  const diagnostics = validateChart(chart);
+  assert.equal(diagnostics.some((item) => item.code === "E_GROUP_CELL"), true);
+});
+
+test("colours must exist in the palette", () => {
+  const chart = createChart({ width: 10, height: 8 });
+  setColor(chart, 1, 1, "A");
+  chart.colors[0][1] = "Z";
+  const diagnostics = validateChart(chart);
+  assert.equal(diagnostics.some((item) => item.code === "E_COLOR_ID"), true);
+});
+
+test("repeat range and cell size are checked", () => {
+  const chart = createChart({ width: 10, height: 8 });
+  chart.options.repeat = { start: 8, end: 4 };
+  chart.options.cellMm = 1;
+  const diagnostics = validateChart(chart);
+  assert.equal(diagnostics.some((item) => item.code === "E_REPEAT_RANGE"), true);
+  assert.equal(diagnostics.some((item) => item.code === "E_CELL_MM"), true);
+});
+
+test("hidden wrong-side patterning produces a warning", () => {
+  const chart = createChart({ width: 10, height: 8 });
+  chart.options.rowsMode = "rs";
+  setCell(chart, 2, 1, "p");
+  const diagnostics = validateChart(chart);
+  assert.equal(diagnostics.some((item) => item.code === "W_HIDDEN_WS"), true);
+  assert.equal(hasErrors(diagnostics), false);
+});
+
+test("unknown top-level keys are warnings unless strict", () => {
+  const chart = createChart({ width: 10, height: 8 });
+  chart.something = true;
+  assert.equal(validateChart(chart).some((item) => item.code === "W_UNKNOWN_KEY" && item.severity === "warning"), true);
+  assert.equal(validateChart(chart, { strict: true }).some((item) => item.code === "W_UNKNOWN_KEY" && item.severity === "error"), true);
+});

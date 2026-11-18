@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="de" data-theme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="description" content="Stitchwright – freier, lokaler Strickschrift-Editor">
+  <title>Stitchwright</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="favicon.ico" sizes="32x32">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+  <svg class="icon-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4 20l4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10L4 20z"/><path d="M13.5 6.5l4 4"/></symbol>
+    <symbol id="i-eraser" viewBox="0 0 24 24"><path d="M4 16l7-7 6 6-4 4H7l-3-3z"/><path d="M11 9l5-5 4 4-5 5"/><path d="M9 20h10"/></symbol>
+    <symbol id="i-cursor" viewBox="0 0 24 24"><path d="M5 3l14 9-6 1-3 6L5 3z"/></symbol>
+    <symbol id="i-hand" viewBox="0 0 24 24"><path d="M8 11V6a2 2 0 1 1 4 0v5"/><path d="M12 11V4a2 2 0 1 1 4 0v7"/><path d="M16 11V6a2 2 0 1 1 4 0v9a7 7 0 0 1-7 7h-1a7 7 0 0 1-7-7v-4a2 2 0 1 1 4 0v3"/></symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></symbol>
+    <symbol id="i-redo" viewBox="0 0 24 24"><path d="M15 14l5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></symbol>
+    <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5V3z"/><path d="M8 3v6h8V3"/><path d="M8 21v-7h8v7"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6h7l2 2h9v11H3V6z"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 21V9"/><path d="M7 14l5-5 5 5"/><path d="M5 3h14"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h10"/><path d="M18 7h2"/><circle cx="16" cy="7" r="2"/><path d="M4 17h2"/><path d="M10 17h10"/><circle cx="8" cy="17" r="2"/><path d="M4 12h16"/></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2.5"/><path d="M12 17h.01"/></symbol>
+    <symbol id="i-theme" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4 6.5 6.5 0 0 0 20 14.5z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-fit" viewBox="0 0 24 24"><path d="M4 9V4h5"/><path d="M20 9V4h-5"/><path d="M4 15v5h5"/><path d="M20 15v5h-5"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 14h10l1-14"/><path d="M10 11v6M14 11v6"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="1"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></symbol>
+    <symbol id="i-paste" viewBox="0 0 24 24"><path d="M9 5H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-3"/><rect x="9" y="3" width="6" height="4" rx="1"/></symbol>
+    <symbol id="i-mirror" viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M8 6L4 12l4 6"/><path d="M16 6l4 6-4 6"/></symbol>
+    <symbol id="i-table" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M3 9h18M3 14h18M9 4v16M15 4v16"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-panel-left" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M9 4v16"/></symbol>
+    <symbol id="i-panel-right" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M15 4v16"/></symbol>
+    <symbol id="i-print" viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="1"/><path d="M7 17h10v4H7z"/></symbol>
+    <symbol id="i-file-plus" viewBox="0 0 24 24"><path d="M14 3H5v18h14V8l-5-5z"/><path d="M14 3v5h5"/><path d="M12 12v5M9.5 14.5h5"/></symbol>
+    <symbol id="i-cable" viewBox="0 0 24 24"><path d="M4 18c0-8 16-4 16-12"/><path d="M4 6c0 8 16 4 16 12"/></symbol>
+    <symbol id="i-color" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l5 5L20 6"/></symbol>
+  </svg>
+
+  <div class="app" id="app">
+    <header class="topbar">
+      <div class="brand">
+        <button class="icon-button mobile-only" id="btn-sidebar-left" type="button" data-i18n-title="app.tools" data-i18n-aria-label="app.tools" aria-label="Werkzeuge" title="Werkzeuge">
+          <svg class="icon"><use href="#i-panel-left"/></svg>
+        </button>
+        <a class="brand-link" href="./" aria-label="Stitchwright">
+          <img class="brand-mark" src="assets/icon.svg" alt="" width="26" height="26">
+          <span class="brand-name">Stitchwright</span>
+        </a>
+      </div>
+
+      <div class="title-wrap">
+        <input id="chart-title" class="chart-title" type="text" maxlength="120" data-i18n-aria-label="chart.title" aria-label="Chart-Titel" placeholder="Unbenanntes Chart">
+        <span class="save-indicator" id="save-indicator" aria-live="polite"></span>
+      </div>
+
+      <div class="top-actions">
+        <button class="icon-button" id="btn-undo" type="button" data-i18n-title="app.undo" data-i18n-aria-label="app.undo" title="Rückgängig">
+          <svg class="icon"><use href="#i-undo"/></svg>
+        </button>
+        <button class="icon-button" id="btn-redo" type="button" data-i18n-title="app.redo" data-i18n-aria-label="app.redo" title="Wiederholen">
+          <svg class="icon"><use href="#i-redo"/></svg>
+        </button>
+        <span class="divider"></span>
+        <button class="icon-button" id="btn-new" type="button" data-i18n-title="app.new" data-i18n-aria-label="app.new" title="Neu">
+          <svg class="icon"><use href="#i-file-plus"/></svg>
+        </button>
+        <button class="icon-button" id="btn-open" type="button" data-i18n-title="app.open" data-i18n-aria-label="app.open" title="Öffnen">
+          <svg class="icon"><use href="#i-folder"/></svg>
+        </button>
+        <button class="icon-button" id="btn-save" type="button" data-i18n-title="app.save" data-i18n-aria-label="app.save" title="Speichern">
+          <svg class="icon"><use href="#i-save"/></svg>
+        </button>
+        <button class="button primary" id="btn-export" type="button">
+          <svg class="icon"><use href="#i-download"/></svg>
+          <span data-i18n="app.export">Exportieren</span>
+        </button>
+        <button class="icon-button" id="btn-settings" type="button" data-i18n-title="app.settings" data-i18n-aria-label="app.settings" title="Einstellungen">
+          <svg class="icon"><use href="#i-settings"/></svg>
+        </button>
+        <button class="icon-button" id="btn-help" type="button" data-i18n-title="app.help" data-i18n-aria-label="app.help" title="Hilfe">
+          <svg class="icon"><use href="#i-help"/></svg>
+        </button>
+        <button class="icon-button mobile-only" id="btn-sidebar-right" type="button" data-i18n-title="app.properties" data-i18n-aria-label="app.properties" aria-label="Eigenschaften" title="Eigenschaften">
+          <svg class="icon"><use href="#i-panel-right"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar left" id="left-panel" aria-label="Werkzeuge und Symbole">
+        <div class="panel-section tools-section">
+          <div class="segmented" role="toolbar" aria-label="Werkzeuge">
+            <button class="tool-button" data-tool="pencil" type="button" data-i18n-title="tool.pencil.hint" data-i18n-aria-label="tool.pencil" title="Zeichnen">
+              <svg class="icon"><use href="#i-pencil"/></svg>
+            </button>
+            <button class="tool-button" data-tool="eraser" type="button" data-i18n-title="tool.eraser.hint" data-i18n-aria-label="tool.eraser" title="Radieren">
+              <svg class="icon"><use href="#i-eraser"/></svg>
+            </button>
+            <button class="tool-button" data-tool="select" type="button" data-i18n-title="tool.select.hint" data-i18n-aria-label="tool.select" title="Auswählen">
+              <svg class="icon"><use href="#i-cursor"/></svg>
+            </button>
+            <button class="tool-button" data-tool="pan" type="button" data-i18n-title="tool.pan.hint" data-i18n-aria-label="tool.pan" title="Verschieben">
+              <svg class="icon"><use href="#i-hand"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="panel-section grow">
+          <div class="section-head">
+            <h2 data-i18n="palette.title">Symbole</h2>
+          </div>
+          <input class="search" id="symbol-search" type="search" data-i18n-placeholder="palette.search" placeholder="Symbole suchen …">
+          <div class="palette" id="palette"></div>
+        </div>
+
+        <div class="panel-section">
+          <div class="section-head">
+            <h2 data-i18n="palette.colors">Farben</h2>
+          </div>
+          <div class="colors" id="colors"></div>
+        </div>
+      </aside>
+
+      <section class="stage">
+        <div class="stage-toolbar">
+          <div class="zoom-group">
+            <button class="icon-button small" id="zoom-out" type="button" data-i18n-title="chart.zoomOut" data-i18n-aria-label="chart.zoomOut" title="Verkleinern">
+              <svg class="icon"><use href="#i-minus"/></svg>
+            </button>
+            <span class="zoom-label" id="zoom-label">100 %</span>
+            <button class="icon-button small" id="zoom-in" type="button" data-i18n-title="chart.zoomIn" data-i18n-aria-label="chart.zoomIn" title="Vergrößern">
+              <svg class="icon"><use href="#i-plus"/></svg>
+            </button>
+            <button class="icon-button small" id="zoom-fit" type="button" data-i18n-title="chart.zoomFit" data-i18n-aria-label="chart.zoomFit" title="Einpassen">
+              <svg class="icon"><use href="#i-fit"/></svg>
+            </button>
+          </div>
+          <div class="stage-meta">
+            <span class="pill" id="rows-mode-pill">Alle Reihen</span>
+            <button class="button subtle small" id="btn-rows-mode" type="button">Nur Hinreihen</button>
+            <button class="icon-button small" id="btn-table" type="button" data-i18n-title="dialog.table.title" data-i18n-aria-label="dialog.table.title" title="Tabellenansicht">
+              <svg class="icon"><use href="#i-table"/></svg>
+            </button>
+            <button class="icon-button small" id="btn-mirror-h" type="button" data-i18n-title="chart.mirrorHorizontal" data-i18n-aria-label="chart.mirrorHorizontal" title="Horizontal spiegeln">
+              <svg class="icon"><use href="#i-mirror"/></svg>
+            </button>
+            <button class="icon-button small" id="btn-mirror-v" type="button" data-i18n-title="chart.mirrorVertical" data-i18n-aria-label="chart.mirrorVertical" title="Vertikal spiegeln">
+              <svg class="icon rotate-90"><use href="#i-mirror"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="canvas-wrap" id="canvas-wrap">
+          <canvas id="chart-canvas" tabindex="0" role="img" aria-label="Strickschrift"></canvas>
+          <div class="empty-hint" id="empty-hint" hidden>
+            <div class="empty-card">
+              <h2 data-i18n="chart.empty.title">Noch ist das Chart leer</h2>
+              <p data-i18n="chart.empty.text">Wähle ein Symbol und male die erste Masche.</p>
+              <div class="button-row">
+                <button class="button primary" id="btn-empty-start" type="button" data-i18n="onboard.start">Leeres Chart</button>
+                <button class="button" id="btn-empty-sample" type="button" data-i18n="chart.empty.sample">Beispiel laden</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="statusbar">
+          <span id="status-cursor">–</span>
+          <span class="status-sep"></span>
+          <span id="status-size">–</span>
+          <span class="status-sep"></span>
+          <span id="status-zoom">100 %</span>
+          <span class="status-spacer"></span>
+          <span id="status-save" class="muted"></span>
+        </footer>
+      </section>
+
+      <aside class="sidebar right" id="right-panel" aria-label="Eigenschaften">
+        <div class="panel-section">
+          <div class="section-head">
+            <h2 data-i18n="inspector.title">Eigenschaften</h2>
+          </div>
+          <div id="inspector"></div>
+        </div>
+
+        <div class="panel-section">
+          <div class="section-head">
+            <h2 data-i18n="chart.legend">Legende</h2>
+          </div>
+          <div id="legend" class="legend"></div>
+        </div>
+
+        <div class="panel-section">
+          <div class="section-head">
+            <h2 data-i18n="chart.size">Größe</h2>
+          </div>
+          <div class="settings-grid">
+            <label class="field compact">
+              <span class="field-label" data-i18n="chart.width">Breite</span>
+              <input id="chart-width" type="number" min="1" max="1000" step="1">
+            </label>
+            <label class="field compact">
+              <span class="field-label" data-i18n="chart.height">Höhe</span>
+              <input id="chart-height" type="number" min="1" max="1000" step="1">
+            </label>
+          </div>
+          <div class="button-row wrap">
+            <button class="button subtle small" id="btn-row-above" type="button">+ Reihe ↑</button>
+            <button class="button subtle small" id="btn-row-below" type="button">+ Reihe ↓</button>
+            <button class="button subtle small" id="btn-col-left" type="button">+ Spalte ←</button>
+            <button class="button subtle small" id="btn-col-right" type="button">+ Spalte →</button>
+          </div>
+          <label class="field">
+            <span class="field-label" data-i18n="chart.rowsMode">Rückreihen</span>
+            <select id="opt-rows-mode">
+              <option value="all" data-i18n="chart.rowsMode.all">Alle Reihen zeichnen</option>
+              <option value="rs" data-i18n="chart.rowsMode.rs">Nur Hinreihen</option>
+            </select>
+          </label>
+          <p class="hint" data-i18n="chart.rowsMode.hint"></p>
+          <label class="check">
+            <input id="opt-row-numbers" type="checkbox">
+            <span data-i18n="chart.showRowNumbers">Reihennummern</span>
+          </label>
+          <label class="check">
+            <input id="opt-stitch-numbers" type="checkbox">
+            <span data-i18n="chart.showStitchNumbers">Maschennummern</span>
+          </label>
+          <label class="check">
+            <input id="opt-legend" type="checkbox">
+            <span data-i18n="chart.showLegend">Legende</span>
+          </label>
+
+          <div class="settings-grid">
+            <label class="field compact">
+              <span class="field-label" data-i18n="chart.repeat.start">Von Masche</span>
+              <input id="opt-repeat-start" type="number" min="1" step="1">
+            </label>
+            <label class="field compact">
+              <span class="field-label" data-i18n="chart.repeat.end">Bis Masche</span>
+              <input id="opt-repeat-end" type="number" min="1" step="1">
+            </label>
+          </div>
+          <label class="field">
+            <span class="field-label" data-i18n="chart.cellSize">Zellgröße</span>
+            <input id="opt-cell-mm" type="number" min="2" max="20" step="0.5">
+          </label>
+          <label class="field">
+            <span class="field-label" data-i18n="chart.paper">Papier</span>
+            <select id="opt-paper">
+              <option value="A4">A4</option>
+              <option value="A3">A3</option>
+              <option value="Letter">Letter</option>
+              <option value="auto">Auto</option>
+            </select>
+          </label>
+          <label class="field">
+            <span class="field-label" data-i18n="chart.subtitle">Untertitel</span>
+            <input id="opt-subtitle" type="text" maxlength="120">
+          </label>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <div class="overlay" id="overlay" hidden></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <dialog id="dialog-new" class="dialog">
+    <form method="dialog" class="dialog-inner">
+      <header class="dialog-head">
+        <h2 data-i18n="chart.new.title">Neues Chart anlegen</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+          <svg class="icon"><use href="#i-close"/></svg>
+        </button>
+      </header>
+      <label class="field">
+        <span class="field-label" data-i18n="chart.title">Titel</span>
+        <input id="new-title" type="text" maxlength="120" placeholder="Mein Chart">
+      </label>
+      <div class="settings-grid">
+        <label class="field">
+          <span class="field-label" data-i18n="chart.new.width">Breite in Maschen</span>
+          <input id="new-width" type="number" min="1" max="1000" value="40">
+        </label>
+        <label class="field">
+          <span class="field-label" data-i18n="chart.new.height">Höhe in Reihen</span>
+          <input id="new-height" type="number" min="1" max="1000" value="24">
+        </label>
+      </div>
+      <footer class="dialog-actions">
+        <button class="button" value="cancel" type="submit" data-i18n="app.cancel">Abbrechen</button>
+        <button class="button primary" id="btn-create-chart" value="default" type="button" data-i18n="chart.new.create">Chart anlegen</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <dialog id="dialog-export" class="dialog">
+    <form method="dialog" class="dialog-inner">
+      <header class="dialog-head">
+        <h2 data-i18n="dialog.export.title">Exportieren</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+          <svg class="icon"><use href="#i-close"/></svg>
+        </button>
+      </header>
+      <label class="field">
+        <span class="field-label" data-i18n="dialog.export.format">Format</span>
+        <select id="export-format">
+          <option value="svg" data-i18n="dialog.export.svg">SVG (Vektor, zum Drucken)</option>
+          <option value="png" data-i18n="dialog.export.png">PNG (Bild)</option>
+          <option value="json" data-i18n="dialog.export.json">JSON (Quelldatei)</option>
+        </select>
+      </label>
+      <label class="field" id="export-scale-field">
+        <span class="field-label" data-i18n="dialog.export.scale">Auflösung</span>
+        <select id="export-scale">
+          <option value="1">1×</option>
+          <option value="2" selected>2×</option>
+          <option value="4">4×</option>
+        </select>
+      </label>
+      <label class="check">
+        <input id="export-legend" type="checkbox" checked>
+        <span data-i18n="dialog.export.legend">Legende einbetten</span>
+      </label>
+      <footer class="dialog-actions">
+        <button class="button" id="btn-export-print" type="button" data-i18n="dialog.export.print">Drucken</button>
+        <button class="button primary" id="btn-export-download" type="button" data-i18n="dialog.export.download">Herunterladen</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <dialog id="dialog-open" class="dialog">
+    <form method="dialog" class="dialog-inner">
+      <header class="dialog-head">
+        <h2 data-i18n="dialog.open.title">Chart öffnen</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+          <svg class="icon"><use href="#i-close"/></svg>
+        </button>
+      </header>
+      <div class="drop-zone" id="drop-zone">
+        <p data-i18n="dialog.open.drop">Chart-Datei hier ablegen</p>
+        <button class="button" id="btn-open-file" type="button" data-i18n="dialog.open.browse">Datei wählen</button>
+      </div>
+      <h3 data-i18n="dialog.open.recent">Zuletzt geöffnet</h3>
+      <div class="recent-list" id="recent-list"></div>
+    </form>
+  </dialog>
+
+  <dialog id="dialog-settings" class="dialog">
+    <form method="dialog" class="dialog-inner">
+      <header class="dialog-head">
+        <h2 data-i18n="settings.title">Einstellungen</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+          <svg class="icon"><use href="#i-close"/></svg>
+        </button>
+      </header>
+      <label class="field">
+        <span class="field-label" data-i18n="settings.language">Sprache</span>
+        <select id="settings-language"></select>
+      </label>
+      <label class="field">
+        <span class="field-label" data-i18n="settings.theme">Darstellung</span>
+        <select id="settings-theme">
+          <option value="system" data-i18n="app.theme.system">System</option>
+          <option value="light" data-i18n="app.theme.light">Hell</option>
+          <option value="dark" data-i18n="app.theme.dark">Dunkel</option>
+          <option value="high-contrast" data-i18n="app.theme.highContrast">Hoher Kontrast</option>
+        </select>
+      </label>
+      <label class="field">
+        <span class="field-label" data-i18n="settings.units">Einheiten</span>
+        <select id="settings-units">
+          <option value="metric" data-i18n="app.units.metric">Metrisch</option>
+          <option value="imperial" data-i18n="app.units.imperial">Imperial</option>
+        </select>
+      </label>
+      <label class="check">
+        <input id="settings-autosave" type="checkbox">
+        <span data-i18n="settings.autosave">Automatisch speichern</span>
+      </label>
+      <p class="hint" data-i18n="settings.aiNotice"></p>
+      <footer class="dialog-actions">
+        <button class="button" id="btn-settings-reset" type="button" data-i18n="settings.reset">Einstellungen zurücksetzen</button>
+        <button class="button" id="btn-open-about" type="button" data-i18n="app.about">Über Stitchwright</button>
+        <button class="button primary" value="default" type="submit" data-i18n="app.close">Schließen</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <dialog id="dialog-help" class="dialog wide">
+    <form method="dialog" class="dialog-inner">
+      <header class="dialog-head">
+        <h2 data-i18n="app.help">Hilfe</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+          <svg class="icon"><use href="#i-close"/></svg>
+        </button>
+      </header>
+      <p data-i18n="help.intro"></p>
+      <div class="help-grid">
+        <section>
+          <h3 data-i18n="dialog.help.mouse">Maus</h3>
+          <p data-i18n="help.mouse"></p>
+          <h3 data-i18n="dialog.help.touch">Touch</h3>
+          <p data-i18n="help.touch"></p>
+        </section>
+        <section>
+          <h3 data-i18n="dialog.help.rows">Rückreihen</h3>
+          <p data-i18n="help.rows"></p>
+          <h3 data-i18n="dialog.help.colors">Farben</h3>
+          <p data-i18n="help.colors"></p>
+        </section>
+        <section>
+          <h3 data-i18n="dialog.help.export">Export</h3>
+          <p data-i18n="help.export"></p>
+          <h3 data-i18n="dialog.help.privacy">Datenschutz</h3>
+          <p data-i18n="help.privacy"></p>
+        </section>
+      </div>
+      <h3 data-i18n="dialog.help.shortcuts">Tastenkürzel</h3>
+      <div class="shortcut-grid" id="shortcut-list"></div>
+      <p class="hint" data-i18n="help.ai"></p>
+      <p class="hint" data-i18n="dialog.about.license"></p>
+    </form>
+  </dialog>
+
+  <dialog id="dialog-about" class="dialog">
+    <form method="dialog" class="dialog-inner">
+      <header class="dialog-head">
+        <h2 data-i18n="dialog.about.title">Über Stitchwright</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+          <svg class="icon"><use href="#i-close"/></svg>
+        </button>
+      </header>
+      <p data-i18n="dialog.about.text"></p>
+      <p data-i18n="dialog.about.privacy"></p>
+      <p data-i18n="dialog.about.ai"></p>
+      <p class="muted" id="about-version"></p>
+      <p class="muted" data-i18n="dialog.about.license"></p>
+      <footer class="dialog-actions">
+        <button class="button primary" value="default" type="submit" data-i18n="app.close">Schließen</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <dialog id="dialog-table" class="dialog wide">
+    <form method="dialog" class="dialog-inner">
+      <header class="dialog-head">
+        <h2 data-i18n="dialog.table.title">Tabellenansicht</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+          <svg class="icon"><use href="#i-close"/></svg>
+        </button>
+      </header>
+      <p data-i18n="dialog.table.description"></p>
+      <div class="table-wrap" id="table-view"></div>
+    </form>
+  </dialog>
+
+  <dialog id="dialog-confirm" class="dialog">
+    <form method="dialog" class="dialog-inner">
+      <header class="dialog-head">
+        <h2 data-i18n="dialog.confirm.title">Bestätigen</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+          <svg class="icon"><use href="#i-close"/></svg>
+        </button>
+      </header>
+      <p id="confirm-text"></p>
+      <footer class="dialog-actions">
+        <button class="button" value="cancel" type="submit" data-i18n="dialog.confirm.cancel">Abbrechen</button>
+        <button class="button danger" id="btn-confirm-ok" value="default" type="button" data-i18n="dialog.confirm.ok">Fortfahren</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <dialog id="dialog-custom-group" class="dialog">
+    <form method="dialog" class="dialog-inner">
+      <header class="dialog-head">
+        <h2 data-i18n="palette.customGroup">Eigene Gruppe</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+          <svg class="icon"><use href="#i-close"/></svg>
+        </button>
+      </header>
+      <label class="field">
+        <span class="field-label" data-i18n="palette.label">Beschriftung</span>
+        <input id="custom-label" type="text" maxlength="24" placeholder="TL">
+      </label>
+      <label class="field">
+        <span class="field-label" data-i18n="palette.span">Breite in Maschen</span>
+        <input id="custom-span" type="number" min="1" max="12" value="3">
+      </label>
+      <footer class="dialog-actions">
+        <button class="button" value="cancel" type="submit" data-i18n="app.cancel">Abbrechen</button>
+        <button class="button primary" id="btn-custom-add" value="default" type="button" data-i18n="palette.add">Hinzufügen</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <dialog id="dialog-cable" class="dialog">
+    <form method="dialog" class="dialog-inner">
+      <header class="dialog-head">
+        <h2 data-i18n="palette.cablePresets">Zöpfe</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+          <svg class="icon"><use href="#i-close"/></svg>
+        </button>
+      </header>
+      <div class="settings-grid">
+        <label class="field">
+          <span class="field-label" data-i18n="inspector.group.left">Linke Seite</span>
+          <input id="cable-left" type="number" min="1" max="12" value="2">
+        </label>
+        <label class="field">
+          <span class="field-label" data-i18n="inspector.group.right">Rechte Seite</span>
+          <input id="cable-right" type="number" min="1" max="12" value="2">
+        </label>
+      </div>
+      <label class="field">
+        <span class="field-label" data-i18n="inspector.group.direction">Richtung</span>
+        <select id="cable-direction">
+          <option value="front" data-i18n="inspector.group.direction.front">Vorne</option>
+          <option value="back" data-i18n="inspector.group.direction.back">Hinten</option>
+        </select>
+      </label>
+      <footer class="dialog-actions">
+        <button class="button" value="cancel" type="submit" data-i18n="app.cancel">Abbrechen</button>
+        <button class="button primary" id="btn-cable-add" value="default" type="button" data-i18n="palette.add">Hinzufügen</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <dialog id="dialog-color" class="dialog">
+    <form method="dialog" class="dialog-inner">
+      <header class="dialog-head">
+        <h2 data-i18n="palette.addColor">Farbe hinzufügen</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+          <svg class="icon"><use href="#i-close"/></svg>
+        </button>
+      </header>
+      <label class="field">
+        <span class="field-label" data-i18n="color.name">Name</span>
+        <input id="color-name" type="text" maxlength="40" placeholder="Rot">
+      </label>
+      <label class="field">
+        <span class="field-label" data-i18n="color.hex">Hex-Wert</span>
+        <input id="color-hex" type="color" value="#b3261e">
+      </label>
+      <footer class="dialog-actions">
+        <button class="button" value="cancel" type="submit" data-i18n="app.cancel">Abbrechen</button>
+        <button class="button primary" id="btn-color-add" value="default" type="button" data-i18n="palette.add">Hinzufügen</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

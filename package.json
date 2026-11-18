@@ -1,0 +1,16 @@
+{
+  "name": "stitchwright",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Freier, lokaler Strickschrift-Editor für Menschen und Agenten",
+  "license": "GPL-3.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node scripts/serve.js",
+    "test": "node --test",
+    "check": "node scripts/check.js && node --test"
+  }
+}

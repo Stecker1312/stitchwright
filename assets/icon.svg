@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Stitchwright">
+  <rect width="128" height="128" rx="28" fill="#2563eb"/>
+  <g fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M26 46h76M26 64h76M26 82h76"/>
+    <path d="M46 26v76M64 26v76M82 26v76" opacity="0.35"/>
+    <path d="M40 88c0-22 48-10 48-32"/>
+    <path d="M40 40c0 22 48 10 48 32"/>
+  </g>
+</svg>
