@@ -70,3 +70,11 @@ test("custom groups are labelled in the legend", () => {
   assert.match(svg, /TL/);
   assert.match(svg, /zwei Maschen vor die Arbeit/);
 });
+
+test("stitch markers are exported as dashed guides", () => {
+  const chart = sample();
+  chart.options.markers = [3, 6];
+  const svg = renderSvg(chart);
+  assert.match(svg, /stroke-dasharray="4 4"/);
+  assert.match(svg, /#7c3aed/);
+});

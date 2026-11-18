@@ -37,7 +37,8 @@ export const DEFAULT_OPTIONS = {
   repeat: null,
   cellMm: 6,
   paper: "A4",
-  subtitle: ""
+  subtitle: "",
+  markers: []
 };
 
 function emptyMatrix(width, height) {
@@ -64,7 +65,7 @@ export function createChart({ width = 24, height = 24, title = "" } = {}) {
     colors: emptyMatrix(width, height),
     groups: [],
     palette: clone(DEFAULT_PALETTE),
-    options: { ...DEFAULT_OPTIONS },
+    options: { ...DEFAULT_OPTIONS, markers: [] },
     meta: {
       author: "",
       source: "",
@@ -108,7 +109,11 @@ export function normalizeChart(raw) {
     palette: Array.isArray(raw.palette) && raw.palette.length
       ? raw.palette.map((entry) => ({ ...entry }))
       : clone(DEFAULT_PALETTE),
-    options: { ...DEFAULT_OPTIONS, ...(raw.options || {}) },
+    options: {
+      ...DEFAULT_OPTIONS,
+      ...(raw.options || {}),
+      markers: Array.isArray(raw.options?.markers) ? raw.options.markers.slice() : []
+    },
     meta: {
       author: "",
       source: "",
@@ -175,6 +180,35 @@ export function setColor(chart, row, col, colorId) {
     throw new Error(`Unknown colour: ${colorId}`);
   }
   chart.colors[row - 1][col - 1] = colorId;
+}
+
+/**
+ * Toggle a stitch marker after a column. Markers are chart guides only; they
+ * are not knitted and do not appear in the legend. Boundary 3 means "after
+ * stitch 3", between columns 3 and 4.
+ */
+export function toggleMarker(chart, boundary) {
+  if (!Number.isInteger(boundary) || boundary < 1 || boundary >= chart.width) return false;
+  const markers = Array.isArray(chart.options.markers) ? chart.options.markers : [];
+  const index = markers.indexOf(boundary);
+  if (index === -1) markers.push(boundary);
+  else markers.splice(index, 1);
+  markers.sort((a, b) => a - b);
+  chart.options.markers = markers;
+  return true;
+}
+
+/** Replace all markers with a regular grid: after every N stitches. */
+export function setMarkerEvery(chart, every) {
+  if (!Number.isInteger(every) || every < 1) throw new Error("Marker interval must be positive");
+  const markers = [];
+  for (let boundary = every; boundary < chart.width; boundary += every) markers.push(boundary);
+  chart.options.markers = markers;
+  return markers;
+}
+
+export function clearMarkers(chart) {
+  chart.options.markers = [];
 }
 
 /** Find the group that covers a cell, if any. */
@@ -314,6 +348,7 @@ export function resizeChart(chart, width, height) {
   chart.rows = nextRows;
   chart.colors = nextColors;
   chart.groups = keptGroups;
+  chart.options.markers = (chart.options.markers || []).filter((marker) => marker < width);
   return { removedGroups };
 }
 
@@ -358,6 +393,9 @@ export function insertColumn(chart, col, side = "left") {
   for (const row of chart.rows) row.splice(index, 0, null);
   for (const row of chart.colors) row.splice(index, 0, null);
   chart.width += 1;
+  chart.options.markers = (chart.options.markers || [])
+    .map((marker) => (marker >= index ? marker + 1 : marker))
+    .filter((marker) => marker < chart.width);
 
   const removed = [];
   chart.groups = chart.groups.filter((group) => {
@@ -381,6 +419,13 @@ export function deleteColumn(chart, col) {
   for (const row of chart.rows) row.splice(index, 1);
   for (const row of chart.colors) row.splice(index, 1);
   chart.width -= 1;
+  chart.options.markers = (chart.options.markers || [])
+    .map((marker) => {
+      if (marker <= index) return marker;
+      if (marker === index + 1) return null;
+      return marker - 1;
+    })
+    .filter((marker) => marker !== null && marker < chart.width);
 
   const removed = [];
   chart.groups = chart.groups.filter((group) => {
@@ -424,6 +469,9 @@ export function mirrorHorizontal(chart) {
     }
     return next;
   });
+  chart.options.markers = (chart.options.markers || [])
+    .map((marker) => chart.width - marker)
+    .sort((a, b) => a - b);
 }
 
 /** Mirror the whole chart bottom-to-top. */

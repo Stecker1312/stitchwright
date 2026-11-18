@@ -238,6 +238,14 @@
         "subtitle": {
           "type": "string",
           "maxLength": 120
+        },
+        "markers": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "uniqueItems": true
         }
       },
       "additionalProperties": true

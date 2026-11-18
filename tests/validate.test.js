@@ -88,6 +88,14 @@ test("custom group legend must be a short string", () => {
   assert.equal(diagnostics.some((item) => item.code === "E_CUSTOM_LEGEND_LENGTH"), true);
 });
 
+test("markers must be unique and inside the chart", () => {
+  const chart = createChart({ width: 10, height: 8 });
+  chart.options.markers = [2, 2, 10];
+  const diagnostics = validateChart(chart);
+  assert.equal(diagnostics.some((item) => item.code === "E_MARKER_DUPLICATE"), true);
+  assert.equal(diagnostics.some((item) => item.code === "E_MARKER"), true);
+});
+
 test("unknown top-level keys are warnings unless strict", () => {
   const chart = createChart({ width: 10, height: 8 });
   chart.something = true;

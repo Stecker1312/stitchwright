@@ -147,11 +147,34 @@ freigegeben.
 - Die lokale Bibliothek speichert den Legendentext mit. Änderungen im Inspector
   aktualisieren die Bibliothek (Vergleich über den Inhalt, nicht nur die Anzahl).
 - Ausführliche Projektseite `about.html`, Screenshot, README, Changelog,
-  Contribution-Hinweise und Versionskonstante `0.1.0-alpha.1`.
+  Contribution-Hinweise und Versionskonstante `0.2.0-alpha.1`.
 - Repository wird öffentlich, GitHub Pages veröffentlicht die App; die Alpha
   ist überall klar gekennzeichnet.
-- 60 Tests grün; Browserprüfung: Legendentext angelegt, platziert, im Inspector
+- 64 Tests grün; Browserprüfung: Legendentext angelegt, platziert, im Inspector
   geändert und nach Reload angezeigt.
+
+## 2026-11-18 – Maschenmarker und Bereiche kopieren
+
+**Beobachtet:** Das Chart braucht sichtbare Maschengruppen wie gesetzte
+Maschenmarker; außerdem fehlten sichtbare Kopieren-/Einfügen-Schaltflächen für
+einen ausgewählten Bereich.
+
+**Getan:**
+
+- `options.markers` speichert Grenzen nach Masche N. Canvas und SVG zeichnen
+  gestrichelte violette Hilfslinien; sie sind ausdrücklich keine Strickanweisung
+  und erscheinen nicht in der Legende.
+- Marker-Werkzeug: Klick setzt oder entfernt einen Marker. Zusätzlich „Marker
+  alle N“ und „Marker löschen“ im Größen-Panel.
+- Marker folgen Spalten einfügen/löschen, Spiegeln und Verkleinern; Validierung
+  prüft Lage und Duplikate.
+- Auswahlwerkzeug mit Ziehen, sichtbare Kopieren-/Einfügen-Buttons in der
+  Werkzeugleiste, Zielzelle anklicken, einfügen. Farben und Gruppen werden
+  mitkopiert; nach dem Einfügen bleibt der eingefügte Bereich ausgewählt.
+- Werkzeugauswahl auf `button[data-tool]` begrenzt; vorher traf sie auch die
+  Zeichenfläche.
+- 64 Tests grün; Browserprüfung: Marker alle 5 gesetzt und einzeln entfernt,
+  3×3-Bereich kopiert und an anderer Stelle eingefügt.
 
 
 

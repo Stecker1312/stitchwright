@@ -44,6 +44,7 @@ PNG sind Exporte. Das JSON-Schema für Editoren und Agenten liegt unter
     "showStitchNumbers": true,
     "showLegend": true,
     "repeat": null,
+    "markers": [],
     "cellMm": 6,
     "paper": "A4",
     "subtitle": ""
@@ -149,9 +150,14 @@ Eine Gruppe ist ein Symbol, das mehrere Maschen in einer Reihe verbraucht.
 | `showStitchNumbers` | boolean | Maschennummern unten |
 | `showLegend` | boolean | Legende im Export |
 | `repeat` | `null` oder `{start,end}` | Rapport, 1-basiert, inklusiv |
+| `markers` | Array von Zahlen | Maschenmarker nach Masche N, nur Zeichenhilfe |
 | `cellMm` | Zahl 2…20 | Zellgröße für den Druck |
 | `paper` | `"A4"`, `"A3"`, `"Letter"`, `"auto"` | Papierhinweis |
 | `subtitle` | String | kurze Zeile unter dem Titel |
+
+`markers` sind reine Zeichenhilfen: `[10, 20]` zeichnet gestrichelte Linien
+nach Masche 10 und 20. Sie werden nicht gestrickt und erscheinen nicht in der
+Legende.
 
 ## Meta
 

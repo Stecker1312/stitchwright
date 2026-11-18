@@ -274,6 +274,20 @@ export function validateChart(chart, { strict = false } = {}) {
     if (typeof options.subtitle !== "string") {
       diagnostics.push(error("E_SUBTITLE", "options.subtitle", "subtitle muss ein String sein"));
     }
+    if (!Array.isArray(options.markers)) {
+      diagnostics.push(error("E_MARKERS", "options.markers", "markers muss ein Array sein"));
+    } else {
+      const seenMarkers = new Set();
+      options.markers.forEach((marker, index) => {
+        if (!isInteger(marker) || marker < 1 || (widthOk && marker >= width)) {
+          diagnostics.push(error("E_MARKER", `options.markers[${index}]`, "Marker liegt außerhalb des Rasters"));
+        } else if (seenMarkers.has(marker)) {
+          diagnostics.push(error("E_MARKER_DUPLICATE", `options.markers[${index}]`, "Marker ist doppelt"));
+        } else {
+          seenMarkers.add(marker);
+        }
+      });
+    }
   }
 
   // Helpful warnings, not correctness problems.

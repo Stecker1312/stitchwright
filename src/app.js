@@ -28,6 +28,9 @@ import {
   pasteFragment,
   removeGroup,
   resizeChart,
+  setMarkerEvery,
+  toggleMarker,
+  clearMarkers,
   visibleRows
 } from "./core/chart.js";
 import { createBrowserI18n, LANGUAGE_META } from "./core/i18n.js";
@@ -142,6 +145,7 @@ function onStoreChange(type) {
   if (type === "history") {
     updateHistoryButtons();
     updateSaveIndicator();
+    updateClipboardButtons();
     scheduleAutosave();
     renderLegendPanel();
     return;
@@ -155,6 +159,7 @@ function onStoreChange(type) {
   }
   if (type === "selection") {
     renderInspectorPanel();
+    updateClipboardButtons();
     updateStatus();
     return;
   }
@@ -203,6 +208,7 @@ function renderAll() {
   updateZoomUI();
   updateToolUI();
   updateAdders();
+  updateClipboardButtons();
   updateCanvasScrollbars();
   updateStatus();
   updateEmptyHint();
@@ -245,6 +251,10 @@ function renderSettings() {
   $("opt-row-numbers").checked = Boolean(chart.options.showRowNumbers);
   $("opt-stitch-numbers").checked = Boolean(chart.options.showStitchNumbers);
   $("opt-legend").checked = Boolean(chart.options.showLegend);
+  const markerCount = Array.isArray(chart.options.markers) ? chart.options.markers.length : 0;
+  $("marker-count").textContent = markerCount
+    ? i18n.t("chart.markerCount", { count: markerCount })
+    : "";
 
   const pill = $("rows-mode-pill");
   pill.textContent = chart.options.rowsMode === "rs" ? i18n.t("chart.rowsMode.rs") : i18n.t("chart.rowsMode.all");
@@ -335,7 +345,7 @@ function updateHistoryButtons() {
 }
 
 function updateToolUI() {
-  $$("[data-tool]").forEach((button) => {
+  $$("button[data-tool]").forEach((button) => {
     const active = button.dataset.tool === store.tool;
     button.classList.toggle("active", active);
     button.setAttribute("aria-pressed", String(active));
@@ -596,6 +606,8 @@ function setupTopbar() {
   $("btn-settings").addEventListener("click", () => openSettingsDialog());
   $("btn-help").addEventListener("click", () => openHelpDialog());
   $("btn-table").addEventListener("click", () => openTableDialog());
+  $("btn-copy-selection").addEventListener("click", copyCurrentSelection);
+  $("btn-paste-selection").addEventListener("click", pasteClipboard);
   $("btn-mirror-h").addEventListener("click", () => mirrorH());
   $("btn-mirror-v")?.addEventListener("click", () => mirrorV());
   $("btn-rows-mode").addEventListener("click", () => toggleRowsMode());
@@ -616,7 +628,7 @@ function setupTopbar() {
 }
 
 function setupTools() {
-  $$("[data-tool]").forEach((button) => {
+  $$("button[data-tool]").forEach((button) => {
     button.addEventListener("click", () => store.setTool(button.dataset.tool));
   });
   $("symbol-search").addEventListener("input", () => renderPalettePanel());
@@ -698,6 +710,8 @@ function setupChartSettings() {
   $("btn-row-below").addEventListener("click", () => insertRowAt("below"));
   $("btn-col-left").addEventListener("click", () => insertColumnAt("left"));
   $("btn-col-right").addEventListener("click", () => insertColumnAt("right"));
+  $("btn-marker-every").addEventListener("click", setMarkerGrid);
+  $("btn-marker-clear").addEventListener("click", clearAllMarkers);
 }
 
 async function resizeFromInputs() {
@@ -802,6 +816,25 @@ function addColumnAtRight() {
   } catch (error) {
     showToast(error.message || i18n.t("error.unknown"), "error");
   }
+}
+
+function setMarkerGrid() {
+  const every = Number($("opt-marker-every").value);
+  if (!Number.isInteger(every) || every < 1 || every > 1000) {
+    showToast(i18n.t("error.fix"), "error");
+    return;
+  }
+  store.edit("Maschenmarker", (chart) => {
+    setMarkerEvery(chart, every);
+  });
+  renderSettings();
+}
+
+function clearAllMarkers() {
+  store.edit("Maschenmarker löschen", (chart) => {
+    clearMarkers(chart);
+  });
+  renderSettings();
 }
 
 async function deleteSelectedHeader() {
@@ -911,19 +944,37 @@ function clearSelection() {
 /* Clipboard                                                           */
 /* ------------------------------------------------------------------ */
 
+function updateClipboardButtons() {
+  const copy = $("btn-copy-selection");
+  const paste = $("btn-paste-selection");
+  if (copy) copy.disabled = !store?.selection;
+  if (paste) paste.disabled = !clipboard;
+}
+
 function copyCurrentSelection() {
   const bounds = selectionBounds();
   if (!bounds) return;
   clipboard = copySelection(store.chart, bounds.top, bounds.left, bounds.bottom, bounds.right);
+  updateClipboardButtons();
   showToast(i18n.t("app.copied"));
 }
 
 function pasteClipboard() {
   if (!clipboard) return;
+  const startRow = store.cursor.row;
+  const startCol = store.cursor.col;
   try {
     store.edit("Einfügen", (chart) => {
-      pasteFragment(chart, clipboard, store.cursor.row, store.cursor.col);
+      pasteFragment(chart, clipboard, startRow, startCol);
     });
+    store.setSelection({
+      row1: startRow,
+      col1: startCol,
+      row2: Math.min(store.chart.height, startRow + clipboard.height - 1),
+      col2: Math.min(store.chart.width, startCol + clipboard.width - 1)
+    });
+    updateClipboardButtons();
+    showToast(i18n.t("message.pasted"));
   } catch (error) {
     showToast(error.message || i18n.t("error.unknown"), "error");
   }

@@ -40,8 +40,8 @@
         </div>
       </div>
       <figure>
-        <img src="assets/screenshot-editor.png" alt="Der Stitchwright-Editor mit einem Beispielchart: Raster, Zöpfe, Farbflächen und Legende.">
-        <figcaption>Der Editor mit dem eingebauten Beispielchart. Kein persönliches Projekt, nur eine Demonstration.</figcaption>
+        <img src="assets/screenshot-editor.png" alt="Der Stitchwright-Editor mit einem Beispielchart: Raster, Zöpfe, Farbflächen, Maschenmarker und Legende.">
+        <figcaption>Der Editor mit dem eingebauten Beispielchart und gesetzten Maschenmarkern. Kein persönliches Projekt, nur eine Demonstration.</figcaption>
       </figure>
     </section>
 
@@ -49,7 +49,7 @@
       <div>
         <strong>Das ist eine frühe Vorabversion, keine fertige Software.</strong>
         <p>
-          Version 0.1.0-alpha.1 ist ein erster benutzbarer Stand. Fehler sind
+          Version 0.2.0-alpha.1 ist ein erster benutzbarer Stand. Fehler sind
           wahrscheinlich, das Dateiformat kann sich noch ändern, und nicht jede
           Funktion ist auf jedem Gerät getestet. Bitte sichere wichtige Charts
           zusätzlich als JSON-Datei. Für Produktivdaten ist die App noch nicht
@@ -134,6 +134,22 @@
             Beschriftete Mehrfachsymbole wie <code>TL</code> oder <code>TR</code>
             bleiben in einer lokalen Bibliothek. Du kannst ihnen einen
             Legendentext mitgeben, damit später klar ist, was gemeint war.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Maschenmarker</h3>
+          <p>
+            Gestrichelte Hilfslinien teilen das Chart in Maschengruppen, einzeln
+            gesetzt oder automatisch alle N Maschen. Sie sind nur eine
+            Zeichenhilfe und keine Strickanweisung.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Bereiche kopieren</h3>
+          <p>
+            Mit dem Auswahlwerkzeug einen Bereich aufziehen, kopieren und an
+            einer anderen Stelle einfügen. Farben und Mehrfachsymbole wandern
+            mit.
           </p>
         </article>
         <article class="card">
@@ -353,7 +369,7 @@ node cli/stitchwright.js legend chart.strickschrift.json</pre>
 
   <footer>
     <div class="footer-inner">
-      <span>Stitchwright 0.1.0-alpha.1 · 2026-11-18 · GPL-3.0</span>
+      <span>Stitchwright 0.2.0-alpha.1 · 2026-11-18 · GPL-3.0</span>
       <span><a href="./">Editor</a> · <a href="https://github.com/Stecker1312/stitchwright" rel="noopener">Quellcode</a> · <a href="#alpha">Alpha-Hinweis</a></span>
     </div>
   </footer>

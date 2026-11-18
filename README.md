@@ -4,7 +4,7 @@
 der im Browser läuft, offline funktioniert und niemandem etwas nach Hause
 schickt.
 
-> **Frühe Vorabversion 0.1.0-alpha.1 (2026-11-18).**
+> **Frühe Vorabversion 0.2.0-alpha.1 (2026-11-18).**
 > Noch nicht für Produktivdaten. Fehler, unfertige Ecken und Änderungen am
 > Dateiformat sind möglich. Bitte wichtige Charts zusätzlich als JSON-Datei
 > sichern.
@@ -33,6 +33,8 @@ eine kleine CLI benutzt werden.
   Symbol, nicht sechs Kästchen
 - Eigene beschriftete Gruppen bleiben in einer lokalen Bibliothek; sie können
   einen eigenen Legendentext bekommen
+- Maschenmarker als Zeichenhilfe: einzeln oder alle N Maschen
+- Bereiche auswählen, kopieren und einfügen, inklusive Farben und Gruppen
 - Hin- und Rückreihen oder nur Hinreihen mit Nummerierung 1, 3, 5 …
 - Rapport markieren, Legende automatisch erzeugen
 - Farben pro Masche, auch für Fair Isle und Intarsien
@@ -64,7 +66,7 @@ Dann <http://localhost:8080> öffnen. Ohne lokalen Server lässt sich die
 Live-Demo benutzen.
 
 ```bash
-npm test      # 60 Node-Tests
+npm test      # 64 Node-Tests
 npm run check # Tests und Syntaxprüfung
 ```
 

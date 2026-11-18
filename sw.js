@@ -6,7 +6,7 @@
  * and no analytics to cache or leak.
  */
 
-const CACHE = "stitchwright-v0.1.12";
+const CACHE = "stitchwright-v0.2.0";
 
 const SHELL = [
   "./",

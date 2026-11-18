@@ -13,7 +13,8 @@ import {
   getColor,
   groupAt,
   paintCell,
-  setColor
+  setColor,
+  toggleMarker
 } from "../core/chart.js";
 import { isGroupSymbol, symbolSpan } from "../core/symbols.js";
 import { drawChart } from "../core/render-canvas.js";
@@ -137,6 +138,10 @@ export class CanvasView {
       if (!cell) return;
       this.store.setCursor(cell);
       event.preventDefault();
+      if (this.store.tool === "marker") {
+        this.toggleMarkerAt(cell.col);
+        return;
+      }
       this.canvas.setPointerCapture(event.pointerId);
       this.pointers.set(event.pointerId, point);
       this.startGesture("erase", cell);
@@ -177,6 +182,11 @@ export class CanvasView {
     }
     if (!cell) return;
     this.store.setCursor(cell);
+
+    if (this.store.tool === "marker") {
+      this.toggleMarkerAt(cell.col);
+      return;
+    }
 
     if (this.store.tool === "select") {
       const group = groupAt(this.store.chart, cell.row, cell.col);
@@ -365,6 +375,13 @@ export class CanvasView {
 
   eraseAt(row, col) {
     if (eraseCell(this.store.chart, row, col)) this.store.touch();
+  }
+
+  toggleMarkerAt(col) {
+    if (col < 1 || col >= this.store.chart.width) return;
+    this.store.edit("Maschenmarker", (chart) => {
+      toggleMarker(chart, col);
+    });
   }
 
   /** Paint or erase at the keyboard cursor. */

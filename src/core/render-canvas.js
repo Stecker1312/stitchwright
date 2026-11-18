@@ -23,7 +23,8 @@ export const LIGHT_THEME = {
   muted: "#5f6672",
   accent: "#2563eb",
   selection: "rgba(37, 99, 235, 0.18)",
-  repeat: "#c0392b"
+  repeat: "#c0392b",
+  marker: "#7c3aed"
 };
 
 export const DARK_THEME = {
@@ -35,7 +36,8 @@ export const DARK_THEME = {
   muted: "#aab1bc",
   accent: "#60a5fa",
   selection: "rgba(96, 165, 250, 0.24)",
-  repeat: "#c0392b"
+  repeat: "#c0392b",
+  marker: "#c4b5fd"
 };
 
 const pathCache = new Map();
@@ -290,6 +292,24 @@ export function drawChart(ctx, chart, view, {
       ctx.lineTo(x, view.offsetY + chartH);
       ctx.stroke();
     }
+  }
+
+  // Stitch markers are chart guides, not knitted instructions.
+  const markers = chart.options?.markers || [];
+  if (markers.length) {
+    ctx.strokeStyle = theme.marker;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+    for (const boundary of markers) {
+      if (!Number.isInteger(boundary) || boundary < 1 || boundary >= chart.width) continue;
+      const x = view.offsetX + boundary * scale;
+      if (x < 0 || x > width) continue;
+      ctx.beginPath();
+      ctx.moveTo(x, view.offsetY);
+      ctx.lineTo(x, view.offsetY + chartH);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
   }
 
   // Whole-row or whole-column selection from the number margins.

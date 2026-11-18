@@ -27,6 +27,7 @@ Strickabnahme bleibt offen.
 
 - PWA offline, Installation
 - Symbolsuche, Legende, eigene Gruppen mit Legendentext
+- Maschenmarker und Bereichs-Kopieren
 - Fehler- und Leerzustände, Onboarding
 - Tests für Kern und Browser
 - README, Screenshots, Contribution-Hinweise

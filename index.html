@@ -41,6 +41,7 @@
     <symbol id="i-print" viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="1"/><path d="M7 17h10v4H7z"/></symbol>
     <symbol id="i-file-plus" viewBox="0 0 24 24"><path d="M14 3H5v18h14V8l-5-5z"/><path d="M14 3v5h5"/><path d="M12 12v5M9.5 14.5h5"/></symbol>
     <symbol id="i-cable" viewBox="0 0 24 24"><path d="M4 18c0-8 16-4 16-12"/><path d="M4 6c0 8 16 4 16 12"/></symbol>
+    <symbol id="i-marker" viewBox="0 0 24 24"><path d="M12 4v16"/><path d="M12 6h6l-2 3 2 3h-6"/></symbol>
     <symbol id="i-color" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l5 5L20 6"/></symbol>
   </svg>
@@ -111,6 +112,9 @@
             <button class="tool-button" data-tool="pan" type="button" data-i18n-title="tool.pan.hint" data-i18n-aria-label="tool.pan" title="Verschieben">
               <svg class="icon"><use href="#i-hand"/></svg>
             </button>
+            <button class="tool-button" data-tool="marker" type="button" data-i18n-title="tool.marker.hint" data-i18n-aria-label="tool.marker" title="Maschenmarker setzen">
+              <svg class="icon"><use href="#i-marker"/></svg>
+            </button>
           </div>
         </div>
 
@@ -149,6 +153,12 @@
             <button class="button subtle small" id="btn-rows-mode" type="button">Nur Hinreihen</button>
             <button class="icon-button small" id="btn-table" type="button" data-i18n-title="dialog.table.title" data-i18n-aria-label="dialog.table.title" title="Tabellenansicht">
               <svg class="icon"><use href="#i-table"/></svg>
+            </button>
+            <button class="icon-button small" id="btn-copy-selection" type="button" data-i18n-title="chart.copy" data-i18n-aria-label="chart.copy" title="Kopieren" disabled>
+              <svg class="icon"><use href="#i-copy"/></svg>
+            </button>
+            <button class="icon-button small" id="btn-paste-selection" type="button" data-i18n-title="chart.paste" data-i18n-aria-label="chart.paste" title="Einfügen" disabled>
+              <svg class="icon"><use href="#i-paste"/></svg>
             </button>
             <button class="icon-button small" id="btn-mirror-h" type="button" data-i18n-title="chart.mirrorHorizontal" data-i18n-aria-label="chart.mirrorHorizontal" title="Horizontal spiegeln">
               <svg class="icon"><use href="#i-mirror"/></svg>
@@ -272,6 +282,18 @@
               <input id="opt-repeat-end" type="number" min="1" step="1">
             </label>
           </div>
+          <div class="settings-grid">
+            <label class="field compact">
+              <span class="field-label" data-i18n="chart.markerEvery">Marker alle</span>
+              <input id="opt-marker-every" type="number" min="1" max="1000" step="1" placeholder="10">
+            </label>
+            <button class="button subtle small" id="btn-marker-every" type="button" data-i18n="chart.markerSet">Setzen</button>
+          </div>
+          <div class="button-row wrap">
+            <button class="button subtle small" id="btn-marker-clear" type="button" data-i18n="chart.markerClear">Marker löschen</button>
+            <span class="hint" id="marker-count"></span>
+          </div>
+          <p class="hint" data-i18n="chart.markerHint"></p>
           <label class="field">
             <span class="field-label" data-i18n="chart.cellSize">Zellgröße</span>
             <input id="opt-cell-mm" type="number" min="2" max="20" step="0.5">
@@ -432,12 +454,14 @@
         <section>
           <h3 data-i18n="dialog.help.mouse">Maus</h3>
           <p data-i18n="help.mouse"></p>
+          <p data-i18n="help.selection"></p>
           <h3 data-i18n="dialog.help.touch">Touch</h3>
           <p data-i18n="help.touch"></p>
         </section>
         <section>
           <h3 data-i18n="dialog.help.rows">Rückreihen</h3>
           <p data-i18n="help.rows"></p>
+          <p data-i18n="help.markers"></p>
           <h3 data-i18n="dialog.help.colors">Farben</h3>
           <p data-i18n="help.colors"></p>
         </section>

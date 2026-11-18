@@ -1,7 +1,7 @@
 # Status
 
 - Stand: 2026-11-18
-- Version: **0.1.0-alpha.1**
+- Version: **0.2.0-alpha.1**
 - Phase: Öffentliche Vorabversion (Alpha)
 - Sichtbarkeit: öffentlich, GitHub Pages:
   <https://stecker1312.github.io/stitchwright/>
@@ -35,6 +35,9 @@
 - Leer-Hinweis schließbar und persistent; Schnell-Buttons für Reihen/Spalten
 - Reihen- und Spaltennummern anklickbar; Papierkorb löscht die ausgewählte
   Reihe oder Spalte nach Bestätigung
+- Maschenmarker als gestrichelte Zeichenhilfe, einzeln oder alle N Maschen;
+  nicht Teil der Strickanleitung
+- Bereiche auswählen, kopieren und einfügen, inklusive Farben und Gruppen
 - Eigene beschriftete Gruppen bleiben in einer lokalen Bibliothek und
   erscheinen unter „Eigene“; optionaler Legendentext
 - Zopfrichtung: „vorne“ = zuerst gestrickter (rechter) Strang oben,
@@ -43,7 +46,7 @@
   Scrollbalken in Panels, Dialogen, Tabellen und der oberen Bedienleiste
 - Deutsch/Englisch, hell/dunkel/System/hoher Kontrast, metrisch/imperial
 - PWA mit Service Worker, offline getestet
-- 60 Node-Tests grün; Browserprüfung mit Chromium/Playwright
+- 64 Node-Tests grün; Browserprüfung mit Chromium/Playwright
 - Beispiel-Charts unter `samples/`, Projektseite `about.html`
 
 ## In Arbeit / offen
@@ -65,7 +68,7 @@
 
 ## Tests
 
-`npm test`: 60 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
+`npm test`: 64 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
 Einheiten, Viewport, CLI, Performance).
 `npm run check`: Syntax- und JSON-Prüfung plus Tests grün.
 Browser: Zeichnen, Farben, Zöpfe, Rückreihen, Undo, Export, Scrollbalken,

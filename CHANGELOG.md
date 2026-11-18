@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.2.0-alpha.1 – 2026-11-18
+
+Zweite öffentliche Vorabversion. Keine Produktionsreife.
+
+### Neu
+
+- **Maschenmarker:** gestrichelte vertikale Hilfslinien nach wählbaren Maschen.
+  Einzelne Marker per Marker-Werkzeug setzen/entfernen oder „Marker alle N“
+  erzeugen. Marker sind reine Zeichenhilfen, keine Strickanweisung.
+- **Bereiche kopieren und einfügen:** Auswahlwerkzeug, Ziehen, Kopieren,
+  Zielzelle anklicken, Einfügen. Farben und Gruppen werden mitkopiert.
+- Sichtbare Kopieren-/Einfügen-Buttons in der Werkzeugleiste.
+
+### Behoben / verbessert
+
+- Werkzeugauswahl traf auch die Zeichenfläche statt nur die Werkzeugbuttons.
+- 64 Node-Tests; Browserprüfung für Marker und Bereichs-Kopieren.
+
 ## 0.1.0-alpha.1 – 2026-11-18
 
 Erste öffentliche Vorabversion. Keine Produktionsreife.

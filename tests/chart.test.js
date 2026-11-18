@@ -19,6 +19,9 @@ import {
   resizeChart,
   setCell,
   setColor,
+  setMarkerEvery,
+  toggleMarker,
+  clearMarkers,
   usedLegendKeys
 } from "../src/core/chart.js";
 
@@ -173,4 +176,28 @@ test("stats count symbols, colours and groups", () => {
   assert.equal(stats.symbols, 1);
   assert.equal(stats.colored, 1);
   assert.equal(stats.groups, 1);
+});
+
+test("stitch markers can be set, toggled and cleared", () => {
+  const chart = createChart({ width: 12, height: 6 });
+  assert.deepEqual(setMarkerEvery(chart, 5), [5, 10]);
+  assert.deepEqual(chart.options.markers, [5, 10]);
+  assert.equal(toggleMarker(chart, 5), true);
+  assert.deepEqual(chart.options.markers, [10]);
+  assert.equal(toggleMarker(chart, 12), false);
+  clearMarkers(chart);
+  assert.deepEqual(chart.options.markers, []);
+});
+
+test("markers follow column inserts, deletes and mirrors", () => {
+  const chart = createChart({ width: 10, height: 6 });
+  chart.options.markers = [3, 7];
+  insertColumn(chart, 2, "left");
+  assert.deepEqual(chart.options.markers, [4, 8]);
+  deleteColumn(chart, 5);
+  assert.deepEqual(chart.options.markers, [4, 7]);
+  mirrorHorizontal(chart);
+  assert.deepEqual(chart.options.markers, [3, 6]);
+  resizeChart(chart, 6, 6);
+  assert.deepEqual(chart.options.markers, [3]);
 });

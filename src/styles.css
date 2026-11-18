@@ -376,6 +376,12 @@ html[data-theme="high-contrast"] .button.primary { color: #000000; }
   min-width: 0;
 }
 
+.stage-meta {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
 .zoom-label {
   min-width: 52px;
   text-align: center;
@@ -571,6 +577,7 @@ html[data-theme="high-contrast"] .button.primary { color: #000000; }
 #chart-canvas[data-tool="pan"] { cursor: grab; }
 #chart-canvas[data-tool="pan"]:active { cursor: grabbing; }
 #chart-canvas[data-tool="eraser"] { cursor: cell; }
+#chart-canvas[data-tool="marker"] { cursor: copy; }
 
 .statusbar {
   display: flex;
@@ -632,7 +639,7 @@ html[data-theme="high-contrast"] .button.primary { color: #000000; }
 
 .segmented {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 3px;
   padding: 3px;
   border-radius: var(--radius);
@@ -854,6 +861,8 @@ html[data-theme="high-contrast"] .button.primary { color: #000000; }
   gap: 8px;
   margin-bottom: 8px;
 }
+
+.settings-grid .button { align-self: end; }
 
 .check {
   display: flex;

@@ -207,6 +207,13 @@ export function renderSvg(chart, {
     }
   }
 
+  // Stitch markers: dashed guides, not part of the knitting key.
+  for (const boundary of chart.options?.markers || []) {
+    if (!Number.isInteger(boundary) || boundary < 1 || boundary >= chart.width) continue;
+    const x = chartX + boundary * cellPx;
+    parts.push(`<line x1="${x}" y1="${chartY}" x2="${x}" y2="${chartY + chartH}" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="4 4"/>`);
+  }
+
   // Symbols in cells.
   for (let visibleIndex = 0; visibleIndex < rowCount; visibleIndex += 1) {
     const row = rows[visibleIndex];
