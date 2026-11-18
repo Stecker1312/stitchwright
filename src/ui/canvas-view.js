@@ -152,8 +152,6 @@ export class CanvasView {
     if (this.pointers.size > 2) return;
 
     const cell = cellAt(this.store.chart, this.store.view, point.x, point.y);
-    if (!cell) return;
-    this.store.setCursor(cell);
     if (this.store.tool === "pan" || event.button === 1) {
       this.gesture = {
         type: "pan",
@@ -165,6 +163,7 @@ export class CanvasView {
       return;
     }
     if (!cell) return;
+    this.store.setCursor(cell);
 
     if (this.store.tool === "select") {
       const group = groupAt(this.store.chart, cell.row, cell.col);
