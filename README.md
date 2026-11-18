@@ -75,6 +75,15 @@ Details: [`docs/format.md`](docs/format.md).
 - Tests mit `node:test`; Browserprüfung mit Playwright
 - JSON-Schema unter `schema/strickschrift.schema.json`
 
+## Dokumentation
+
+- [Symbolsprache Klar](docs/symbols.md)
+- [Chart-Format](docs/format.md)
+- [Entscheidungen (ADRs)](docs/adr/)
+- [Arbeitsabläufe (SOPs)](docs/sop/)
+- [Status](STATUS.md)
+- [Arbeitsjournal](docs/JOURNAL.md)
+
 ## Datenschutz
 
 Stitchwright sendet keine Daten. Es gibt keine Analyse, keine Werbung, keine
