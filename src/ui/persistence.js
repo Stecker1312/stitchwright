@@ -10,6 +10,7 @@ const DB_NAME = "stitchwright";
 const DB_VERSION = 1;
 const STORE = "charts";
 const SETTINGS_KEY = "stitchwright.settings.v1";
+const CUSTOM_GROUPS_KEY = "stitchwright.customGroups.v1";
 
 const DEFAULT_SETTINGS = {
   language: "de",
@@ -123,6 +124,35 @@ export function saveSettings(settings) {
   } catch {
     // Storage can be unavailable in private mode. The app still works; the
     // setting just will not survive a reload.
+  }
+}
+
+/** Load the user's reusable custom groups. */
+export function loadCustomGroups() {
+  try {
+    const raw = localStorage.getItem(CUSTOM_GROUPS_KEY);
+    if (!raw) return [];
+    const data = JSON.parse(raw);
+    if (!Array.isArray(data)) return [];
+    return data
+      .filter((group) => group
+        && typeof group.label === "string"
+        && group.label.length > 0
+        && group.label.length <= 24
+        && Number.isInteger(group.span)
+        && group.span >= 1
+        && group.span <= 12)
+      .map((group) => ({ label: group.label, span: group.span }));
+  } catch {
+    return [];
+  }
+}
+
+export function saveCustomGroups(groups) {
+  try {
+    localStorage.setItem(CUSTOM_GROUPS_KEY, JSON.stringify(groups));
+  } catch {
+    // The current session still works; only persistence is lost.
   }
 }
 

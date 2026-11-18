@@ -115,6 +115,25 @@ Bedienleiste horizontal scrollt.
 - Im Browser bei 182 % geprüft: beide Balken erscheinen, Griffe ziehen die
   Ansicht, Werte ändern sich; bei „Einpassen“ verschwinden sie wieder.
 
+## 2026-11-18 – Eigene Gruppen bleiben erhalten
+
+**Beobachtet:** Eine eigene Gruppe (z. B. `TL`) musste für jede Verwendung neu
+angelegt werden; der Dialog zeigte `TL` als Platzhalter, was wie ein Vorgabewert
+wirkte.
+
+**Getan:**
+
+- Eigene Gruppen werden in einer lokalen Bibliothek gespeichert und unter
+  „Eigene“ in der Symbolleiste als wiederverwendbare Buttons angezeigt.
+- Beim Anlegen wird die Gruppe automatisch in die Bibliothek übernommen; beim
+  Öffnen eines Charts werden darin enthaltene eigene Gruppen ergänzt.
+- Der Platzhalter im Namensfeld ist jetzt „Name“, das Feld ist leer.
+- „Neue eigene Gruppe“ öffnet den Dialog; bestehende Gruppen werden mit einem
+  Klick ausgewählt und direkt gesetzt.
+- 57 Tests grün; Browserprüfung: `TL` angelegt, gesetzt, nach Reload weiter in
+  der Palette vorhanden.
+
+
 
 
 

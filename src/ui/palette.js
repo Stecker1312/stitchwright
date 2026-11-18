@@ -28,7 +28,9 @@ function isSelected(store, id, params = {}) {
       && store.symbol.right === params.right
       && store.symbol.direction === params.direction;
   }
-  if (id === "custom") return true;
+  if (id === "custom") {
+    return store.symbol.label === params.label && store.symbol.span === params.span;
+  }
   return true;
 }
 
@@ -57,7 +59,7 @@ function symbolButton({ id, params = {}, span, label, description, store, t, onC
  * Render the palette. Returns nothing; call again after a language change or
  * a palette change.
  */
-export function renderPalette({ symbolsEl, colorsEl, store, t, lang = "de", onCustomGroup, onCustomLabel, onAddColor }) {
+export function renderPalette({ symbolsEl, colorsEl, store, t, lang = "de", customGroups = [], onCustomGroup, onCustomLabel, onSelectCustomGroup, onAddColor }) {
   const query = (symbolsEl.dataset.query || "").trim().toLowerCase();
   symbolsEl.replaceChildren();
 
@@ -144,11 +146,36 @@ export function renderPalette({ symbolsEl, colorsEl, store, t, lang = "de", onCu
     symbolsEl.append(grid);
   }
 
-  const customGroup = element("button", "palette-item palette-item-wide");
-  customGroup.type = "button";
-  customGroup.append(element("span", "palette-label", t("palette.customGroup")));
-  customGroup.addEventListener("click", () => onCustomLabel?.());
-  symbolsEl.append(customGroup);
+  // Reusable custom groups. They are stored outside the chart so the same
+  // "TL"/"TR" group can be placed again without recreating it.
+  const customMatches = customGroups.filter((group) => (
+    !query || group.label.toLowerCase().includes(query) || "eigene custom".includes(query)
+  ));
+  if (!query || customMatches.length || "eigene custom".includes(query)) {
+    symbolsEl.append(element("h3", "palette-category", t("category.custom")));
+    const grid = element("div", "palette-grid");
+    for (const group of customMatches) {
+      grid.append(symbolButton({
+        id: "custom",
+        params: { span: group.span, label: group.label },
+        span: group.span,
+        label: group.label,
+        description: `${group.label} · ${group.span} M`,
+        store,
+        t,
+        onClick: () => {
+          store.setSymbol({ id: "custom", span: group.span, label: group.label });
+          store.setTool("pencil");
+        }
+      }));
+    }
+    const newGroup = element("button", "palette-item palette-item-wide");
+    newGroup.type = "button";
+    newGroup.append(element("span", "palette-label", t("palette.newCustomGroup")));
+    newGroup.addEventListener("click", () => onCustomLabel?.());
+    grid.append(newGroup);
+    symbolsEl.append(grid);
+  }
 
   // Colours
   if (!colorsEl) return;

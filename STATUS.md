@@ -32,6 +32,8 @@
   für `+ Reihe` und `+ Spalte` auf der Zeichenfläche
 - Reihen- und Spaltennummern anklickbar; Papierkorb löscht die ausgewählte
   Reihe oder Spalte nach Bestätigung
+- Eigene beschriftete Gruppen bleiben in einer lokalen Bibliothek und
+  erscheinen unter „Eigene“ in der Symbolleiste; Dialog-Platzhalter ist „Name“
 - Zopfrichtung korrigiert: „vorne“ zeigt den zuerst gestrickten (rechten)
   Strang oben, „hinten“ den linken
 - Horizontale und vertikale Scrollbalken auf der Zeichenfläche, sichtbar

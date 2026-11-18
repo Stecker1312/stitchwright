@@ -57,6 +57,7 @@ let toastTimer = null;
 let confirmResolve = null;
 let saving = false;
 let emptyHintDismissed = false;
+let customGroups = [];
 
 const scrollState = {
   x: { max: 0, track: 0, thumb: 0 },
@@ -74,10 +75,13 @@ async function init() {
   applyTheme(settings.theme || "system", { persist: false });
   populateLanguages();
   emptyHintDismissed = localStorage.getItem("stitchwright.emptyHintDismissed") === "1";
+  customGroups = storage.loadCustomGroups();
 
   const chart = await loadInitialChart();
   store = new Store(chart, { settings });
   if (!chart.id) chart.id = storage.makeChartId(chart.title || "chart");
+  customGroups = mergeCustomGroups(customGroups, customGroupsFromChart(chart));
+  storage.saveCustomGroups(customGroups);
   canvasView = new CanvasView({
     canvas: $("chart-canvas"),
     wrap: $("canvas-wrap"),
@@ -261,10 +265,41 @@ function renderPalettePanel() {
     store,
     t: i18n.t,
     lang: i18n.language,
+    customGroups,
     onCustomGroup: () => openCableDialog(),
     onCustomLabel: () => openCustomGroupDialog(),
     onAddColor: () => openColorDialog()
   });
+}
+
+function mergeCustomGroups(existing, additions) {
+  const merged = new Map();
+  for (const group of [...existing, ...additions]) {
+    if (!group || typeof group.label !== "string") continue;
+    const label = group.label.trim().slice(0, 24);
+    const span = Number(group.span);
+    if (!label || !Number.isInteger(span) || span < 1 || span > 12) continue;
+    merged.set(`${label}\u0000${span}`, { label, span });
+  }
+  return [...merged.values()];
+}
+
+function customGroupsFromChart(chart) {
+  return chart.groups
+    .filter((group) => group.symbol === "custom")
+    .map((group) => ({
+      label: group.label || "",
+      span: group.span || groupSpan(chart, group)
+    }))
+    .filter((group) => group.label);
+}
+
+function rememberCustomGroups(additions) {
+  const next = mergeCustomGroups(customGroups, additions);
+  if (next.length === customGroups.length) return;
+  customGroups = next;
+  storage.saveCustomGroups(customGroups);
+  renderPalettePanel();
 }
 
 function renderInspectorPanel() {
@@ -808,6 +843,12 @@ function updateGroup(group, values) {
       addGroup(chart, { ...values, id: group.id });
     });
     store.selectGroup(group.id);
+    if (group.symbol === "custom") {
+      rememberCustomGroups([{
+        label: values.label ?? group.label,
+        span: values.span ?? group.span
+      }]);
+    }
   } catch (error) {
     showToast(error.message || i18n.t("error.unknown"), "error");
   }
@@ -1053,6 +1094,8 @@ function addCustomGroup() {
     showToast(i18n.t("error.fix"), "error");
     return;
   }
+  const group = { label, span };
+  rememberCustomGroups([group]);
   store.setSymbol({ id: "custom", span, label });
   store.setTool("pencil");
   $("dialog-custom-group").close();
@@ -1112,6 +1155,8 @@ function loadChart(chart, { save = false, fit = true } = {}) {
   } catch {
     // Ignore storage failures; the current session still dismisses the hint.
   }
+  customGroups = mergeCustomGroups(customGroups, customGroupsFromChart(chart));
+  storage.saveCustomGroups(customGroups);
   store.replace(chart);
   if (fit) canvasView.fit();
   if (save) saveLocal(true);

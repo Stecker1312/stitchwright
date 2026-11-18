@@ -21,6 +21,7 @@ Konten, keine Telemetrie.
   Bobbel, verkürzte Reihen, Farbflächen
 - Mehrfachsymbole als eine Gruppe: ein Zopf über sechs Maschen ist ein
   Symbol, nicht sechs Kästchen
+- Eigene beschriftete Gruppen bleiben in der Symbolleiste erhalten
 - Hin- und Rückreihen oder nur Hinreihen mit Nummerierung 1, 3, 5 …
 - Rapport markieren, Legende automatisch erzeugen
 - Farben pro Masche, auch für Fair Isle und Intarsien

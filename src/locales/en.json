@@ -59,6 +59,8 @@
   "palette.colors": "Colours",
   "palette.cablePresets": "Cables",
   "palette.customGroup": "Custom group",
+  "palette.newCustomGroup": "New custom group",
+  "palette.namePlaceholder": "Name",
   "palette.customCable": "Custom cable",
   "palette.noColor": "No colour",
   "palette.addColor": "Add colour",
@@ -74,6 +76,7 @@
   "category.cable": "Cables",
   "category.texture": "Texture",
   "category.utility": "Utility",
+  "category.custom": "Custom",
 
   "chart.title": "Title",
   "chart.untitled": "Untitled chart",

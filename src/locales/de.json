@@ -59,6 +59,8 @@
   "palette.colors": "Farben",
   "palette.cablePresets": "Zöpfe",
   "palette.customGroup": "Eigene Gruppe",
+  "palette.newCustomGroup": "Neue eigene Gruppe",
+  "palette.namePlaceholder": "Name",
   "palette.customCable": "Eigener Zopf",
   "palette.noColor": "Keine Farbe",
   "palette.addColor": "Farbe hinzufügen",
@@ -74,6 +76,7 @@
   "category.cable": "Zöpfe",
   "category.texture": "Textur",
   "category.utility": "Hilfszeichen",
+  "category.custom": "Eigene",
 
   "chart.title": "Titel",
   "chart.untitled": "Unbenanntes Chart",
