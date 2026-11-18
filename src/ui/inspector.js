@@ -95,6 +95,18 @@ export function renderInspector({ container, store, t, lang = "de", onUpdateGrou
   container.replaceChildren();
   const chart = store.chart;
 
+  if (store.headerSelection) {
+    const card = el("div", "inspector-card");
+    card.append(el("h3", null, t("status.selected")));
+    const label = store.headerSelection.kind === "row"
+      ? t("chart.rowLabel")
+      : t("chart.columnLabel");
+    card.append(el("p", null, `${label} ${store.headerSelection.index}`));
+    card.append(el("p", "hint", t("chart.deleteHeader")));
+    container.append(card);
+    return;
+  }
+
   if (store.selectedGroupId) {
     const group = chart.groups.find((item) => item.id === store.selectedGroupId);
     if (group) {

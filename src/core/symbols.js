@@ -121,8 +121,8 @@ export function cableGlyph({ left, right, direction = "front" }) {
 
   const leftBundle = bundle(left, 0.12, span - 0.12, 0.8, 0.2);
   const rightBundle = bundle(right, span - 0.12, 0.12, 0.8, 0.2);
-  const front = direction === "front" ? leftBundle : rightBundle;
-  const back = direction === "front" ? rightBundle : leftBundle;
+  const front = direction === "front" ? rightBundle : leftBundle;
+  const back = direction === "front" ? leftBundle : rightBundle;
 
   const primitives = [...back];
   // Halo first, then the front strands. The renderer resolves `halo` to the

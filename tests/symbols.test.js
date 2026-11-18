@@ -46,6 +46,14 @@ test("cable direction changes which bundle is on top", () => {
   assert.notDeepEqual(front, back);
 });
 
+test("cable front puts the first-worked right bundle on top", () => {
+  const front = cableGlyph({ left: 2, right: 2, direction: "front" }).filter((item) => !item.halo);
+  const back = cableGlyph({ left: 2, right: 2, direction: "back" }).filter((item) => !item.halo);
+  // The array is [back bundle, front bundle]; the front bundle is drawn last.
+  assert.match(front[2].d, /^M3\.88/);
+  assert.match(back[2].d, /^M0\.12/);
+});
+
 test("cable presets are valid", () => {
   for (const preset of CABLE_PRESETS) {
     assert.ok(preset.left >= 1);

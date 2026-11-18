@@ -30,9 +30,13 @@
 - Speichern/Laden in IndexedDB, JSON-Export, SVG/PNG, Druck
 - Leer-Hinweis schließbar und persistent; immer sichtbare Schnell-Buttons
   für `+ Reihe` und `+ Spalte` auf der Zeichenfläche
+- Reihen- und Spaltennummern anklickbar; Papierkorb löscht die ausgewählte
+  Reihe oder Spalte nach Bestätigung
+- Zopfrichtung korrigiert: „vorne“ zeigt den zuerst gestrickten (rechten)
+  Strang oben, „hinten“ den linken
 - Deutsch/Englisch, hell/dunkel/System/hoher Kontrast, metrisch/imperial
 - PWA mit Service Worker, offline getestet
-- 54 Node-Tests grün; Browserprüfung mit Chromium/Playwright
+- 57 Node-Tests grün; Browserprüfung mit Chromium/Playwright
 - Beispiel-Charts unter `samples/`
 
 ## In Arbeit / offen
@@ -54,7 +58,7 @@
 
 ## Tests
 
-`npm test`: 54 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
+`npm test`: 57 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
 Einheiten, Viewport, CLI, Performance).
 `npm run check`: Syntax- und JSON-Prüfung plus Tests grün.
 Browser: Zeichnen, Farben, Zöpfe, Rückreihen, Undo, Export, PWA offline

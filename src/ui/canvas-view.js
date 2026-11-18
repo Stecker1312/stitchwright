@@ -21,6 +21,7 @@ import {
   cellAt,
   cellRect,
   fitView,
+  headerAt,
   panBy,
   zoomAt
 } from "../core/viewport.js";
@@ -55,12 +56,13 @@ export class CanvasView {
     this.canvas.addEventListener("pointercancel", (event) => this.pointerUp(event));
     this.canvas.addEventListener("pointerleave", () => {
       this.store.setHover(null);
+      this.canvas.style.cursor = "";
     });
     this.canvas.addEventListener("contextmenu", (event) => event.preventDefault());
     this.canvas.addEventListener("wheel", (event) => this.wheel(event), { passive: false });
 
     this.store.subscribe((type) => {
-      if (["paint", "chart", "view", "selection", "hover", "cursor", "tool", "symbol", "color"].includes(type)) {
+      if (["paint", "chart", "view", "selection", "header", "hover", "cursor", "tool", "symbol", "color"].includes(type)) {
         this.render();
       }
     });
@@ -101,7 +103,8 @@ export class CanvasView {
         selection: this.store.selection,
         hover: this.store.hover,
         cursor: this.store.cursor,
-        selectedGroupId: this.store.selectedGroupId
+        selectedGroupId: this.store.selectedGroupId,
+        headerSelection: this.store.headerSelection
       });
     });
   }
@@ -151,7 +154,15 @@ export class CanvasView {
     }
     if (this.pointers.size > 2) return;
 
+    const header = headerAt(this.store.chart, this.store.view, point.x, point.y);
+    if (header) {
+      this.canvas.style.cursor = "pointer";
+      this.store.setHeaderSelection(header);
+      return;
+    }
+
     const cell = cellAt(this.store.chart, this.store.view, point.x, point.y);
+    if (this.store.headerSelection) this.store.setHeaderSelection(null);
     if (this.store.tool === "pan" || event.button === 1) {
       this.gesture = {
         type: "pan",
@@ -216,6 +227,11 @@ export class CanvasView {
         offsetY: this.gesture.offsetY + dy
       });
       return;
+    }
+
+    const header = headerAt(this.store.chart, this.store.view, point.x, point.y);
+    if (!this.gesture) {
+      this.canvas.style.cursor = header ? "pointer" : "";
     }
 
     const cell = cellAt(this.store.chart, this.store.view, point.x, point.y);

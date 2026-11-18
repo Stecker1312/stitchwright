@@ -10,7 +10,7 @@
  */
 
 import { getCell, getColor, groupSpan, visibleRows } from "./chart.js";
-import { backgroundFor, contrastColor } from "./color.js";
+import { backgroundFor, contrastColor, withAlpha } from "./color.js";
 import { glyphFor } from "./symbols.js";
 import { cellRect, visibleColumns } from "./viewport.js";
 
@@ -163,6 +163,7 @@ export function drawChart(ctx, chart, view, {
   hover = null,
   cursor = null,
   selectedGroupId = null,
+  headerSelection = null,
   showNumbers = true
 } = {}) {
   const scale = view.scale;
@@ -288,6 +289,25 @@ export function drawChart(ctx, chart, view, {
       ctx.moveTo(x, view.offsetY);
       ctx.lineTo(x, view.offsetY + chartH);
       ctx.stroke();
+    }
+  }
+
+  // Whole-row or whole-column selection from the number margins.
+  if (headerSelection) {
+    ctx.fillStyle = withAlpha(theme.accent, 0.16);
+    ctx.strokeStyle = theme.accent;
+    ctx.lineWidth = 2;
+    if (headerSelection.kind === "row") {
+      const visibleIndex = rows.indexOf(headerSelection.index);
+      if (visibleIndex !== -1) {
+        const y = view.offsetY + (rowCount - 1 - visibleIndex) * scale;
+        ctx.fillRect(view.offsetX, y, chartW, scale);
+        ctx.strokeRect(view.offsetX + 1, y + 1, chartW - 2, scale - 2);
+      }
+    } else if (headerSelection.kind === "column") {
+      const x = view.offsetX + (headerSelection.index - 1) * scale;
+      ctx.fillRect(x, view.offsetY, scale, chartH);
+      ctx.strokeRect(x + 1, view.offsetY + 1, scale - 2, chartH - 2);
     }
   }
 

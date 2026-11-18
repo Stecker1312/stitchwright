@@ -79,4 +79,23 @@ Fenstern zugeklappt ist.
 - 54 Tests weiter grün; im Browser geprüft: Hinweis bleibt nach Reload weg,
   Größe wächst von 300 × 300 auf 301 × 301.
 
+## 2026-11-18 – Reihen/Spalten löschen, Zopfrichtung korrigiert
+
+**Beobachtet:** Raster ließ sich nur erweitern, nicht verkleinern. Außerdem
+waren die Zopfrichtungen „vorne“ und „hinten“ vertauscht.
+
+**Getan:**
+
+- Reihen- und Spaltennummern auf der Zeichenfläche sind anklickbar. Die
+  Auswahl erscheint als Markierung und als Label neben den Schnellbuttons.
+  Der Papierkorb löscht die ausgewählte Reihe/Spalte nach Bestätigung.
+  `Entf` löst dasselbe aus, solange eine Reihe/Spalte ausgewählt ist.
+- Die Zopf-Glyphen wurden getauscht: Bei „vorne“ liegt der zuerst gestrickte
+  Strang (im Bild rechts) oben, bei „hinten“ der linke. Die Dokumentation
+  erklärt jetzt ausdrücklich die Leserichtung.
+- Demo-Chart und SVG neu erzeugt.
+- 57 Tests grün, Browserprüfung: Reihe 24 und Spalte 1 gelöscht, Größe
+  jeweils korrekt reduziert.
+
+
 

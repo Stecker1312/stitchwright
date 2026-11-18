@@ -11,6 +11,8 @@ import {
   addGroup,
   copySelection,
   createChart,
+  deleteColumn,
+  deleteRow,
   eraseCell,
   getCell,
   getColor,
@@ -141,6 +143,12 @@ function onStoreChange(type) {
     updateStatus();
     return;
   }
+  if (type === "header") {
+    updateAdders();
+    renderInspectorPanel();
+    updateStatus();
+    return;
+  }
   if (type === "tool") {
     updateToolUI();
     updateStatus();
@@ -178,6 +186,7 @@ function renderAll() {
   updateHistoryButtons();
   updateZoomUI();
   updateToolUI();
+  updateAdders();
   updateStatus();
   updateEmptyHint();
   updateSaveIndicator();
@@ -290,16 +299,43 @@ function updateZoomUI() {
 
 function updateStatus() {
   const chart = store.chart;
-  const cell = store.hover || store.cursor;
-  if (cell) {
-    const stitch = chart.width - cell.col + 1;
-    $("status-cursor").textContent = `${i18n.t("status.row")} ${cell.row} · ${i18n.t("chart.stitchLabel")} ${stitch}`;
+  if (store.headerSelection) {
+    const { kind, index } = store.headerSelection;
+    const label = kind === "row" ? i18n.t("chart.rowLabel") : i18n.t("chart.columnLabel");
+    $("status-cursor").textContent = `${label} ${index} · ${i18n.t("status.selected")}`;
   } else {
-    $("status-cursor").textContent = i18n.t("status.ready");
+    const cell = store.hover || store.cursor;
+    if (cell) {
+      const stitch = chart.width - cell.col + 1;
+      $("status-cursor").textContent = `${i18n.t("status.row")} ${cell.row} · ${i18n.t("chart.stitchLabel")} ${stitch}`;
+    } else {
+      $("status-cursor").textContent = i18n.t("status.ready");
+    }
   }
   $("status-size").textContent = `${chart.width} × ${chart.height}`;
   updateZoomUI();
   updateSaveIndicator();
+}
+
+function updateAdders() {
+  const selection = store.headerSelection;
+  const label = $("header-selection");
+  const button = $("btn-delete-header");
+  if (!selection) {
+    label.hidden = true;
+    label.textContent = "";
+    button.disabled = true;
+    button.title = i18n.t("chart.selectHeaderHint");
+    button.setAttribute("aria-label", i18n.t("chart.selectHeaderHint"));
+    return;
+  }
+  const name = selection.kind === "row" ? i18n.t("chart.rowLabel") : i18n.t("chart.columnLabel");
+  label.hidden = false;
+  label.textContent = `${name} ${selection.index}`;
+  const atMinimum = selection.kind === "row" ? store.chart.height <= 1 : store.chart.width <= 1;
+  button.disabled = atMinimum;
+  button.title = i18n.t("chart.deleteHeader");
+  button.setAttribute("aria-label", i18n.t("chart.deleteHeader"));
 }
 
 function updateSaveIndicator() {
@@ -364,6 +400,7 @@ function setupTopbar() {
   $("btn-empty-sample").addEventListener("click", () => loadChart(createDemoChart(), { save: true }));
   $("btn-add-row").addEventListener("click", addRowAtTop);
   $("btn-add-col").addEventListener("click", addColumnAtRight);
+  $("btn-delete-header").addEventListener("click", deleteSelectedHeader);
 }
 
 function setupTools() {
@@ -409,6 +446,7 @@ function setupChartSettings() {
     store.edit("Rückreihen", (chart) => {
       chart.options.rowsMode = event.target.value === "rs" ? "rs" : "all";
     });
+    store.setHeaderSelection(null);
     canvasView.fit();
     const diagnostics = validateChart(store.chart);
     if (diagnostics.some((item) => item.code === "W_HIDDEN_WS")) {
@@ -470,6 +508,7 @@ async function resizeFromInputs() {
   store.edit("Größe", (current) => {
     resizeChart(current, width, height);
   });
+  store.setHeaderSelection(null);
   canvasView.fit();
 }
 
@@ -492,6 +531,7 @@ function updateRepeat() {
 function toggleRowsMode() {
   const next = store.chart.options.rowsMode === "rs" ? "all" : "rs";
   store.edit("Rückreihen", (chart) => { chart.options.rowsMode = next; });
+  store.setHeaderSelection(null);
   canvasView.fit();
   if (next === "rs" && validateChart(store.chart).some((item) => item.code === "W_HIDDEN_WS")) {
     showToast(i18n.t("chart.hiddenWS.warning"), "error");
@@ -501,6 +541,7 @@ function toggleRowsMode() {
 function insertRowAt(side) {
   const row = store.cursor.row;
   dismissEmptyHint();
+  store.setHeaderSelection(null);
   try {
     store.edit("Reihe einfügen", (chart) => {
       insertRow(chart, row, side);
@@ -514,6 +555,7 @@ function insertRowAt(side) {
 function insertColumnAt(side) {
   const col = store.cursor.col;
   dismissEmptyHint();
+  store.setHeaderSelection(null);
   try {
     store.edit("Spalte einfügen", (chart) => {
       insertColumn(chart, col, side);
@@ -526,6 +568,7 @@ function insertColumnAt(side) {
 
 function addRowAtTop() {
   dismissEmptyHint();
+  store.setHeaderSelection(null);
   try {
     store.edit("Reihe hinzufügen", (chart) => {
       insertRow(chart, chart.height, "above");
@@ -538,6 +581,7 @@ function addRowAtTop() {
 
 function addColumnAtRight() {
   dismissEmptyHint();
+  store.setHeaderSelection(null);
   try {
     store.edit("Spalte hinzufügen", (chart) => {
       insertColumn(chart, chart.width, "right");
@@ -548,12 +592,35 @@ function addColumnAtRight() {
   }
 }
 
+async function deleteSelectedHeader() {
+  const selection = store.headerSelection;
+  if (!selection) return;
+  const isRow = selection.kind === "row";
+  const message = isRow
+    ? i18n.t("chart.deleteRowConfirm", { row: selection.index })
+    : i18n.t("chart.deleteColumnConfirm", { column: selection.index });
+  if (!(await confirmDialog(message))) return;
+  try {
+    store.edit(isRow ? "Reihe löschen" : "Spalte löschen", (chart) => {
+      if (isRow) deleteRow(chart, selection.index);
+      else deleteColumn(chart, selection.index);
+    });
+    store.setHeaderSelection(null);
+    canvasView.fit();
+    renderSettings();
+  } catch (error) {
+    showToast(error.message || i18n.t("error.unknown"), "error");
+  }
+}
+
 function mirrorH() {
   store.edit("Horizontal spiegeln", (chart) => mirrorHorizontal(chart));
+  store.setHeaderSelection(null);
 }
 
 function mirrorV() {
   store.edit("Vertikal spiegeln", (chart) => mirrorVertical(chart));
+  store.setHeaderSelection(null);
 }
 
 /* ------------------------------------------------------------------ */
@@ -1241,12 +1308,20 @@ function setupKeyboard() {
     if (key === " " || key === "Enter") { event.preventDefault(); canvasView.paintCursor(); return; }
     if (key === "Delete" || key === "Backspace") {
       event.preventDefault();
+      if (store.headerSelection) {
+        deleteSelectedHeader();
+        return;
+      }
       store.begin("Radieren");
       canvasView.eraseAt(store.cursor.row, store.cursor.col);
       store.commit();
       return;
     }
-    if (key === "Escape") { store.setSelection(null); return; }
+    if (key === "Escape") {
+      store.setSelection(null);
+      store.setHeaderSelection(null);
+      return;
+    }
 
     if (lower === "v") { store.setTool("select"); return; }
     if (lower === "p") { store.setTool("pencil"); return; }

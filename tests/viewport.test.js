@@ -6,6 +6,7 @@ import {
   cellAt,
   cellRect,
   fitView,
+  headerAt,
   zoomAt,
   panBy,
   visibleColumns
@@ -56,4 +57,21 @@ test("visible columns are clipped to the chart", () => {
   const chart = createChart({ width: 100, height: 10 });
   const view = { scale: 10, offsetX: -50, offsetY: 0 };
   assert.deepEqual(visibleColumns(chart, view, 200), { start: 5, end: 25 });
+});
+
+test("row and column number margins are clickable", () => {
+  const chart = createChart({ width: 4, height: 3 });
+  const view = { scale: 10, offsetX: 40, offsetY: 40 };
+  assert.deepEqual(headerAt(chart, view, 32, 45), { kind: "row", index: 3 });
+  assert.deepEqual(headerAt(chart, view, 45, 74), { kind: "column", index: 1 });
+  assert.equal(headerAt(chart, view, 10, 10), null);
+});
+
+test("hidden numbers do not create invisible hit areas", () => {
+  const chart = createChart({ width: 4, height: 3 });
+  chart.options.showRowNumbers = false;
+  chart.options.showStitchNumbers = false;
+  const view = { scale: 10, offsetX: 40, offsetY: 40 };
+  assert.equal(headerAt(chart, view, 32, 45), null);
+  assert.equal(headerAt(chart, view, 45, 74), null);
 });

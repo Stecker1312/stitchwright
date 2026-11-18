@@ -71,9 +71,12 @@ Ein Zopf ist eine Gruppe mit `symbol: "cable"` und Parametern:
 { "symbol": "cable", "left": 2, "right": 2, "direction": "front" }
 ```
 
-- `left` und `right` sind die Maschenzahlen der beiden Stränge.
-- `direction: "front"` heißt: der linke Strang liegt vorne (C4F).
-- `direction: "back"` heißt: der rechte Strang liegt vorne (C4B).
+- `left` und `right` sind die Maschenzahlen der beiden Stränge im Bild.
+  Die zuerst gestrickte Masche steht in einer Hinreihe **rechts**.
+- `direction: "front"` heißt: die zuerst gestrickten Maschen (im Bild
+  rechts) liegen vorne, also ist das **rechte Bündel durchgezogen** (C4F).
+- `direction: "back"` heißt: die zuerst gestrickten Maschen liegen hinten,
+  also ist das **linke Bündel durchgezogen** (C4B).
 - Die Spannweite ist `left + right`.
 - Jeder Strang wird als Bündel aus `left` bzw. `right` parallelen Linien
   gezeichnet. Das vordere Bündel bekommt eine Hintergrundkontur, damit das

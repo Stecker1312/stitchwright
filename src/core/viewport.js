@@ -110,3 +110,38 @@ export function rowVisible(chart, view, row, viewportHeight) {
   if (!rect) return false;
   return rect.y + rect.size > 0 && rect.y < viewportHeight;
 }
+
+/**
+ * Hit-test the row and column number margins.
+ *
+ * The canvas draws row numbers to the left of the chart and stitch numbers
+ * below it. Clicking those numbers selects the whole row or column, which is
+ * the natural way to choose what a delete button should remove.
+ */
+export function headerAt(chart, view, x, y) {
+  const rows = visibleRows(chart);
+  const chartW = chart.width * view.scale;
+  const chartH = rows.length * view.scale;
+  const chartBottom = view.offsetY + chartH;
+
+  if (chart.options?.showRowNumbers !== false
+    && x <= view.offsetX && x >= view.offsetX - 34
+    && y >= view.offsetY && y < chartBottom) {
+    const fromTop = Math.floor((y - view.offsetY) / view.scale);
+    const index = rows.length - 1 - fromTop;
+    if (index >= 0 && index < rows.length) {
+      return { kind: "row", index: rows[index] };
+    }
+  }
+
+  if (chart.options?.showStitchNumbers !== false
+    && y >= chartBottom && y <= chartBottom + 28
+    && x >= view.offsetX && x < view.offsetX + chartW) {
+    const col = Math.floor((x - view.offsetX) / view.scale) + 1;
+    if (col >= 1 && col <= chart.width) {
+      return { kind: "column", index: col };
+    }
+  }
+
+  return null;
+}

@@ -21,6 +21,7 @@ export class Store {
     this.color = null;
     this.selection = null;
     this.selectedGroupId = null;
+    this.headerSelection = null;
     this.cursor = { row: 1, col: 1 };
     this.hover = null;
     this.view = { scale: 28, offsetX: 40, offsetY: 40 };
@@ -105,6 +106,7 @@ export class Store {
     this.dirty = true;
     this.selectedGroupId = null;
     this.selection = null;
+    this.headerSelection = null;
     this.emit("chart");
     this.emit("history");
     return true;
@@ -118,6 +120,7 @@ export class Store {
     this.dirty = true;
     this.selectedGroupId = null;
     this.selection = null;
+    this.headerSelection = null;
     this.emit("chart");
     this.emit("history");
     return true;
@@ -131,6 +134,7 @@ export class Store {
     this.chart = chart;
     this.selection = null;
     this.selectedGroupId = null;
+    this.headerSelection = null;
     this.dirty = false;
     this.savedAt = null;
     this.emit("chart");
@@ -156,13 +160,22 @@ export class Store {
   setSelection(selection) {
     this.selection = selection;
     this.selectedGroupId = null;
+    this.headerSelection = null;
     this.emit("selection");
   }
 
   selectGroup(groupId) {
     this.selectedGroupId = groupId;
     this.selection = null;
+    this.headerSelection = null;
     this.emit("selection");
+  }
+
+  setHeaderSelection(headerSelection) {
+    this.headerSelection = headerSelection;
+    this.selection = null;
+    this.selectedGroupId = null;
+    this.emit("header");
   }
 
   setHover(hover) {

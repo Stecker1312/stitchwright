@@ -426,6 +426,32 @@ html[data-theme="high-contrast"] .button.primary { color: #000000; }
   color: var(--text);
 }
 
+.adder-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  margin: 0 2px;
+}
+
+.header-selection {
+  max-width: 110px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 10.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-selection[hidden] { display: none; }
+
+#btn-delete-header:disabled {
+  opacity: 0.35;
+}
+
 #chart-canvas {
   position: absolute;
   inset: 0;
