@@ -318,6 +318,7 @@ export function resizeChart(chart, width, height) {
 
 /** Insert an empty row above or below a 1-based row. */
 export function insertRow(chart, row, side = "above") {
+  if (chart.height >= MAX_SIZE) throw new Error("Maximum chart height reached");
   if (!inBounds(chart, row, 1)) throw new Error("Row is outside the chart");
   const index = side === "below" ? row - 1 : row;
   chart.rows.splice(index, 0, Array(chart.width).fill(null));
@@ -350,6 +351,7 @@ export function deleteRow(chart, row) {
 
 /** Insert an empty column left or right of a 1-based column. */
 export function insertColumn(chart, col, side = "left") {
+  if (chart.width >= MAX_SIZE) throw new Error("Maximum chart width reached");
   if (!inBounds(chart, 1, col)) throw new Error("Column is outside the chart");
   const index = side === "right" ? col : col - 1;
   for (const row of chart.rows) row.splice(index, 0, null);

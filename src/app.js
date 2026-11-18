@@ -53,6 +53,7 @@ let autosaveTimer = null;
 let toastTimer = null;
 let confirmResolve = null;
 let saving = false;
+let emptyHintDismissed = false;
 
 /* ------------------------------------------------------------------ */
 /* Boot                                                                */
@@ -63,6 +64,7 @@ async function init() {
   i18n.apply(document);
   applyTheme(settings.theme || "system", { persist: false });
   populateLanguages();
+  emptyHintDismissed = localStorage.getItem("stitchwright.emptyHintDismissed") === "1";
 
   const chart = await loadInitialChart();
   store = new Store(chart, { settings });
@@ -311,7 +313,17 @@ function updateSaveIndicator() {
 }
 
 function updateEmptyHint() {
-  $("empty-hint").hidden = hasContent(store.chart);
+  $("empty-hint").hidden = emptyHintDismissed || hasContent(store.chart);
+}
+
+function dismissEmptyHint() {
+  emptyHintDismissed = true;
+  try {
+    localStorage.setItem("stitchwright.emptyHintDismissed", "1");
+  } catch {
+    // Private mode can block storage; the hint still closes for this session.
+  }
+  updateEmptyHint();
 }
 
 /* ------------------------------------------------------------------ */
@@ -342,8 +354,16 @@ function setupTopbar() {
   $("zoom-in").addEventListener("click", () => canvasView.zoomBy(1.2));
   $("zoom-out").addEventListener("click", () => canvasView.zoomBy(1 / 1.2));
   $("zoom-fit").addEventListener("click", () => canvasView.fit());
-  $("btn-empty-start").addEventListener("click", () => openNewDialog());
+  $("btn-empty-start").addEventListener("click", () => {
+    dismissEmptyHint();
+    store.setTool("pencil");
+    $("chart-canvas").focus();
+  });
+  $("btn-empty-close").addEventListener("click", dismissEmptyHint);
+  $("chart-canvas").addEventListener("pointerdown", dismissEmptyHint, { passive: true });
   $("btn-empty-sample").addEventListener("click", () => loadChart(createDemoChart(), { save: true }));
+  $("btn-add-row").addEventListener("click", addRowAtTop);
+  $("btn-add-col").addEventListener("click", addColumnAtRight);
 }
 
 function setupTools() {
@@ -480,18 +500,52 @@ function toggleRowsMode() {
 
 function insertRowAt(side) {
   const row = store.cursor.row;
-  store.edit("Reihe einfügen", (chart) => {
-    insertRow(chart, row, side);
-  });
-  renderSettings();
+  dismissEmptyHint();
+  try {
+    store.edit("Reihe einfügen", (chart) => {
+      insertRow(chart, row, side);
+    });
+    renderSettings();
+  } catch (error) {
+    showToast(error.message || i18n.t("error.unknown"), "error");
+  }
 }
 
 function insertColumnAt(side) {
   const col = store.cursor.col;
-  store.edit("Spalte einfügen", (chart) => {
-    insertColumn(chart, col, side);
-  });
-  renderSettings();
+  dismissEmptyHint();
+  try {
+    store.edit("Spalte einfügen", (chart) => {
+      insertColumn(chart, col, side);
+    });
+    renderSettings();
+  } catch (error) {
+    showToast(error.message || i18n.t("error.unknown"), "error");
+  }
+}
+
+function addRowAtTop() {
+  dismissEmptyHint();
+  try {
+    store.edit("Reihe hinzufügen", (chart) => {
+      insertRow(chart, chart.height, "above");
+    });
+    canvasView.fit();
+  } catch (error) {
+    showToast(error.message || i18n.t("error.unknown"), "error");
+  }
+}
+
+function addColumnAtRight() {
+  dismissEmptyHint();
+  try {
+    store.edit("Spalte hinzufügen", (chart) => {
+      insertColumn(chart, chart.width, "right");
+    });
+    canvasView.fit();
+  } catch (error) {
+    showToast(error.message || i18n.t("error.unknown"), "error");
+  }
 }
 
 function mirrorH() {
@@ -813,6 +867,12 @@ function confirmDialog(message) {
 /* ------------------------------------------------------------------ */
 
 function loadChart(chart, { save = false, fit = true } = {}) {
+  emptyHintDismissed = true;
+  try {
+    localStorage.setItem("stitchwright.emptyHintDismissed", "1");
+  } catch {
+    // Ignore storage failures; the current session still dismisses the hint.
+  }
   store.replace(chart);
   if (fit) canvasView.fit();
   if (save) saveLocal(true);

@@ -400,6 +400,32 @@ html[data-theme="high-contrast"] .button.primary { color: #000000; }
   background: var(--canvas-bg);
 }
 
+.canvas-adders {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.canvas-adders .button {
+  background: transparent;
+  border-color: transparent;
+  color: var(--muted);
+}
+
+.canvas-adders .button:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
 #chart-canvas {
   position: absolute;
   inset: 0;
@@ -455,6 +481,7 @@ html[data-theme="high-contrast"] .button.primary { color: #000000; }
 
 .empty-card {
   pointer-events: auto;
+  position: relative;
   width: min(420px, 100%);
   padding: 22px;
   border: 1px solid var(--border);
@@ -462,6 +489,12 @@ html[data-theme="high-contrast"] .button.primary { color: #000000; }
   background: var(--surface);
   box-shadow: var(--shadow-lg);
   text-align: center;
+}
+
+.empty-close {
+  position: absolute;
+  top: 6px;
+  right: 6px;
 }
 
 .empty-card h2 { margin: 0 0 6px; font-size: 19px; letter-spacing: -0.02em; }
@@ -996,6 +1029,8 @@ html[data-theme="high-contrast"] .button.primary { color: #000000; }
   .stage-toolbar { padding-inline: 6px; }
   .zoom-label { display: none; }
   .stage-meta .pill { display: none; }
+  .canvas-adders { top: 6px; right: 6px; }
+  .canvas-adders .button { padding: 5px 7px; }
   .help-grid { grid-template-columns: 1fr; }
   .shortcut-grid { grid-template-columns: 1fr; }
   .dialog-inner { padding: 14px; }

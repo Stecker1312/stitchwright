@@ -161,12 +161,23 @@
 
         <div class="canvas-wrap" id="canvas-wrap">
           <canvas id="chart-canvas" tabindex="0" role="img" aria-label="Strickschrift"></canvas>
+          <div class="canvas-adders" data-i18n-aria-label="chart.extendGrid" aria-label="Raster erweitern">
+            <button class="button subtle small" id="btn-add-row" type="button" data-i18n-title="chart.addRowHint" data-i18n-aria-label="chart.addRowHint" title="Reihe oben anhängen">
+              + <span data-i18n="chart.addRowShort">Reihe</span>
+            </button>
+            <button class="button subtle small" id="btn-add-col" type="button" data-i18n-title="chart.addColumnHint" data-i18n-aria-label="chart.addColumnHint" title="Spalte rechts anhängen">
+              + <span data-i18n="chart.addColumnShort">Spalte</span>
+            </button>
+          </div>
           <div class="empty-hint" id="empty-hint" hidden>
             <div class="empty-card">
+              <button class="icon-button empty-close" id="btn-empty-close" type="button" data-i18n-aria-label="app.close" aria-label="Schließen">
+                <svg class="icon"><use href="#i-close"/></svg>
+              </button>
               <h2 data-i18n="chart.empty.title">Noch ist das Chart leer</h2>
               <p data-i18n="chart.empty.text">Wähle ein Symbol und male die erste Masche.</p>
               <div class="button-row">
-                <button class="button primary" id="btn-empty-start" type="button" data-i18n="onboard.start">Leeres Chart</button>
+                <button class="button primary" id="btn-empty-start" type="button" data-i18n="onboard.draw">Jetzt zeichnen</button>
                 <button class="button" id="btn-empty-sample" type="button" data-i18n="chart.empty.sample">Beispiel laden</button>
               </div>
             </div>
