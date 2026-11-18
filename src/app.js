@@ -42,6 +42,7 @@ import { renderPalette } from "./ui/palette.js";
 import * as storage from "./ui/persistence.js";
 import { Store } from "./ui/store.js";
 import { createDemoChart } from "./demo.js";
+import { APP_VERSION } from "./version.js";
 
 const $ = (id) => document.getElementById(id);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -279,7 +280,10 @@ function mergeCustomGroups(existing, additions) {
     const label = group.label.trim().slice(0, 24);
     const span = Number(group.span);
     if (!label || !Number.isInteger(span) || span < 1 || span > 12) continue;
-    merged.set(`${label}\u0000${span}`, { label, span });
+    const legend = typeof group.legend === "string" ? group.legend.trim().slice(0, 160) : "";
+    const key = `${label}\u0000${span}`;
+    const previous = merged.get(key);
+    merged.set(key, { label, span, legend: legend || previous?.legend || "" });
   }
   return [...merged.values()];
 }
@@ -289,14 +293,15 @@ function customGroupsFromChart(chart) {
     .filter((group) => group.symbol === "custom")
     .map((group) => ({
       label: group.label || "",
-      span: group.span || groupSpan(chart, group)
+      span: group.span || groupSpan(chart, group),
+      legend: group.legend || ""
     }))
     .filter((group) => group.label);
 }
 
 function rememberCustomGroups(additions) {
   const next = mergeCustomGroups(customGroups, additions);
-  if (next.length === customGroups.length) return;
+  if (JSON.stringify(next) === JSON.stringify(customGroups)) return;
   customGroups = next;
   storage.saveCustomGroups(customGroups);
   renderPalettePanel();
@@ -846,7 +851,8 @@ function updateGroup(group, values) {
     if (group.symbol === "custom") {
       rememberCustomGroups([{
         label: values.label ?? group.label,
-        span: values.span ?? group.span
+        span: values.span ?? group.span,
+        legend: values.legend ?? group.legend ?? ""
       }]);
     }
   } catch (error) {
@@ -1059,7 +1065,7 @@ function openHelpDialog() {
 }
 
 function openAboutDialog() {
-  $("about-version").textContent = `${i18n.t("about.version")} 0.0.1 · ${i18n.t("about.license")}`;
+  $("about-version").textContent = `${i18n.t("about.version")} ${APP_VERSION} · ${i18n.t("about.license")}`;
   openDialog("dialog-about");
 }
 
@@ -1071,7 +1077,9 @@ function openTableDialog() {
 function openCustomGroupDialog() {
   $("custom-label").value = "";
   $("custom-span").value = "3";
+  $("custom-legend").value = "";
   openDialog("dialog-custom-group");
+  $("custom-label").focus();
 }
 
 function openCableDialog() {
@@ -1090,13 +1098,14 @@ function openColorDialog() {
 function addCustomGroup() {
   const label = $("custom-label").value.trim();
   const span = Number($("custom-span").value);
+  const legend = $("custom-legend").value.trim();
   if (!label || !Number.isInteger(span) || span < 1 || span > 12) {
     showToast(i18n.t("error.fix"), "error");
     return;
   }
-  const group = { label, span };
+  const group = { label, span, legend };
   rememberCustomGroups([group]);
-  store.setSymbol({ id: "custom", span, label });
+  store.setSymbol({ id: "custom", span, label, legend });
   store.setTool("pencil");
   $("dialog-custom-group").close();
   showToast(i18n.t("message.clickToPlace"));

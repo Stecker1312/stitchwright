@@ -45,7 +45,7 @@ export function legendEntries(chart, lang = "de") {
         text: group.symbol === "cable"
           ? cableDirection
           : (group.symbol === "custom"
-            ? (lang === "de" ? "eigene Gruppe" : "custom group")
+            ? (group.legend || (lang === "de" ? "eigene Gruppe" : "custom group"))
             : symbolLegend(group.symbol, lang))
       };
     }

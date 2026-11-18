@@ -76,6 +76,14 @@ function groupEditor(group, chart, { t, lang, onUpdateGroup, onRemoveGroup }) {
     label.value = group.label || "";
     label.addEventListener("input", () => { values.label = label.value; });
     form.append(labeled(t("inspector.group.label"), label));
+
+    const legend = el("textarea");
+    legend.rows = 3;
+    legend.maxLength = 160;
+    legend.placeholder = t("palette.legendPlaceholder");
+    legend.value = group.legend || "";
+    legend.addEventListener("input", () => { values.legend = legend.value; });
+    form.append(labeled(t("inspector.group.legend"), legend));
   }
 
   const actions = el("div", "button-row");

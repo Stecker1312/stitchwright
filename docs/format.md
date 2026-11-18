@@ -121,7 +121,8 @@ Eine Gruppe ist ein Symbol, das mehrere Maschen in einer Reihe verbraucht.
     "col": 2,
     "symbol": "custom",
     "span": 3,
-    "label": "TL"
+    "label": "TL",
+    "legend": "zwei Maschen auf Hilfsnadel vor die Arbeit"
   }
 ]
 ```
@@ -131,7 +132,8 @@ Eine Gruppe ist ein Symbol, das mehrere Maschen in einer Reihe verbraucht.
 - `symbol` ist die Symbol-ID.
 - `cable`: `left`, `right`, `direction` (`front` oder `back`). Spannweite =
   `left + right`.
-- `custom`: `span` und `label` sind Pflicht.
+- `custom`: `span` und `label` sind Pflicht; `legend` ist optional und
+  erscheint als Erklärung in der Legende.
 - Alle anderen Gruppen haben eine feste Spannweite aus der Symboldefinition.
 - Gruppen liegen in genau einer Reihe. Mehrzeilige Symbole sind für eine
   spätere Schemaversion vorgesehen.

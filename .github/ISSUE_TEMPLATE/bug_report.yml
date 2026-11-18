@@ -1,0 +1,46 @@
+name: Fehler melden
+description: Etwas funktioniert nicht wie erwartet.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Danke für den Bericht. Bitte keine persönlichen Daten oder vertraulichen
+        Projekte anhängen. Wenn möglich, die Chart-Datei als JSON beilegen.
+  - type: input
+    id: browser
+    attributes:
+      label: Browser und Betriebssystem
+      placeholder: "z. B. Firefox 140 auf Linux, Chrome auf Android"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Schritte zum Nachstellen
+      placeholder: |
+        1. …
+        2. …
+        3. …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Erwartetes Verhalten
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Tatsächliches Verhalten
+    validations:
+      required: true
+  - type: textarea
+    id: chart
+    attributes:
+      label: Chart-Datei oder Screenshot (optional)
+      description: Bitte keine persönlichen Daten oder vertraulichen Inhalte.
+    validations:
+      required: false

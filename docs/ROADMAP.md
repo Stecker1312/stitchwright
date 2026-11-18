@@ -8,7 +8,7 @@ Keine Datumsversprechen. Die Reihenfolge ist wichtig, die Dauer nicht.
 - ADRs und SOPs
 - Symbol- und Formatentscheidung
 
-## M1 – Kern und Editor-MVP
+## M1 – Kern und Editor-MVP (erledigt)
 
 - Chart-Modell, Validierung, JSON-Schema
 - Symbolpack Klar als Glyphen
@@ -20,23 +20,26 @@ Keine Datumsversprechen. Die Reihenfolge ist wichtig, die Dauer nicht.
 - Tastatur, Maus, Touch, Stift
 - Deutsch/Englisch, hell/dunkel/system, metrisch/imperial
 
-**Abnahme:** Die Gugel-V-Probe lässt sich zeichnen, speichern, neu laden und
-als sauberes SVG drucken.
+**Abnahme:** Der Editor ist benutzbar; die Gugel-V-Probe als reale
+Strickabnahme bleibt offen.
 
-## M2 – Vorzeigbar
+## M2 – Vorzeigbar (Alpha veröffentlicht)
 
 - PWA offline, Installation
-- Themes und Dichte einstellbar
-- Symbolsuche und Favoriten
-- Legenden-Editor
+- Symbolsuche, Legende, eigene Gruppen mit Legendentext
 - Fehler- und Leerzustände, Onboarding
 - Tests für Kern und Browser
-- README mit Screenshots, Contribution-Hinweise
-- Veröffentlichung als v0.1
+- README, Screenshots, Contribution-Hinweise
+- Veröffentlichung als **0.1.0-alpha.1**
+
+Offen aus M2: Theme-Editor, Favoriten, letzte Touch-Prüfungen auf echten
+Geräten.
 
 ## M3 – Ausbau
 
+- Stabilität und Fehler aus der Alpha
 - Eigene Symbol-Packs, SVG-Import mit Sanitisierung
+- Theme-Editor
 - Übersetzungen für 20 europäische Sprachen, Status und Review
 - Erweiterte Drucklayouts
 - Farbmuster: Fair Isle, Intarsien, Palette

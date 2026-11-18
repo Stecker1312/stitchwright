@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Stitchwright ist ein freier, lokaler Editor für Strickschriften. Frühe Vorabversion, GPL-3.0, ohne Cloud.">
+  <meta name="theme-color" content="#2563eb">
+  <title>Über Stitchwright – Strickschriften lokal zeichnen</title>
+  <link rel="icon" href="favicon.ico" sizes="32x32">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="about.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./">
+      <img src="assets/icon.svg" alt="" width="28" height="28">
+      <span>Stitchwright</span>
+    </a>
+    <nav class="site-nav" aria-label="Seitennavigation">
+      <a href="./">Editor</a>
+      <a href="#geplant">Geplant</a>
+      <a href="https://github.com/Stecker1312/stitchwright" rel="noopener">GitHub</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <span class="badge">Frühe Vorabversion · Alpha</span>
+        <h1>Strickschriften zeichnen, ohne Kästchenpapier.</h1>
+        <p class="lead">
+          Stitchwright ist ein freier, lokaler Editor für Strickdiagramme.
+          Du zeichnest Maschen, Farben und Zöpfe; die App macht daraus ein
+          sauberes SVG zum Drucken. Keine Cloud, kein Konto, keine Telemetrie.
+        </p>
+        <div class="actions">
+          <a class="button primary" href="./">Editor öffnen</a>
+          <a class="button" href="#was-es-kann">Was es kann</a>
+          <a class="button" href="#geplant">Was noch kommt</a>
+        </div>
+      </div>
+      <figure>
+        <img src="assets/screenshot-editor.png" alt="Der Stitchwright-Editor mit einem Beispielchart: Raster, Zöpfe, Farbflächen und Legende.">
+        <figcaption>Der Editor mit dem eingebauten Beispielchart. Kein persönliches Projekt, nur eine Demonstration.</figcaption>
+      </figure>
+    </section>
+
+    <div class="alpha-note" role="note">
+      <div>
+        <strong>Das ist eine frühe Vorabversion, keine fertige Software.</strong>
+        <p>
+          Version 0.1.0-alpha.1 ist ein erster benutzbarer Stand. Fehler sind
+          wahrscheinlich, das Dateiformat kann sich noch ändern, und nicht jede
+          Funktion ist auf jedem Gerät getestet. Bitte sichere wichtige Charts
+          zusätzlich als JSON-Datei. Für Produktivdaten ist die App noch nicht
+          gedacht.
+        </p>
+      </div>
+    </div>
+
+    <section id="was-ist-das">
+      <h2>Was ist Stitchwright?</h2>
+      <p class="section-intro">
+        Stitchwright ist ein Werkzeug zum Zeichnen von Strickdiagrammen – nicht
+        zum Schreiben von Strickanleitungen. Es ersetzt das Kästchenpapier:
+        Du setzt Symbole in ein Raster, markierst Rapporte, zeichnest Zöpfe
+        über mehrere Maschen und exportierst das Ergebnis als Vektorgrafik.
+      </p>
+      <div class="split">
+        <div class="card">
+          <h3>Für Strickerinnen und Stricker</h3>
+          <p>
+            Die Oberfläche ist auf Maus, Touch und Stift ausgelegt. Häufige
+            Arbeitsschritte – zeichnen, radieren, Reihe oder Spalte ergänzen,
+            rückgängig machen, exportieren – liegen direkt auf der Fläche.
+            Wer eine Reihe oder Spalte löschen will, klickt ihre Nummer an und
+            bestätigt.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Für Menschen, die Code lesen</h3>
+          <p>
+            Charts sind offenes JSON. Dieselben Daten lassen sich in der App
+            bearbeiten, mit der Node-CLI prüfen und als SVG rendern. Das Format
+            ist dokumentiert; es gibt keine versteckte Datenbank und keinen
+            Server.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="was-es-kann">
+      <h2>Was es kann</h2>
+      <p class="section-intro">
+        Der aktuelle Stand deckt die Grundlagen des Diagrammzeichnens ab.
+        Weitere Funktionen sind geplant, aber nicht heimlich schon „fast fertig“.
+      </p>
+      <div class="grid">
+        <article class="card">
+          <h3>Raster und Symbole</h3>
+          <p>
+            Beliebig große Charts, Zoom, Reihen- und Maschennummern. Das
+            Standardpack „Klar“ enthält re, li, Umschlag, Zu- und Abnahmen,
+            verschränkte Maschen, Bobbel, Perlen, Wenden und Kantenzeichen.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Zöpfe richtig gezeichnet</h3>
+          <p>
+            1/1 bis 4/4, vorne und hinten, als ein Symbol über die ganze
+            Maschengruppe. Die Über-/Unterführung ist sichtbar; die Legende
+            nennt die genaue Richtung.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Farben</h3>
+          <p>
+            Farbflächen pro Masche, eigene Farben, Farb-Legende und lesbare
+            Symbole auf hellen und dunklen Hintergründen. Farben sind eine
+            eigene Ebene, kein Ersatz für die Symbolsprache.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Hin- und Rückreihen</h3>
+          <p>
+            Alle Reihen zeichnen oder nur die Hinreihen mit Nummerierung
+            1, 3, 5 … Rückreihen bleiben gespeichert und lassen sich jederzeit
+            wieder einblenden.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Eigene Gruppen</h3>
+          <p>
+            Beschriftete Mehrfachsymbole wie <code>TL</code> oder <code>TR</code>
+            bleiben in einer lokalen Bibliothek. Du kannst ihnen einen
+            Legendentext mitgeben, damit später klar ist, was gemeint war.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Export und Druck</h3>
+          <p>
+            SVG für den Druck, PNG zum Teilen, JSON als Quelle. Der Browser
+            druckt das SVG direkt; eine zusätzliche PDF-Bibliothek braucht es
+            nicht.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Große Charts</h3>
+          <p>
+            Der Editor zeichnet nur den sichtbaren Ausschnitt. Scrollbalken
+            erscheinen, sobald das Chart größer als das Fenster ist. Bei sehr
+            kleinem Zoom bleibt die Übersicht flüssig.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Lokal und offline</h3>
+          <p>
+            Als installierbare Web-App (PWA) läuft Stitchwright nach dem ersten
+            Laden ohne Netz. Charts und Einstellungen bleiben im Browser oder
+            in Dateien, die du selbst speicherst.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Deutsch und Englisch</h3>
+          <p>
+            Die Oberfläche ist auf Deutsch und Englisch gepflegt. Metrisch und
+            imperial sind umschaltbar; weitere Sprachen sind vorbereitet, aber
+            noch nicht redaktionell geprüft.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="nicht">
+      <h2>Was es bewusst nicht ist</h2>
+      <div class="split">
+        <div class="card">
+          <h3>Kein Anleitungsgenerator</h3>
+          <p>
+            Stitchwright schreibt keine Strickanleitung und rechnet keine
+            Passform. Das Diagramm ist das Produkt. Wer Prosa braucht, schreibt
+            sie selbst oder mit einem anderen Werkzeug.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Keine Cloud, keine Konten</h3>
+          <p>
+            Es gibt keine Anmeldung, keine Synchronisation und keine
+            Kollaboration. Deine Charts verlassen das Gerät nur, wenn du sie
+            exportierst. Das ist Absicht, nicht eine fehlende Funktion.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="alpha">
+      <h2>Frühe Vorabversion: Was das konkret bedeutet</h2>
+      <ul class="clean">
+        <li><strong>Fehler sind möglich.</strong> Bitte melde sie mit einer kurzen Beschreibung und, wenn möglich, der JSON-Datei.</li>
+        <li><strong>Das Dateiformat kann sich ändern.</strong> Charts sind JSON; eine neue Version kann eine Migration brauchen. Sichere wichtige Dateien zusätzlich.</li>
+        <li><strong>Nicht alles ist auf jedem Gerät getestet.</strong> Die App läuft im Browser; Touch und Stift sind implementiert, aber noch nicht auf allen Tablets und Browsern erprobt.</li>
+        <li><strong>Nur zwei Sprachen sind gepflegt.</strong> Deutsch und Englisch sind vollständig; weitere Sprachen folgen als Übersetzungsdateien.</li>
+        <li><strong>Eigene Symbol-Packs und ein Theme-Editor fehlen noch.</strong> Die Architektur ist darauf vorbereitet.</li>
+        <li><strong>Kein Support-Versprechen.</strong> Das Projekt ist ein offenes Einzelprojekt, kein kommerzieller Dienst.</li>
+      </ul>
+    </section>
+
+    <section id="technik">
+      <h2>Wie es funktioniert</h2>
+      <div class="split">
+        <div class="card">
+          <h3>Canvas für die Arbeit, SVG für das Ergebnis</h3>
+          <p>
+            Der Editor zeichnet auf Canvas und nur den sichtbaren Ausschnitt.
+            Der Export erzeugt SVG aus demselben Modell und denselben
+            Symboldaten. Das hält die Bearbeitung schnell und den Druck scharf.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Offenes JSON statt proprietärer Datei</h3>
+          <p>
+            Ein Chart ist eine JSON-Datei mit Raster, Farben, Gruppen und
+            Optionen. Das Schema liegt im Repository. Agenten können dieselbe
+            Datei lesen, schreiben, prüfen und rendern wie die App.
+          </p>
+        </div>
+      </div>
+      <pre class="code">node cli/stitchwright.js validate chart.strickschrift.json
+node cli/stitchwright.js render chart.strickschrift.json chart.svg
+node cli/stitchwright.js legend chart.strickschrift.json</pre>
+    </section>
+
+    <section id="agenten">
+      <h2>Für Agenten</h2>
+      <p class="section-intro">
+        Stitchwright ist absichtlich so gebaut, dass ein Agent und ein Mensch
+        dieselben Daten benutzen können. Die CLI braucht keinen Browser und
+        keine Netzwerkverbindung. Die Validierung liefert strukturierte
+        Diagnosen; das Rendern ist deterministisch.
+      </p>
+      <div class="card accent">
+        <p>
+          Der Agent schreibt JSON, prüft es mit <code>validate</code> und
+          rendert eine Vorschau mit <code>render</code>. Der Mensch öffnet
+          dieselbe Datei im Editor und korrigiert, was nur ein Stricker sehen
+          kann. Keine Export-/Import-Schleife, keine doppelte Wahrheit.
+        </p>
+      </div>
+    </section>
+
+    <section id="datenschutz">
+      <h2>Datenschutz und Datenhoheit</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Keine Telemetrie</h3>
+          <p>Keine Analyse, keine Werbung, keine externen Schriften, keine CDNs.</p>
+        </div>
+        <div class="card">
+          <h3>Keine Konten</h3>
+          <p>Keine Anmeldung, kein Profil, keine Cloud. Alles bleibt lokal.</p>
+        </div>
+        <div class="card">
+          <h3>Du entscheidest über Dateien</h3>
+          <p>Charts werden gespeichert, exportiert und geteilt, wenn du es sagst.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="geplant">
+      <h2>Was noch geplant ist</h2>
+      <p class="section-intro">
+        Keine festen Termine. Die Reihenfolge ist eine Absicht, keine Zusage.
+      </p>
+      <div class="roadmap">
+        <div class="roadmap-item">
+          <strong>Zuerst</strong>
+          <p>Stabilität, Fehler beheben, Touch auf echten Geräten prüfen, Tests erweitern, Dokumentation und Beispiele verbessern.</p>
+        </div>
+        <div class="roadmap-item">
+          <strong>Danach</strong>
+          <p>Eigene Symbol-Packs, ein Symbol-Editor, Theme-Editor, bessere Drucklayouts und mehr Farbmuster-Funktionen.</p>
+        </div>
+        <div class="roadmap-item">
+          <strong>Sprachen</strong>
+          <p>Übersetzungsdateien für weitere europäische Sprachen, mit klarer Kennzeichnung, solange eine Übersetzung nicht fachlich geprüft ist.</p>
+        </div>
+        <div class="roadmap-item">
+          <strong>Zusammenarbeit</strong>
+          <p>Import und Export mit anderen offenen Formaten, damit Charts nicht in einer Insellösung gefangen sind.</p>
+        </div>
+        <div class="roadmap-item">
+          <strong>Nicht geplant</strong>
+          <p>Cloud, Konten, Kollaboration, Telemetrie und native Apps. Wenn sich das ändert, braucht es eine offene Entscheidung – keine stille Erweiterung.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="mitmachen">
+      <h2>Mitmachen</h2>
+      <div class="split">
+        <div class="card">
+          <h3>Fehler und Wünsche</h3>
+          <p>
+            Öffne ein Issue im Repository. Hilfreich sind Browser, Betriebssystem,
+            Schritte zum Nachstellen und – wenn möglich – die Chart-Datei.
+            Bitte keine persönlichen Daten oder vertraulichen Projekte anhängen.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Übersetzungen und Symbole</h3>
+          <p>
+            Übersetzungen sind JSON-Dateien; Symbol-Packs sind Daten. Beides
+            lässt sich prüfen und erweitern, ohne den Editor umzubauen.
+            Fachliche Prüfung durch Muttersprachler ist ausdrücklich erwünscht.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="offenheit">
+      <h2>Offenheit und Transparenz</h2>
+      <p class="section-intro">
+        Stitchwright ist freie Software unter GPL-3.0. Der Quellcode liegt offen;
+        die Entscheidungen stehen in ADRs, die Abläufe in SOPs und der Stand im
+        Repository.
+      </p>
+      <blockquote class="quote">
+        Der Code wurde von einem KI-Agenten (DeepSeek V4.1 Flash) im Auftrag von
+        Daniel geschrieben und von ihm fachlich geprüft. Das ist kein
+        Qualitätsbeweis und kein Marketing: Fehler sind möglich. Die
+        Dokumentation sagt, was geprüft wurde und was nicht.
+      </blockquote>
+      <p>
+        Lizenz: <a href="https://www.gnu.org/licenses/gpl-3.0.html" rel="noopener">GPL-3.0</a>.
+        Quellcode und Issues:
+        <a href="https://github.com/Stecker1312/stitchwright" rel="noopener">github.com/Stecker1312/stitchwright</a>.
+      </p>
+    </section>
+
+    <section id="english">
+      <h2>English summary</h2>
+      <p class="section-intro">
+        Stitchwright is a free, local-first knitting chart editor. It runs as a
+        static web app and installable PWA, needs no account or cloud, and
+        exports SVG, PNG and open JSON. It is an early alpha: bugs are likely,
+        the file format may still change, and only German and English are
+        currently maintained. The editor deliberately does not generate written
+        instructions, pattern maths or row counters. The code is GPL-3.0 and
+        was written by an AI agent under human review.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>Stitchwright 0.1.0-alpha.1 · 2026-11-18 · GPL-3.0</span>
+      <span><a href="./">Editor</a> · <a href="https://github.com/Stecker1312/stitchwright" rel="noopener">Quellcode</a> · <a href="#alpha">Alpha-Hinweis</a></span>
+    </div>
+  </footer>
+</body>
+</html>

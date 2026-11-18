@@ -218,6 +218,12 @@ export function validateChart(chart, { strict = false } = {}) {
         if (!isInteger(group.span) || group.span < 1) {
           diagnostics.push(error("E_CUSTOM_SPAN", `${path}.span`, "Eigene Gruppe braucht eine positive Spannweite"));
         }
+        if (group.legend !== undefined && typeof group.legend !== "string") {
+          diagnostics.push(error("E_CUSTOM_LEGEND", `${path}.legend`, "Legendentext muss ein String sein"));
+        }
+        if (typeof group.legend === "string" && group.legend.length > 160) {
+          diagnostics.push(error("E_CUSTOM_LEGEND_LENGTH", `${path}.legend`, "Legendentext ist zu lang (maximal 160 Zeichen)"));
+        }
       }
 
       // Cells under a group must be empty. The group is the symbol.

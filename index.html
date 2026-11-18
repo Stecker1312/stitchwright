@@ -464,6 +464,7 @@
         </button>
       </header>
       <p data-i18n="dialog.about.text"></p>
+      <p><a href="about.html" target="_blank" rel="noopener" data-i18n="about.more">Mehr über Stitchwright</a></p>
       <p data-i18n="dialog.about.privacy"></p>
       <p data-i18n="dialog.about.ai"></p>
       <p class="muted" id="about-version"></p>
@@ -519,6 +520,11 @@
         <span class="field-label" data-i18n="palette.span">Breite in Maschen</span>
         <input id="custom-span" type="number" min="1" max="12" value="3">
       </label>
+      <label class="field">
+        <span class="field-label" data-i18n="inspector.group.legend">Legendentext</span>
+        <textarea id="custom-legend" rows="2" maxlength="160" data-i18n-placeholder="palette.legendPlaceholder" placeholder="z. B. zwei Maschen auf Hilfsnadel vor die Arbeit"></textarea>
+      </label>
+      <p class="hint" data-i18n="palette.legendHint"></p>
       <footer class="dialog-actions">
         <button class="button" value="cancel" type="submit" data-i18n="app.cancel">Abbrechen</button>
         <button class="button primary" id="btn-custom-add" value="default" type="button" data-i18n="palette.add">Hinzufügen</button>

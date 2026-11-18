@@ -6,16 +6,19 @@
  * and no analytics to cache or leak.
  */
 
-const CACHE = "stitchwright-v0.1.11";
+const CACHE = "stitchwright-v0.1.12";
 
 const SHELL = [
   "./",
   "index.html",
+  "about.html",
+  "about.css",
   "manifest.webmanifest",
   "favicon.ico",
   "assets/icon.svg",
   "assets/icon-192.png",
   "assets/icon-512.png",
+  "assets/screenshot-editor.png",
   "src/styles.css",
   "src/app.js",
   "src/demo.js",
@@ -34,6 +37,7 @@ const SHELL = [
   "src/ui/palette.js",
   "src/ui/persistence.js",
   "src/ui/store.js",
+  "src/version.js",
   "src/locales/de.json",
   "src/locales/en.json"
 ];

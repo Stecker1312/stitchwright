@@ -88,9 +88,10 @@ nennt die genaue Ausführung.
 
 ## Beschriftete Gruppen
 
-Für Sonderfälle gibt es `symbol: "custom"` mit `label` und `span`. Das Zeichen
-ist ein dünner Rahmen mit Text. Es ist ausdrücklich die Ausnahme, nicht der
-Standard. Die Legende übernimmt den Text.
+Für Sonderfälle gibt es `symbol: "custom"` mit `label`, `span` und optional
+`legend`. Das Zeichen ist ein dünner Rahmen mit Text. Es ist ausdrücklich die
+Ausnahme, nicht der Standard. Die Legende übernimmt `legend`, sonst den
+Beschriftungstext.
 
 ## Farben
 

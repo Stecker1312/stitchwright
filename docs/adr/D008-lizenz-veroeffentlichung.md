@@ -1,7 +1,7 @@
 # D008 – GPL-3.0 und Veröffentlichung erst ab v0.1
 
 - Datum: 2026-11-18
-- Status: Gültig
+- Status: Gültig; Veröffentlichung am 2026-11-18 durch D009 ausgelöst
 - Betrifft: Stitchwright
 
 ## Zusammenhang

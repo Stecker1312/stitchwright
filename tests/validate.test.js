@@ -77,6 +77,17 @@ test("hidden wrong-side patterning produces a warning", () => {
   assert.equal(hasErrors(diagnostics), false);
 });
 
+test("custom group legend must be a short string", () => {
+  const chart = createChart({ width: 10, height: 8 });
+  addGroup(chart, { row: 1, col: 1, symbol: "custom", span: 3, label: "TL" });
+  chart.groups[0].legend = 42;
+  let diagnostics = validateChart(chart);
+  assert.equal(diagnostics.some((item) => item.code === "E_CUSTOM_LEGEND"), true);
+  chart.groups[0].legend = "x".repeat(161);
+  diagnostics = validateChart(chart);
+  assert.equal(diagnostics.some((item) => item.code === "E_CUSTOM_LEGEND_LENGTH"), true);
+});
+
 test("unknown top-level keys are warnings unless strict", () => {
   const chart = createChart({ width: 10, height: 8 });
   chart.something = true;

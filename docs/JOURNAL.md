@@ -133,6 +133,27 @@ wirkte.
 - 57 Tests grün; Browserprüfung: `TL` angelegt, gesetzt, nach Reload weiter in
   der Palette vorhanden.
 
+## 2026-11-18 – Legendentext und öffentliche Alpha
+
+**Beobachtet:** Eigene Gruppen brauchten einen frei geschriebenen Legendentext,
+damit später klar ist, wofür `TL` steht. Daniel hat die Veröffentlichung
+freigegeben.
+
+**Getan:**
+
+- Eigene Gruppen haben jetzt ein optionales Feld `legend`. Es erscheint in der
+  Legende, im Export und in der Tabellenansicht; der Dialog und der Inspector
+  können es bearbeiten.
+- Die lokale Bibliothek speichert den Legendentext mit. Änderungen im Inspector
+  aktualisieren die Bibliothek (Vergleich über den Inhalt, nicht nur die Anzahl).
+- Ausführliche Projektseite `about.html`, Screenshot, README, Changelog,
+  Contribution-Hinweise und Versionskonstante `0.1.0-alpha.1`.
+- Repository wird öffentlich, GitHub Pages veröffentlicht die App; die Alpha
+  ist überall klar gekennzeichnet.
+- 60 Tests grün; Browserprüfung: Legendentext angelegt, platziert, im Inspector
+  geändert und nach Reload angezeigt.
+
+
 
 
 

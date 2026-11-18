@@ -58,7 +58,15 @@ test("colour contrast chooses readable glyph colour", () => {
 
 test("custom groups are labelled in the legend", () => {
   const chart = createChart({ width: 8, height: 4 });
-  addGroup(chart, { row: 1, col: 1, symbol: "custom", span: 3, label: "TL" });
+  addGroup(chart, {
+    row: 1,
+    col: 1,
+    symbol: "custom",
+    span: 3,
+    label: "TL",
+    legend: "zwei Maschen vor die Arbeit"
+  });
   const svg = renderSvg(chart);
   assert.match(svg, /TL/);
+  assert.match(svg, /zwei Maschen vor die Arbeit/);
 });

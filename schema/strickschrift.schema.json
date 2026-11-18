@@ -107,6 +107,10 @@
           "label": {
             "type": "string",
             "maxLength": 24
+          },
+          "legend": {
+            "type": "string",
+            "maxLength": 160
           }
         },
         "allOf": [

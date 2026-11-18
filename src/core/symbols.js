@@ -461,7 +461,8 @@ export function groupLegend(group, lang = "de") {
       : `Cable ${group.left}/${group.right} ${side} ${where}`;
   }
   if (group.symbol === "custom") {
-    return group.label || (lang === "de" ? "eigene Gruppe" : "custom group");
+    const label = group.label || (lang === "de" ? "eigene Gruppe" : "custom group");
+    return group.legend ? `${label}: ${group.legend}` : label;
   }
   return symbolLegend(group.symbol, lang);
 }

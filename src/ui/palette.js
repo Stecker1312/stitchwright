@@ -157,14 +157,19 @@ export function renderPalette({ symbolsEl, colorsEl, store, t, lang = "de", cust
     for (const group of customMatches) {
       grid.append(symbolButton({
         id: "custom",
-        params: { span: group.span, label: group.label },
+        params: { span: group.span, label: group.label, legend: group.legend },
         span: group.span,
         label: group.label,
-        description: `${group.label} · ${group.span} M`,
+        description: group.legend || `${group.label} · ${group.span} M`,
         store,
         t,
         onClick: () => {
-          store.setSymbol({ id: "custom", span: group.span, label: group.label });
+          store.setSymbol({
+            id: "custom",
+            span: group.span,
+            label: group.label,
+            legend: group.legend || ""
+          });
           store.setTool("pencil");
         }
       }));

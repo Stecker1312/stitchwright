@@ -235,6 +235,7 @@ export function addGroup(chart, input) {
   } else if (input.symbol === "custom") {
     group.span = span;
     group.label = String(input.label || "").slice(0, 24);
+    group.legend = String(input.legend || "").slice(0, 160);
   }
   chart.groups.push(group);
   chart.groups.sort((a, b) => (a.row - b.row) || (a.col - b.col));

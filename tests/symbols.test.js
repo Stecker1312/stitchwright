@@ -69,3 +69,9 @@ test("group legends describe cables in both languages", () => {
   assert.match(groupLegend(group, "de"), /vorne/);
   assert.match(groupLegend(group, "en"), /front/);
 });
+
+test("custom group legends include the user's explanation", () => {
+  const group = { symbol: "custom", label: "TL", legend: "zwei Maschen vor die Arbeit" };
+  assert.match(groupLegend(group, "de"), /^TL: zwei Maschen/);
+  assert.match(groupLegend(group, "en"), /^TL: zwei Maschen/);
+});

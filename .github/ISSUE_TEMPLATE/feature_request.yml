@@ -1,0 +1,35 @@
+name: Funktion vorschlagen
+description: Eine Idee für Stitchwright.
+title: "[Idee] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Stitchwright bleibt lokal, datensparsam und ohne Cloud. Vorschläge,
+        die dazu passen, sind willkommen.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Welches Problem löst die Idee?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Vorschlag
+    validations:
+      required: true
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Passt es zum Projekt?
+      options:
+        - Editor / Diagramm
+        - Symbolsprache / Legende
+        - Export / Druck
+        - Übersetzung / Oberfläche
+        - Agenten / Dateiformat
+        - Weiß ich nicht
+    validations:
+      required: true

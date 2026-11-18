@@ -73,6 +73,19 @@ test("a group cannot cover a filled cell", () => {
   );
 });
 
+test("custom groups keep their legend explanation", () => {
+  const chart = createChart({ width: 12, height: 8 });
+  const group = addGroup(chart, {
+    row: 2,
+    col: 3,
+    symbol: "custom",
+    span: 3,
+    label: "TL",
+    legend: "zwei Maschen vor die Arbeit"
+  });
+  assert.equal(group.legend, "zwei Maschen vor die Arbeit");
+});
+
 test("erasing a cell removes the group covering it", () => {
   const chart = createChart({ width: 12, height: 8 });
   addGroup(chart, { row: 2, col: 3, symbol: "cable", left: 2, right: 2, direction: "front" });
