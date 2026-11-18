@@ -514,7 +514,16 @@ html[data-theme="high-contrast"] .button.primary { color: #000000; }
   background-clip: padding-box;
 }
 
-.top-actions::-webkit-scrollbar { height: 6px; }
+.top-actions::-webkit-scrollbar { height: 8px; }
+
+.top-actions {
+  scrollbar-color: var(--border-strong) var(--scroll-track);
+}
+
+.top-actions::-webkit-scrollbar-track {
+  background: var(--scroll-track);
+  border-radius: 999px;
+}
 
 .adder-divider {
   width: 1px;
