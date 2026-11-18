@@ -1217,7 +1217,7 @@ function renderShortcuts() {
     ["0", i18n.t("shortcut.fit")],
     ["← ↑ ↓ →", i18n.t("shortcut.move")],
     ["Space / Enter", i18n.t("shortcut.paint")],
-    ["Entf", i18n.t("shortcut.delete")],
+    [i18n.language === "de" ? "Entf" : "Del", i18n.t("shortcut.delete")],
     ["Esc", i18n.t("shortcut.escape")],
     ["M / Shift+M", i18n.t("shortcut.mirrorH")],
     ["T", i18n.t("dialog.table.title")]
