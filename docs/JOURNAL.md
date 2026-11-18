@@ -61,3 +61,22 @@ SVG-Export, PNG-Export, Sprachwechsel, dunkles Theme, Offline-Neuladen.
 **Offen:** Zopf-Über-/Unterführung optisch verfeinern, Touch auf echten
 Geräten, eigene Symbol-Packs, Übersetzungen, V-Probe als Abnahme.
 
+## 2026-11-18 – Rückmeldung aus dem ersten Test
+
+**Beobachtet:** Der Leer-Hinweis blieb nach „Leeres Chart“ stehen. Reihe und
+Spalte ließen sich nur über das rechte Panel hinzufügen, das bei schmalen
+Fenstern zugeklappt ist.
+
+**Getan:**
+
+- Der Leer-Hinweis ist schließbar, merkt sich die Entscheidung und verschwindet
+  auch beim ersten Klick auf die Zeichenfläche. „Leeres Chart“ heißt jetzt
+  „Jetzt zeichnen“ und schließt nur den Hinweis; neue Größen kommen über „Neu“.
+- Immer sichtbare `+ Reihe`- und `+ Spalte`-Buttons oben rechts auf der
+  Zeichenfläche. Sie hängen eine Reihe oben bzw. eine Spalte rechts an.
+  Die vier richtungsgenauen Buttons im rechten Panel bleiben erhalten.
+- Raster-Erweiterungen schließen den Leer-Hinweis und passen die Ansicht an.
+- 54 Tests weiter grün; im Browser geprüft: Hinweis bleibt nach Reload weg,
+  Größe wächst von 300 × 300 auf 301 × 301.
+
+

@@ -28,6 +28,8 @@
 - Canvas-Editor: Raster, Pan/Zoom, Stifte, Radierer, Auswahl, Gruppen,
   Farben, Undo/Redo, Rückreihen-Umschalter, Rapport, Legende
 - Speichern/Laden in IndexedDB, JSON-Export, SVG/PNG, Druck
+- Leer-Hinweis schließbar und persistent; immer sichtbare Schnell-Buttons
+  für `+ Reihe` und `+ Spalte` auf der Zeichenfläche
 - Deutsch/Englisch, hell/dunkel/System/hoher Kontrast, metrisch/imperial
 - PWA mit Service Worker, offline getestet
 - 54 Node-Tests grün; Browserprüfung mit Chromium/Playwright
