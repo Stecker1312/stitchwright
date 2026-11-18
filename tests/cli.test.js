@@ -4,8 +4,9 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
-const CLI = new URL("../cli/stitchwright.js", import.meta.url).pathname;
+const CLI = fileURLToPath(new URL("../cli/stitchwright.js", import.meta.url));
 
 function run(args) {
   return spawnSync(process.execPath, [CLI, ...args], { encoding: "utf8" });
