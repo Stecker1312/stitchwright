@@ -97,5 +97,24 @@ waren die Zopfrichtungen „vorne“ und „hinten“ vertauscht.
 - 57 Tests grün, Browserprüfung: Reihe 24 und Spalte 1 gelöscht, Größe
   jeweils korrekt reduziert.
 
+## 2026-11-18 – Scrollbalken
+
+**Beobachtet:** Bei großen Charts und gezoomter Ansicht fehlten sichtbare
+Scrollbalken; in schmalen Fenstern war nicht erkennbar, dass die obere
+Bedienleiste horizontal scrollt.
+
+**Getan:**
+
+- Eigene horizontale und vertikale Scrollbalken auf der Zeichenfläche. Sie
+  erscheinen nur, wenn das Chart größer als der Ausschnitt ist, und lassen
+  sich am Griff, per Klick in die Spur oder mit den Pfeiltasten bedienen.
+- Die Scrollbalken sind mit `role="scrollbar"` und Werten für Screenreader
+  versehen; der Fokus bleibt in der Tastaturbedienung.
+- Seitenleisten, Dialoge, Tabellenansicht und die obere Bedienleiste zeigen
+  jetzt sichtbare, schlanke native Scrollbalken, wenn Inhalt überläuft.
+- Im Browser bei 182 % geprüft: beide Balken erscheinen, Griffe ziehen die
+  Ansicht, Werte ändern sich; bei „Einpassen“ verschwinden sie wieder.
+
+
 
 

@@ -27,7 +27,8 @@ import {
   paintCell,
   pasteFragment,
   removeGroup,
-  resizeChart
+  resizeChart,
+  visibleRows
 } from "./core/chart.js";
 import { createBrowserI18n, LANGUAGE_META } from "./core/i18n.js";
 import { renderSvg } from "./core/render-svg.js";
@@ -57,6 +58,12 @@ let confirmResolve = null;
 let saving = false;
 let emptyHintDismissed = false;
 
+const scrollState = {
+  x: { max: 0, track: 0, thumb: 0 },
+  y: { max: 0, track: 0, thumb: 0 }
+};
+let scrollDrag = null;
+
 /* ------------------------------------------------------------------ */
 /* Boot                                                                */
 /* ------------------------------------------------------------------ */
@@ -76,7 +83,8 @@ async function init() {
     wrap: $("canvas-wrap"),
     store,
     theme: canvasTheme(),
-    onError: (error) => showToast(error.message || i18n.t("error.unknown"), "error")
+    onError: (error) => showToast(error.message || i18n.t("error.unknown"), "error"),
+    onResize: () => updateCanvasScrollbars()
   });
 
   store.subscribe(onStoreChange);
@@ -87,9 +95,11 @@ async function init() {
   setupKeyboard();
   setupMedia();
   setupSidebar();
+  setupCanvasScrollbars();
 
   renderAll();
   canvasView.mount();
+  updateCanvasScrollbars();
   updateEmptyHint();
   registerServiceWorker();
 }
@@ -165,6 +175,7 @@ function onStoreChange(type) {
   }
   if (type === "view") {
     updateZoomUI();
+    updateCanvasScrollbars();
     updateStatus();
     return;
   }
@@ -187,6 +198,7 @@ function renderAll() {
   updateZoomUI();
   updateToolUI();
   updateAdders();
+  updateCanvasScrollbars();
   updateStatus();
   updateEmptyHint();
   updateSaveIndicator();
@@ -336,6 +348,166 @@ function updateAdders() {
   button.disabled = atMinimum;
   button.title = i18n.t("chart.deleteHeader");
   button.setAttribute("aria-label", i18n.t("chart.deleteHeader"));
+}
+
+/* ------------------------------------------------------------------ */
+/* Canvas scrollbars                                                   */
+/* ------------------------------------------------------------------ */
+
+function setupCanvasScrollbars() {
+  setupScrollbar("scroll-h", "scroll-h-thumb", "x");
+  setupScrollbar("scroll-v", "scroll-v-thumb", "y");
+}
+
+function setupScrollbar(trackId, thumbId, axis) {
+  const track = $(trackId);
+  const thumb = $(thumbId);
+  if (!track || !thumb) return;
+
+  track.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) return;
+    const state = scrollState[axis];
+    if (!state || state.max <= 0) return;
+    event.preventDefault();
+    track.focus({ preventScroll: true });
+    const trackRect = track.getBoundingClientRect();
+    const thumbRect = thumb.getBoundingClientRect();
+    const length = axis === "x" ? trackRect.width : trackRect.height;
+    const thumbLength = axis === "x" ? thumbRect.width : thumbRect.height;
+    const travel = Math.max(1, length - thumbLength);
+
+    if (event.target !== thumb) {
+      const pointer = axis === "x" ? event.clientX - trackRect.left : event.clientY - trackRect.top;
+      const fraction = Math.min(1, Math.max(0, (pointer - thumbLength / 2) / travel));
+      setScroll(axis, fraction * state.max);
+    }
+
+    scrollDrag = {
+      axis,
+      track,
+      pointerId: event.pointerId,
+      start: axis === "x" ? event.clientX : event.clientY,
+      startScroll: currentScroll(axis),
+      max: state.max,
+      travel
+    };
+    try {
+      track.setPointerCapture(event.pointerId);
+    } catch {
+      // Pointer capture is a nicety, not a requirement.
+    }
+  });
+
+  track.addEventListener("pointermove", (event) => {
+    if (!scrollDrag || scrollDrag.track !== track || scrollDrag.pointerId !== event.pointerId) return;
+    const delta = (axis === "x" ? event.clientX : event.clientY) - scrollDrag.start;
+    setScroll(axis, scrollDrag.startScroll + (delta / scrollDrag.travel) * scrollDrag.max);
+  });
+
+  const endDrag = (event) => {
+    if (!scrollDrag || scrollDrag.track !== track || scrollDrag.pointerId !== event.pointerId) return;
+    scrollDrag = null;
+    try {
+      if (track.hasPointerCapture(event.pointerId)) track.releasePointerCapture(event.pointerId);
+    } catch {
+      // Ignore a lost capture.
+    }
+  };
+  track.addEventListener("pointerup", endDrag);
+  track.addEventListener("pointercancel", endDrag);
+
+  track.addEventListener("keydown", (event) => {
+    const state = scrollState[axis];
+    if (!state || state.max <= 0) return;
+    const step = Math.max(24, state.track * 0.1);
+    let delta = 0;
+    if (event.key === "Home") delta = -state.max;
+    else if (event.key === "End") delta = state.max;
+    else if (axis === "x" && event.key === "ArrowLeft") delta = -step;
+    else if (axis === "x" && event.key === "ArrowRight") delta = step;
+    else if (axis === "y" && event.key === "ArrowUp") delta = -step;
+    else if (axis === "y" && event.key === "ArrowDown") delta = step;
+    if (!delta) return;
+    event.preventDefault();
+    event.stopPropagation();
+    setScroll(axis, currentScroll(axis) + delta);
+  });
+}
+
+function currentScroll(axis) {
+  const state = scrollState[axis];
+  if (!state) return 0;
+  const offset = axis === "x" ? store.view.offsetX : store.view.offsetY;
+  return Math.min(state.max, Math.max(0, -offset));
+}
+
+function setScroll(axis, value) {
+  const state = scrollState[axis];
+  if (!state || state.max <= 0) return;
+  const next = Math.min(state.max, Math.max(0, value));
+  const view = { ...store.view };
+  if (axis === "x") view.offsetX = -next;
+  else view.offsetY = -next;
+  store.setView(view);
+}
+
+function updateCanvasScrollbars() {
+  if (!store || !canvasView) return;
+  const rows = visibleRows(store.chart).length;
+  updateScrollbar(
+    "scroll-h",
+    "scroll-h-thumb",
+    "x",
+    store.chart.width * store.view.scale,
+    canvasView.width,
+    store.view.offsetX
+  );
+  updateScrollbar(
+    "scroll-v",
+    "scroll-v-thumb",
+    "y",
+    rows * store.view.scale,
+    canvasView.height,
+    store.view.offsetY
+  );
+}
+
+function updateScrollbar(trackId, thumbId, axis, chartSize, viewSize, offset) {
+  const track = $(trackId);
+  const thumb = $(thumbId);
+  if (!track || !thumb) return;
+
+  const max = Math.max(0, chartSize - viewSize);
+  const visible = max > 1;
+  track.hidden = !visible;
+  if (!visible) {
+    scrollState[axis] = { max: 0, track: 0, thumb: 0 };
+    track.setAttribute("aria-valuemax", "0");
+    track.setAttribute("aria-valuenow", "0");
+    return;
+  }
+
+  const trackLength = axis === "x" ? track.clientWidth : track.clientHeight;
+  const thumbLength = trackLength > 0
+    ? Math.max(22, Math.min(trackLength, (viewSize / chartSize) * trackLength))
+    : 0;
+  const scroll = Math.min(max, Math.max(0, -offset));
+  const travel = Math.max(0, trackLength - thumbLength);
+  const position = max > 0 ? (scroll / max) * travel : 0;
+
+  if (axis === "x") {
+    thumb.style.width = `${thumbLength}px`;
+    thumb.style.height = "7px";
+    thumb.style.transform = `translateX(${position}px)`;
+  } else {
+    thumb.style.width = "7px";
+    thumb.style.height = `${thumbLength}px`;
+    thumb.style.transform = `translateY(${position}px)`;
+  }
+
+  track.setAttribute("aria-valuemax", String(Math.round(max)));
+  track.setAttribute("aria-valuenow", String(Math.round(scroll)));
+  scrollState[axis] = { max, track: trackLength, thumb: thumbLength };
 }
 
 function updateSaveIndicator() {
@@ -1276,6 +1448,7 @@ function setupKeyboard() {
     const target = event.target;
     const typing = target instanceof Element && target.closest("input, textarea, select, [contenteditable='true']");
     if (typing) return;
+    if (target instanceof Element && target.closest("[role='scrollbar']")) return;
     if (document.querySelector("dialog[open]")) return;
 
     const key = event.key;

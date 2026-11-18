@@ -34,6 +34,9 @@
   Reihe oder Spalte nach Bestätigung
 - Zopfrichtung korrigiert: „vorne“ zeigt den zuerst gestrickten (rechten)
   Strang oben, „hinten“ den linken
+- Horizontale und vertikale Scrollbalken auf der Zeichenfläche, sichtbar
+  sobald das Chart größer als der Ausschnitt ist; Panels und Dialoge haben
+  sichtbare native Scrollbalken
 - Deutsch/Englisch, hell/dunkel/System/hoher Kontrast, metrisch/imperial
 - PWA mit Service Worker, offline getestet
 - 57 Node-Tests grün; Browserprüfung mit Chromium/Playwright

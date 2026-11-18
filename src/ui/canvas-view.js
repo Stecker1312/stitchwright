@@ -27,13 +27,14 @@ import {
 } from "../core/viewport.js";
 
 export class CanvasView {
-  constructor({ canvas, wrap, store, theme, onError, onCursor }) {
+  constructor({ canvas, wrap, store, theme, onError, onCursor, onResize }) {
     this.canvas = canvas;
     this.wrap = wrap;
     this.store = store;
     this.theme = theme;
     this.onError = onError || (() => {});
     this.onCursor = onCursor || (() => {});
+    this.onResize = onResize || (() => {});
     this.ctx = canvas.getContext("2d", { alpha: false });
     this.pointers = new Map();
     this.gesture = null;
@@ -84,6 +85,7 @@ export class CanvasView {
       this.store.setView(fitView(this.store.chart, this.width, this.height));
     }
     this.render();
+    this.onResize();
   }
 
   setTheme(theme) {

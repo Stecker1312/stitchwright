@@ -231,6 +231,8 @@
   "settings.density.comfortable": "Bequem",
   "settings.aiNotice": "Stitchwright ist ein offenes Projekt. Der Code wurde von einem Agenten geschrieben; Fehler sind möglich.",
 
+  "scroll.horizontal": "Horizontale Scrollposition",
+  "scroll.vertical": "Vertikale Scrollposition",
   "status.ready": "Bereit",
   "status.row": "Reihe",
   "status.column": "Spalte",
