@@ -225,3 +225,33 @@ langfristige Idee unter „Planned“ führen.
   aktualisiert; mobile Kopfzeile der Projektseite umgebrochen.
 - Öffentliche Dateien von privaten Projektverweisen bereinigt.
 - 66 Tests grün; Browserprüfung hell/dunkel, Desktop und 390 px Breite.
+
+## 2026-11-19 – Umfassender Code-Audit für Agenten
+
+**Ziel:** Auf Daniels Wunsch den Code umfassend und kritisch prüfen und
+eine direkt von Agenten nutzbare Arbeitsgrundlage ablegen.
+
+**Getan:**
+
+- Ausgangsstand `d3b1ff81580d5137285479f43f6cd286aa4c7764` geprüft:
+  Kern, UI, Persistenz, CLI, Schema, Renderer, Service Worker, Tests,
+  HTML/CSS und Dokumentationsverträge.
+- Bericht `docs/audits/2026-11-19-code-audit.md`: 38 Befunde mit stabilen IDs,
+  Priorität, Belegstufe, Codeorten, Reparaturauftrag und Abnahmekriterien;
+  sechs geordnete Arbeitspakete und Mindest-Testmatrix.
+- Reproduzierbare, synthetische Node-Proben unter
+  `docs/audits/2026-11-19-probes.mjs`; keine Produktfehler in dieser Sitzung behoben.
+- Kritische Punkte: dokumentübergreifendes Undo, ungesicherter Dokumentwechsel,
+  Save/Edit-Race, doppelte Gruppen-IDs aus der UI, fehlerhafte Importnormalisierung,
+  Verlust von Bibliothekslegenden und unvollständige SW-Installation.
+
+**Geprüft:** `npm run check` mit 66/66 erfolgreichen Tests; zusätzliche
+Auditprobe inklusive gemocktem SW-Lifecycle ausgeführt und Syntax geprüft.
+Chromium bestätigte unter anderem zwei Zöpfe mit ID `cable`, „Saved“ trotz
+neuerer ungespeicherter Änderung, blockiertes Enter auf „New“, fehlende
+Knit-Suchtreffer, falsches HTML-lang nach deutschem Reload und SVG-Text
+außerhalb des ViewBox. Keine reale Touch-/Strick-/Druckabnahme.
+
+**Offen:** Sämtliche Auditbefunde. Zuerst Arbeitspakete A/B/C bearbeiten.
+Der parallel entstandene unversionierte Ordner `design/` gehört nicht zum
+Audit-Ausgangsstand und wurde nicht bearbeitet.

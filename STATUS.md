@@ -57,6 +57,10 @@
 
 ## In Arbeit / offen
 
+- Umfassender [Code-Audit vom 2026-11-19](docs/audits/2026-11-19-code-audit.md):
+  38 priorisierte Befunde mit Codebelegen, Reproduktionen und Agenten-Arbeitspaketen.
+  Trotz 66 grüner Tests sind Datenintegritäts-, Speicher-, Import-, Bedienungs-
+  und Exportfehler offen. Die obige Featureliste ist keine Zuverlässigkeitsabnahme.
 - Stabilität und Fehler aus der ersten öffentlichen Alpha
 - Touch/Stift auf echten Geräten prüfen
 - Eigene Symbol-Packs und Symbol-Editor
@@ -67,9 +71,11 @@
 
 ## Nächster Schritt
 
-1. Öffentliche Alpha 0.3.0-alpha.1 beobachten und Issues triagieren.
-2. Fehler beheben, Tests erweitern.
-3. Übersetzungen und Symbol-Packs als Beiträge ermöglichen.
+1. Audit-Pakete A/B/C: Dokument-/Speichersicherheit, valide UI-Kommandos und
+   verlässlichen Import-/CLI-Vertrag herstellen; Regressionen zuerst.
+2. Weitere Audit-Pakete D/E/F: Interaktion, Export, Offlinefähigkeit und
+   Performance absichern; öffentliche Issues weiter triagieren.
+3. Danach Übersetzungen und Symbol-Packs als Beiträge ermöglichen.
 4. Keine Cloud-Funktion ohne neue ADR.
 
 ## Tests
@@ -79,3 +85,8 @@ Einheiten, Viewport, CLI, Performance).
 `npm run check`: Syntax- und JSON-Prüfung plus Tests grün.
 Browser: Zeichnen, Farben, Zöpfe, Rückreihen, Undo, Export, Scrollbalken,
 eigene Gruppen mit Legendentext, PWA offline manuell mit Playwright geprüft.
+
+Audit-Ergänzung: `node docs/audits/2026-11-19-probes.mjs` reproduziert
+Fehler am Ausgangscommit `d3b1ff8`; kein Sollverhalten und kein Ersatz für
+Regressionstests. Zusätzliche Chromium-Proben bestätigten doppelte Gruppen-IDs,
+falschen Speicherstatus, Tastaturprobleme und abgeschnittene Exportlegenden.
