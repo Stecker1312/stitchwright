@@ -63,6 +63,6 @@ const server = http.createServer((request, response) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log(`Stitchwright läuft auf http://localhost:${PORT}`);
-  console.log("Beenden mit Strg+C.");
+  console.log(`Stitchwright is running at http://localhost:${PORT}`);
+  console.log("Press Ctrl+C to stop.");
 });

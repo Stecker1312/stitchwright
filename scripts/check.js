@@ -31,7 +31,7 @@ for (const file of files.filter((name) => name.endsWith(".js"))) {
     execFileSync(process.execPath, ["--check", file], { stdio: "pipe" });
   } catch (error) {
     errors += 1;
-    console.error(`Syntaxfehler: ${path.relative(ROOT, file)}`);
+    console.error(`Syntax error: ${path.relative(ROOT, file)}`);
     console.error(error.stderr?.toString() || error.message);
   }
 }
@@ -41,12 +41,12 @@ for (const file of files.filter((name) => name.endsWith(".json"))) {
     JSON.parse(fs.readFileSync(file, "utf8"));
   } catch (error) {
     errors += 1;
-    console.error(`JSON-Fehler: ${path.relative(ROOT, file)}: ${error.message}`);
+    console.error(`JSON error: ${path.relative(ROOT, file)}: ${error.message}`);
   }
 }
 
 if (errors) {
-  console.error(`${errors} Fehler.`);
+  console.error(errors === 1 ? "1 error." : `${errors} errors.`);
   process.exit(1);
 }
-console.log(`OK: ${files.filter((name) => name.endsWith(".js")).length} JS-Dateien, ${files.filter((name) => name.endsWith(".json")).length} JSON-Dateien.`);
+console.log(`OK: ${files.filter((name) => name.endsWith(".js")).length} JS files, ${files.filter((name) => name.endsWith(".json")).length} JSON files.`);
