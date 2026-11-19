@@ -135,19 +135,21 @@ function rowY(chart, view, row, visible) {
   return view.offsetY + (visible.length - 1 - index) * view.scale;
 }
 
-function drawSelection(ctx, chart, view, selection, theme, visible) {
+function drawSelection(ctx, chart, view, selection, theme, rows) {
   if (!selection) return;
   const top = Math.min(selection.row1, selection.row2);
   const bottom = Math.max(selection.row1, selection.row2);
   const left = Math.min(selection.col1, selection.col2);
   const right = Math.max(selection.col1, selection.col2);
-  const first = cellRect(chart, view, top, left);
-  const last = cellRect(chart, view, bottom, right);
+  const visible = rows.filter((row) => row >= top && row <= bottom);
+  if (!visible.length) return;
+  const first = cellRect(chart, view, visible[0], left);
+  const last = cellRect(chart, view, visible[visible.length - 1], right);
   if (!first || !last) return;
   const x = first.x;
   const y = last.y;
   const w = (right - left + 1) * view.scale;
-  const h = (bottom - top + 1) * view.scale;
+  const h = visible.length * view.scale;
   ctx.fillStyle = theme.selection;
   ctx.fillRect(x, y, w, h);
   ctx.strokeStyle = theme.accent;
@@ -259,23 +261,36 @@ export function drawChart(ctx, chart, view, {
 
   // Groups: cables and other multi-stitch symbols.
   if (showDetail) {
+    const groupsByRow = new Map();
     for (const group of chart.groups) {
-      const visibleIndex = rows.indexOf(group.row);
-      if (visibleIndex === -1) continue;
-      const span = groupSpan(chart, group);
-      if (group.col + span - 1 < start + 1 || group.col > end + 1) continue;
-      const x = view.offsetX + (group.col - 1) * scale;
+      if (!groupsByRow.has(group.row)) groupsByRow.set(group.row, []);
+      groupsByRow.get(group.row).push(group);
+    }
+    for (let visibleIndex = Math.max(0, firstVisibleRow); visibleIndex <= lastVisibleRow; visibleIndex += 1) {
+      const row = rows[visibleIndex];
+      const groups = groupsByRow.get(row);
+      if (!groups) continue;
       const y = view.offsetY + (rowCount - 1 - visibleIndex) * scale;
-      const background = backgroundFor(chart, group.row, group.col);
-      const color = contrastColor(background);
-      drawGlyph(ctx, glyphFor(group.symbol, group), x, y, scale, color, background);
+      for (const group of groups) {
+        const span = groupSpan(chart, group);
+        if (group.col + span - 1 < start + 1 || group.col > end + 1) continue;
+        const x = view.offsetX + (group.col - 1) * scale;
+        const background = backgroundFor(chart, group.row, group.col);
+        const color = contrastColor(background);
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(x, y, span * scale, scale);
+        ctx.clip();
+        drawGlyph(ctx, glyphFor(group.symbol, group), x, y, scale, color, background);
+        ctx.restore();
 
-      if (group.id === selectedGroupId) {
-        ctx.strokeStyle = theme.accent;
-        ctx.lineWidth = 2;
-        ctx.setLineDash([4, 3]);
-        ctx.strokeRect(x + 1, y + 1, span * scale - 2, scale - 2);
-        ctx.setLineDash([]);
+        if (group.id === selectedGroupId) {
+          ctx.strokeStyle = theme.accent;
+          ctx.lineWidth = 2;
+          ctx.setLineDash([4, 3]);
+          ctx.strokeRect(x + 1, y + 1, span * scale - 2, scale - 2);
+          ctx.setLineDash([]);
+        }
       }
     }
   }
@@ -346,8 +361,8 @@ export function drawChart(ctx, chart, view, {
     ctx.textAlign = "right";
     ctx.textBaseline = "middle";
     for (let visibleIndex = Math.max(0, firstVisibleRow); visibleIndex <= lastVisibleRow; visibleIndex += 1) {
+      if (visibleIndex % step !== 0 && visibleIndex !== 0 && visibleIndex !== rowCount - 1) continue;
       const row = rows[visibleIndex];
-      if (row % step !== 0 && row !== 1 && row !== chart.height) continue;
       const y = view.offsetY + (rowCount - 1 - visibleIndex) * scale + scale * 0.5;
       if (y < 0 || y > height) continue;
       ctx.fillText(String(row), view.offsetX - 7, y);

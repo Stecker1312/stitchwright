@@ -255,3 +255,51 @@ außerhalb des ViewBox. Keine reale Touch-/Strick-/Druckabnahme.
 **Offen:** Sämtliche Auditbefunde. Zuerst Arbeitspakete A/B/C bearbeiten.
 Der parallel entstandene unversionierte Ordner `design/` gehört nicht zum
 Audit-Ausgangsstand und wurde nicht bearbeitet.
+
+## 2026-11-19 – Audit-Pakete A/B/C und zentrale P2-Fixes
+
+**Ziel:** Die P1-Befunde des Code-Audits beheben und die wichtigsten
+P2-Sicherheits-, Export- und Interaktionsfehler mit Regressionen absichern.
+
+**Getan:**
+
+- Dokumentwechsel ist eine harte Store-Grenze: Undo/Redo, Auswahl, Cursor,
+  Pinsel und Bibliothek werden zurückgesetzt; offene Änderungen werden
+  gespeichert, verworfen oder abgebrochen. Autosave-Timer sind an Dokument
+  und Revision gebunden.
+- Speichern quittiert nur die tatsächlich geschriebene Revision. Änderungen
+  während des Speicherns bleiben dirty; Schreibfehler bleiben sichtbar.
+- Gruppen bekommen aus der UI eindeutige Instanz-IDs; Tastaturplatzierung ist
+  atomar, dirty und rückgängig; Marker funktionieren per Tastatur.
+- Import validiert Rohdaten vor der Normalisierung, behält unbekannte Felder,
+  begrenzt Dateigröße und Collections; der Validator ist total und
+  prototypsicher.
+- Rapportgrenzen folgen Einfügen, Löschen, Resize und Spiegeln; asymmetrische
+  Zöpfe tauschen beim Spiegeln die Stränge.
+- Rückreihenmodus hält Cursor und Auswahl auf sichtbaren Reihen und warnt vor
+  versteckten Gruppen; Füllen/Löschen lässt ausgeblendete Reihen unberührt.
+- Clipboard-Fragmente tragen ihre Palette; Konflikte werden beim Einfügen
+  umgemappt. Fehlgeschlagene Paints und Pastes hinterlassen keine Teilmutation.
+- Tastatur respektiert native Buttons; Zeichenbefehle brauchen den Canvas.
+  Pointer interpolieren, Pinch bricht den ersten Strich ab, Mittelklick-Pan
+  und Pointer-Cancel sind definiert.
+- SVG-Legenden umbrechen lange Texte und erweitern den ViewBox; RS-Reihennummern
+  folgen sichtbaren Zeilen; Kontrast wählt den besseren von Schwarz/Weiß;
+  `nostitch` bekommt seinen grauen Grund.
+- Druck ist unabhängig vom Downloadformat; Legenden-Override und Papierwahl
+  wirken; PNG-Kappung wird gemeldet.
+- Service Worker installiert Pflichtassets atomar, behält bei Fehlern die alte
+  Version und löscht nur eigene Caches. Entwicklungsserver validiert URLs,
+  Dotfiles und Realpaths.
+- Persistenz speichert eine vorherige vollständige Chartversion, zeigt
+  Speicherfehler und warnt bei parallelen Tabs. Öffnen bietet Wiederherstellung.
+- CLI: explizite Flag-Schemata, JSON-Fehlervertrag, eindeutige IDs, Validierung
+  vor dem Schreiben, `legend` prüft das Chart.
+- 99 Node-Tests, neue Audit-Regressionen und CI-Workflow; Browserprüfungen für
+  Tastatur, offene Änderungen, RS-Auswahl, mobile Drawer und Offline-Reload.
+- Version auf 0.4.0-alpha.1 angehoben; lokale Änderungen noch nicht veröffentlicht.
+
+**Offen:** P2-Restpunkte aus dem Audit: App-Shell-Refactor, vollständige
+Performance-Messung, dynamische Sprachregistry, Mehrfarben-Halos bei Zöpfen,
+echte Touch-/Druck-/Strickabnahme. Keine Behauptung einer vollständigen
+Audit-Abnahme.

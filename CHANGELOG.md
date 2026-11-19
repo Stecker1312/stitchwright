@@ -1,5 +1,63 @@
 # Changelog
 
+## 0.4.0-alpha.1 – 19 November 2026
+
+Stabilisation release based on the 2026-11-19 code audit. Still an alpha.
+
+### Fixed
+
+- Document switches clear undo/redo and transient state; opening or creating a
+  chart with unsaved changes asks before discarding them.
+- Autosave and manual saves confirm only the exact revision they wrote. Edits
+  that happen during a save stay dirty and are saved again.
+- UI group placement always uses unique instance ids; duplicate ids are
+  rejected by the model.
+- Keyboard group placement is atomic, dirty and undoable; the marker tool also
+  works from the keyboard.
+- Import validates the raw object before normalisation. Broken structures no
+  longer become plausible empty charts, and unknown fields are preserved.
+- The validator never throws on malformed rows, options or inherited symbol
+  names such as `constructor`.
+- Dimensions are checked before allocation; import size and collection limits
+  are capped.
+- Repeat bounds follow insert, delete, resize and mirror operations.
+  Asymmetric cables swap their strands when mirrored.
+- Right-side mode keeps the cursor on visible rows, selects only visible rows
+  and warns about hidden groups.
+- Custom-group legend keys include span and note; library notes survive a
+  reload and can be cleared deliberately.
+- Clipboard fragments carry their palette; conflicting colour ids are remapped
+  on paste. Invalid fragments leave the document unchanged.
+- Painting over a group with the knit brush removes it; failed coloured paints
+  roll back completely.
+- Global Enter/Space no longer steal native buttons; drawing commands require
+  the chart canvas.
+- Pointer strokes interpolate between samples; pinch cancels the first touch;
+  middle-button pan works; pointer cancellation rolls back.
+- SVG legends wrap long text and widen the viewBox; row numbers follow visible
+  rows in right-side mode.
+- Contrast chooses the better of black and white; `nostitch` uses its grey
+  paper colour.
+- Print is independent of the download format; the legend override and paper
+  size are honoured.
+- The service worker installs required assets atomically, keeps the old cache
+  on failure, and deletes only its own caches.
+- Storage errors are visible; a previous complete snapshot can be restored from
+  the open dialog; a save in another tab is reported.
+- CLI flags have explicit bool/value schemas, errors can be JSON, new charts get
+  unique ids and `new` never writes an invalid document.
+- The development server rejects malformed URLs and dotfiles, and checks real
+  paths.
+- Regression tests and a CI workflow cover the repaired paths.
+
+### Changed
+
+- An empty chart now exports a knit explanation in the legend.
+- The chart content licence is empty by default; the GPL-3.0 app licence is
+  shown separately.
+- 99 Node tests; browser checks for keyboard, right-side mode, unsaved
+  switches, mobile drawers and offline reload.
+
 ## 0.3.0-alpha.1 – 19 November 2026
 
 - **English first:** British English is now the default and presentation

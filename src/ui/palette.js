@@ -64,6 +64,7 @@ export function renderPalette({ symbolsEl, colorsEl, store, t, lang = "en", cust
   symbolsEl.replaceChildren();
 
   for (const category of CATEGORIES) {
+    const knitQuery = !query || "k knit re leer empty".includes(query);
     const items = Object.values(SYMBOLS).filter((symbol) => (
       symbol.category === category.id
       && symbol.id !== "cable"
@@ -82,11 +83,11 @@ export function renderPalette({ symbolsEl, colorsEl, store, t, lang = "en", cust
       ].join(" ").toLowerCase();
       return haystack.includes(query);
     });
-    if (!filtered.length) continue;
+    if (!filtered.length && !(category.id === "basic" && knitQuery)) continue;
 
     symbolsEl.append(element("h3", "palette-category", category.name[lang] || category.name.en));
     const grid = element("div", "palette-grid");
-    if (category.id === "basic" && (!query || "re knit leer".includes(query))) {
+    if (category.id === "basic" && knitQuery) {
       const knit = element("button", "palette-item");
       knit.type = "button";
       knit.title = t("palette.knit");
@@ -190,6 +191,7 @@ export function renderPalette({ symbolsEl, colorsEl, store, t, lang = "en", cust
   none.title = t("palette.noColor");
   none.setAttribute("aria-label", t("palette.noColor"));
   none.dataset.selected = String(store.color === null);
+  none.setAttribute("aria-pressed", String(store.color === null));
   none.addEventListener("click", () => store.setColor(null));
   colorsEl.append(none);
 
@@ -200,6 +202,7 @@ export function renderPalette({ symbolsEl, colorsEl, store, t, lang = "en", cust
     button.title = `${color.name} (${color.hex})`;
     button.setAttribute("aria-label", `${color.name} ${color.hex}`);
     button.dataset.selected = String(store.color === color.id);
+    button.setAttribute("aria-pressed", String(store.color === color.id));
     button.addEventListener("click", () => store.setColor(color.id));
     colorsEl.append(button);
   }

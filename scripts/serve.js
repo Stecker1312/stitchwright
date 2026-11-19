@@ -33,32 +33,54 @@ const MIME = {
 };
 
 function safePath(urlPath) {
-  const decoded = decodeURIComponent(urlPath.split("?")[0]);
+  let decoded;
+  try {
+    decoded = decodeURIComponent(urlPath.split("?")[0]);
+  } catch {
+    return { error: 400 };
+  }
   const requested = decoded === "/" ? "/index.html" : decoded;
-  const absolute = path.resolve(ROOT, `.${requested}`);
-  if (!absolute.startsWith(ROOT + path.sep) && absolute !== ROOT) return null;
-  return absolute;
+  const normalized = path.posix.normalize(requested);
+  if (!normalized.startsWith("/") || normalized.split("/").some((part) => part === ".." || part.startsWith("."))) {
+    return { error: 403 };
+  }
+  if (normalized.split("/").includes("node_modules")) return { error: 403 };
+  const absolute = path.resolve(ROOT, `.${normalized}`);
+  if (!absolute.startsWith(ROOT + path.sep) && absolute !== ROOT) return { error: 403 };
+  return { file: absolute };
 }
 
 const server = http.createServer((request, response) => {
-  const file = safePath(request.url || "/");
-  if (!file) {
-    response.writeHead(403);
-    response.end("Forbidden");
+  const target = safePath(request.url || "/");
+  if (!target.file) {
+    response.writeHead(target.error || 403);
+    response.end(target.error === 400 ? "Bad request" : "Forbidden");
     return;
   }
-  fs.stat(file, (statError, stat) => {
-    if (statError || !stat.isFile()) {
+  fs.realpath(target.file, (realError, realFile) => {
+    if (realError || (!realFile.startsWith(ROOT + path.sep) && realFile !== ROOT)) {
       response.writeHead(404);
       response.end("Not found");
       return;
     }
-    response.writeHead(200, {
-      "Content-Type": MIME[path.extname(file)] || "application/octet-stream",
-      "Cache-Control": "no-cache",
-      "X-Content-Type-Options": "nosniff"
+    fs.stat(realFile, (statError, stat) => {
+      if (statError || !stat.isFile()) {
+        response.writeHead(404);
+        response.end("Not found");
+        return;
+      }
+      response.writeHead(200, {
+        "Content-Type": MIME[path.extname(realFile)] || "application/octet-stream",
+        "Cache-Control": "no-cache",
+        "X-Content-Type-Options": "nosniff"
+      });
+      const stream = fs.createReadStream(realFile);
+      stream.on("error", () => {
+        if (!response.headersSent) response.writeHead(500);
+        response.end();
+      });
+      stream.pipe(response);
     });
-    fs.createReadStream(file).pipe(response);
   });
 });
 

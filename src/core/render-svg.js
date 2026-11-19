@@ -100,6 +100,29 @@ function text(value, x, y, { size = 12, weight = 400, anchor = "start", fill = "
   return `<text x="${x}" y="${y}" font-family="system-ui, sans-serif" font-size="${size}" font-weight="${weight}" text-anchor="${anchor}" fill="${fill}">${escapeXml(value)}</text>`;
 }
 
+/** Conservative text width for layout without a browser text measurer. */
+function approxTextWidth(value, size) {
+  return String(value).length * size * 0.58;
+}
+
+/** Wrap a label into lines that fit the available character budget. */
+function wrapText(value, maxChars) {
+  const words = String(value).split(/\s+/).filter(Boolean);
+  const lines = [];
+  let current = "";
+  for (const word of words) {
+    const next = current ? `${current} ${word}` : word;
+    if (next.length > maxChars && current) {
+      lines.push(current);
+      current = word;
+    } else {
+      current = next;
+    }
+  }
+  if (current) lines.push(current);
+  return lines.length ? lines : [""];
+}
+
 /**
  * Render a chart as a standalone SVG.
  *
@@ -113,7 +136,7 @@ function text(value, x, y, { size = 12, weight = 400, anchor = "start", fill = "
 export function renderSvg(chart, {
   lang = "en",
   unit = "metric",
-  includeLegend = true,
+  includeLegend = null,
   cellPx = CELL
 } = {}) {
   const rows = visibleRows(chart);
@@ -122,15 +145,48 @@ export function renderSvg(chart, {
   const chartY = MARGIN_TOP;
   const chartW = chart.width * cellPx;
   const chartH = rowCount * cellPx;
-  const legendWanted = includeLegend && chart.options?.showLegend !== false;
+  const legendWanted = includeLegend === null
+    ? chart.options?.showLegend !== false
+    : Boolean(includeLegend);
   const legend = legendWanted ? legendEntries(chart, lang) : [];
 
-  // Precompute the legend layout so the SVG height is correct.
-  const legendColumns = Math.max(1, Math.min(4, Math.floor((chartW + MARGIN_LEFT + MARGIN_RIGHT) / 250)));
+  // Precompute the legend layout so the SVG width and height are correct.
+  const maxEntryWidth = Math.max(
+    0,
+    ...legend.map((entry) => approxTextWidth(
+      entry.kind === "color"
+        ? `${entry.name}  ${entry.color.hex}`
+        : `${entry.name} · ${entry.text}`,
+      10
+    ))
+  );
+  const columnWidth = Math.max(260, Math.min(520, maxEntryWidth + 62));
+  const legendColumns = Math.max(1, Math.min(4, Math.floor(Math.max(chartW, columnWidth) / columnWidth)));
+  const maxChars = Math.max(18, Math.floor((columnWidth - 50) / (10 * 0.58)));
+  const legendLayout = legend.map((entry) => ({
+    entry,
+    lines: wrapText(
+      entry.kind === "color"
+        ? `${entry.name} · ${entry.color.hex}`
+        : `${entry.name} · ${entry.text}`,
+      maxChars
+    )
+  }));
+  const maxLines = Math.max(1, ...legendLayout.map((item) => item.lines.length));
   const legendRows = legend.length ? Math.ceil(legend.length / legendColumns) : 0;
+  const legendRowHeight = Math.max(LEGEND_ROW, 16 + maxLines * 12);
   const legendTop = chartY + chartH + MARGIN_BOTTOM + 18;
-  const legendHeight = legend.length ? 22 + legendRows * LEGEND_ROW + 14 : 0;
-  const svgW = chartW + MARGIN_LEFT + MARGIN_RIGHT;
+  const legendHeight = legend.length ? 22 + legendRows * legendRowHeight + 14 : 0;
+  const titleWidth = Math.max(
+    approxTextWidth(chart.title || "", 19),
+    approxTextWidth(chart.options?.subtitle || "", 11)
+  );
+  const legendWidth = legend.length ? legendColumns * columnWidth : 0;
+  const svgW = Math.max(
+    chartW + MARGIN_LEFT + MARGIN_RIGHT,
+    legendWidth + MARGIN_LEFT + MARGIN_RIGHT,
+    titleWidth + MARGIN_LEFT + MARGIN_RIGHT
+  );
   const svgH = legendTop + legendHeight + 10;
 
   const parts = [];
@@ -228,24 +284,26 @@ export function renderSvg(chart, {
   }
 
   // Groups are drawn directly because their halo needs the local background.
-  for (const group of chart.groups) {
+  chart.groups.forEach((group, index) => {
     const visibleIndex = rows.indexOf(group.row);
-    if (visibleIndex === -1) continue;
+    if (visibleIndex === -1) return;
     const span = groupSpan(chart, group);
     const x = chartX + (group.col - 1) * cellPx;
     const y = chartY + (rowCount - 1 - visibleIndex) * cellPx;
     const background = backgroundFor(chart, group.row, group.col);
     const color = contrastColor(background);
     const glyph = glyphFor(group.symbol, group);
-    parts.push(`<g transform="translate(${x} ${y}) scale(${cellPx})" color="${color}">${glyphMarkup(glyph, { color, background })}</g>`);
-  }
+    const clipId = `group-clip-${index}`;
+    parts.push(`<clipPath id="${clipId}"><rect x="${x}" y="${y}" width="${span * cellPx}" height="${cellPx}"/></clipPath>`);
+    parts.push(`<g clip-path="url(#${clipId})"><g transform="translate(${x} ${y}) scale(${cellPx})" color="${color}">${glyphMarkup(glyph, { color, background })}</g></g>`);
+  });
 
   // Row numbers. On long charts, print every few rows to avoid a wall of text.
   if (chart.options?.showRowNumbers !== false) {
     const rowStep = chart.height > 120 ? 5 : chart.height > 60 ? 2 : 1;
     for (let visibleIndex = 0; visibleIndex < rowCount; visibleIndex += 1) {
+      if (visibleIndex % rowStep !== 0 && visibleIndex !== 0 && visibleIndex !== rowCount - 1) continue;
       const row = rows[visibleIndex];
-      if (row % rowStep !== 0 && row !== 1 && row !== chart.height) continue;
       const y = chartY + (rowCount - 1 - visibleIndex) * cellPx + cellPx * 0.7;
       parts.push(text(String(row), chartX - 8, y, { size: 10, anchor: "end", fill: "#555555" }));
     }
@@ -265,36 +323,35 @@ export function renderSvg(chart, {
   // Legend.
   if (legend.length) {
     const columns = legendColumns;
-    const columnWidth = (chartW) / columns;
     parts.push(text(lang === "de" ? "Legende" : "Legend", chartX, legendTop - 4, { size: 12, weight: 700 }));
-    legend.forEach((entry, index) => {
+    legendLayout.forEach(({ entry, lines }, index) => {
       const column = index % columns;
       const line = Math.floor(index / columns);
       const x = chartX + column * columnWidth;
-      const y = legendTop + 16 + line * LEGEND_ROW;
+      const y = legendTop + 16 + line * legendRowHeight;
       if (entry.kind === "color") {
         parts.push(`<rect x="${x}" y="${y - 13}" width="18" height="18" rx="3" fill="${entry.color.hex}" stroke="#777777" stroke-width="0.7"/>`);
-        parts.push(text(entry.name, x + 25, y + 1, { size: 10, weight: 600 }));
-        parts.push(text(entry.color.hex, x + 25, y + 13, { size: 9, fill: "#666666" }));
+      } else if (entry.kind === "blank") {
+        parts.push(`<rect x="${x + 1}" y="${y - 17}" width="18" height="18" fill="#ffffff" stroke="#777777" stroke-width="0.8"/>`);
+      } else if (entry.kind === "cell") {
+        parts.push(`<use href="#sym-${entry.symbol}" transform="translate(${x + 1} ${y - 17}) scale(18)" color="#111111"/>`);
       } else {
-        const iconX = x + 1;
-        const iconY = y - 17;
-        if (entry.kind === "cell") {
-          parts.push(`<use href="#sym-${entry.symbol}" transform="translate(${iconX} ${iconY}) scale(18)" color="#111111"/>`);
-        } else {
-          // A group glyph spans `span` cells. Shrink it so it fits the icon
-          // width, but never make it taller than a single cell icon.
-          const iconScale = Math.min(1, LEGEND_ICON / (entry.span * 18));
-          const glyph = entry.glyph;
-          parts.push(`<g transform="translate(${iconX} ${iconY}) scale(${18 * iconScale})" color="#111111">${glyphMarkup(glyph, { color: "#111111", background: "#ffffff" })}</g>`);
-        }
-        parts.push(text(`${entry.name} · ${entry.text}`, x + 42, y + 1, { size: 10 }));
+        // A group glyph spans `span` cells. Shrink it so it fits the icon
+        // width, but never make it taller than a single cell icon.
+        const iconScale = Math.min(1, LEGEND_ICON / (entry.span * 18));
+        parts.push(`<g transform="translate(${x + 1} ${y - 17}) scale(${18 * iconScale})" color="#111111">${glyphMarkup(entry.glyph, { color: "#111111", background: "#ffffff" })}</g>`);
       }
+      lines.forEach((lineText, lineIndex) => {
+        parts.push(text(lineText, x + 42, y + 1 + lineIndex * 12, { size: 10 }));
+      });
     });
   }
 
-  // Footer: cell size and licence. Useful on printed pages.
-  const footer = `${formatLength(chart.options.cellMm, unit, lang)} / ${lang === "de" ? "Raster" : "grid"} · Stitchwright · GPL-3.0`;
+  // Footer: cell size, software licence and the chart's own content licence.
+  const contentLicence = chart.meta?.license
+    ? `content licence: ${chart.meta.license}`
+    : "content licence not set";
+  const footer = `${formatLength(chart.options.cellMm, unit, lang)} / ${lang === "de" ? "Raster" : "grid"} · Stitchwright · GPL-3.0 · ${contentLicence}`;
   parts.push(text(footer, chartX, svgH - 8, { size: 9, fill: "#888888" }));
 
   parts.push("</svg>");

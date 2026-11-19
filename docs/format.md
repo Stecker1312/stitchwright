@@ -4,6 +4,21 @@ Updated 19 November 2026. The format is open JSON. It is the source; SVG and
 PNG are exports. The JSON Schema for editors and agents is at
 [`schema/strickschrift.schema.json`](../schema/strickschrift.schema.json).
 
+## Raw and canonical data
+
+The file format has two layers:
+
+- **Raw**: the JSON that a person or agent writes. Only `schema`, `width`,
+  `height` and `rows` are required. `colors`, `groups`, `palette`, `options`
+  and `meta` are optional.
+- **Canonical**: the in-memory chart after normalization. All matrices and
+  option fields exist, IDs are checked and unknown top-level fields are
+  preserved for later validation.
+
+Always validate the raw object before normalization. Normalization must not
+turn a broken array into a valid empty one, and `--strict` must still see
+unknown fields.
+
 ## Example
 
 ```json
@@ -52,7 +67,7 @@ PNG are exports. The JSON Schema for editors and agents is at
   "meta": {
     "author": "",
     "source": "",
-    "license": "GPL-3.0",
+    "license": "",
     "notes": "",
     "created": "2026-11-19T00:00:00.000Z",
     "modified": "2026-11-19T00:00:00.000Z"
@@ -159,7 +174,8 @@ stitches 10 and 20. They are not knitted and do not appear in the legend.
 ## Meta
 
 All fields are optional. `created` and `modified` are ISO 8601 strings.
-`license` defaults to `"GPL-3.0"`. `notes` is a short note, not knitting
+`license` is the user's content licence and is empty unless set. The app
+licence (GPL-3.0) is separate. `notes` is a short note, not knitting
 instructions.
 
 ## Validation

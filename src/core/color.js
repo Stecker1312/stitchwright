@@ -30,9 +30,13 @@ export function luminance(hex) {
   return 0.2126 * channel(rgb.r) + 0.7152 * channel(rgb.g) + 0.0722 * channel(rgb.b);
 }
 
-/** Black or white, whichever is readable on the given background. */
+/** Black or white, whichever has the better WCAG contrast ratio. */
 export function contrastColor(hex) {
-  return luminance(hex) > 0.46 ? "#111111" : "#ffffff";
+  const background = luminance(hex);
+  const ratio = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+  const dark = luminance("#111111");
+  const light = luminance("#ffffff");
+  return ratio(dark, background) >= ratio(light, background) ? "#111111" : "#ffffff";
 }
 
 /** Resolve a palette id to a hex value, falling back to paper white. */
@@ -43,6 +47,7 @@ export function colorHex(chart, colorId) {
 
 /** Background of one cell, used for symbol contrast and cable halos. */
 export function backgroundFor(chart, row, col) {
+  if (chart.rows?.[row - 1]?.[col - 1] === "nostitch") return "#e6e6e6";
   return colorHex(chart, chart.colors?.[row - 1]?.[col - 1] ?? null);
 }
 

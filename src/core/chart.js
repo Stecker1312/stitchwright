@@ -12,7 +12,7 @@
  *   - Groups use 1-based row and column numbers, where column 1 is leftmost.
  */
 
-import { getSymbol, isGroupSymbol, symbolSpan } from "./symbols.js";
+import { getSymbol, hasSymbol, isGroupSymbol, symbolSpan } from "./symbols.js";
 
 export const SCHEMA = "strickschrift/1";
 export const MIN_SIZE = 1;
@@ -50,10 +50,18 @@ function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
+/** True when a value can be used as a chart dimension. */
+function validSize(value) {
+  return Number.isInteger(value) && value >= MIN_SIZE && value <= MAX_SIZE;
+}
+
 /** Create a new, empty chart. */
 export function createChart({ width = 24, height = 24, title = "" } = {}) {
-  if (!Number.isInteger(width) || !Number.isInteger(height)) {
-    throw new Error("width and height must be integers");
+  if (!validSize(width) || !validSize(height)) {
+    throw new Error(`width and height must be whole numbers between ${MIN_SIZE} and ${MAX_SIZE}`);
+  }
+  if (typeof title !== "string" || title.length > 120) {
+    throw new Error("title must be a string of at most 120 characters");
   }
   return {
     schema: SCHEMA,
@@ -69,7 +77,7 @@ export function createChart({ width = 24, height = 24, title = "" } = {}) {
     meta: {
       author: "",
       source: "",
-      license: "GPL-3.0",
+      license: "",
       notes: "",
       created: new Date().toISOString(),
       modified: new Date().toISOString()
@@ -79,56 +87,137 @@ export function createChart({ width = 24, height = 24, title = "" } = {}) {
 
 /**
  * Bring imported data into the canonical shape without judging its meaning.
- * Validation is a separate step; this function only fills obvious gaps so the
- * editor can show a broken file instead of crashing.
+ *
+ * Structural problems throw instead of being silently repaired. Unknown
+ * top-level fields are preserved so `--strict` and later format versions can
+ * still see them. Validation remains a separate step.
  */
 export function normalizeChart(raw) {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
     throw new Error("Chart must be a JSON object");
   }
-
-  const width = Number(raw.width);
-  const height = Number(raw.height);
-  if (!Number.isInteger(width) || !Number.isInteger(height) || width < MIN_SIZE || height < MIN_SIZE) {
-    throw new Error("Chart needs integer width and height");
+  if (raw.schema !== SCHEMA) {
+    throw new Error(`Expected schema "${SCHEMA}"`);
+  }
+  const width = raw.width;
+  const height = raw.height;
+  if (!validSize(width) || !validSize(height)) {
+    throw new Error(`Chart needs integer width and height between ${MIN_SIZE} and ${MAX_SIZE}`);
+  }
+  if (!Array.isArray(raw.rows) || raw.rows.length !== height) {
+    throw new Error("Chart needs a rows array with one entry per row");
+  }
+  if (raw.title !== undefined && (typeof raw.title !== "string" || raw.title.length > 120)) {
+    throw new Error("title must be a string of at most 120 characters");
+  }
+  if (raw.id !== undefined && (typeof raw.id !== "string" || raw.id.length === 0)) {
+    throw new Error("id must be a non-empty string");
   }
 
-  const rows = Array.isArray(raw.rows) ? raw.rows : emptyMatrix(width, height);
-  const colors = Array.isArray(raw.colors) ? raw.colors : emptyMatrix(width, height);
+  const rows = raw.rows.map((row) => {
+    if (!Array.isArray(row) || row.length !== width) {
+      throw new Error("Every row must be an array with one entry per stitch");
+    }
+    return row.map((cell) => {
+      if (cell === null) return null;
+      if (typeof cell !== "string") throw new Error("Cells must be symbol ids or null");
+      if (cell === "k" || cell === "") return null;
+      getSymbol(cell);
+      if (isGroupSymbol(cell)) throw new Error(`Symbol ${cell} must be placed as a group`);
+      return cell;
+    });
+  });
+
+  let colors = raw.colors === undefined ? emptyMatrix(width, height) : raw.colors;
+  if (!Array.isArray(colors) || colors.length !== height) {
+    throw new Error("colors must be a matrix with one row per chart row");
+  }
+  colors = colors.map((row) => {
+    if (!Array.isArray(row) || row.length !== width) {
+      throw new Error("Every colour row must have one entry per stitch");
+    }
+    return row.map((color) => {
+      if (color !== null && typeof color !== "string") {
+        throw new Error("Colours must be palette ids or null");
+      }
+      return color;
+    });
+  });
+
+  const groups = raw.groups === undefined ? [] : raw.groups;
+  if (!Array.isArray(groups) || groups.some((group) => !group || typeof group !== "object" || Array.isArray(group))) {
+    throw new Error("groups must be an array of objects");
+  }
+
+  const palette = raw.palette === undefined ? clone(DEFAULT_PALETTE) : raw.palette;
+  if (!Array.isArray(palette) || palette.some((entry) => !entry || typeof entry !== "object" || Array.isArray(entry))) {
+    throw new Error("palette must be an array of objects");
+  }
+
+  if (raw.options !== undefined && (!raw.options || typeof raw.options !== "object" || Array.isArray(raw.options))) {
+    throw new Error("options must be an object");
+  }
+  if (raw.meta !== undefined && (!raw.meta || typeof raw.meta !== "object" || Array.isArray(raw.meta))) {
+    throw new Error("meta must be an object");
+  }
+
+  const options = {
+    ...DEFAULT_OPTIONS,
+    ...(raw.options || {}),
+    markers: Array.isArray(raw.options?.markers) ? raw.options.markers.slice() : []
+  };
+  const meta = {
+    author: "",
+    source: "",
+    license: "",
+    notes: "",
+    created: new Date().toISOString(),
+    modified: new Date().toISOString(),
+    ...(raw.meta || {})
+  };
+
+  const {
+    schema: _schema,
+    id: _id,
+    title: _title,
+    width: _width,
+    height: _height,
+    rows: _rows,
+    colors: _colors,
+    groups: _groups,
+    palette: _palette,
+    options: _options,
+    meta: _meta,
+    ...rest
+  } = raw;
 
   return {
-    schema: raw.schema || SCHEMA,
+    ...rest,
+    schema: SCHEMA,
     id: typeof raw.id === "string" && raw.id ? raw.id : "chart",
     title: typeof raw.title === "string" ? raw.title : "",
     width,
     height,
-    // "k" is accepted as a convenience alias for the empty knit cell.
-    rows: rows.map((row) => (Array.isArray(row) ? row.map((cell) => (cell === "k" || cell === "" ? null : cell)) : [])),
-    colors: colors.map((row) => (Array.isArray(row) ? row.slice() : [])),
-    groups: Array.isArray(raw.groups) ? raw.groups.map((group) => ({ ...group })) : [],
-    palette: Array.isArray(raw.palette) && raw.palette.length
-      ? raw.palette.map((entry) => ({ ...entry }))
-      : clone(DEFAULT_PALETTE),
-    options: {
-      ...DEFAULT_OPTIONS,
-      ...(raw.options || {}),
-      markers: Array.isArray(raw.options?.markers) ? raw.options.markers.slice() : []
-    },
-    meta: {
-      author: "",
-      source: "",
-      license: "GPL-3.0",
-      notes: "",
-      created: new Date().toISOString(),
-      modified: new Date().toISOString(),
-      ...(raw.meta || {})
-    }
+    rows,
+    colors,
+    groups: groups.map((group) => ({ ...group })),
+    palette: palette.map((entry) => ({ ...entry })),
+    options,
+    meta
   };
 }
 
 /** Deep copy, used for undo snapshots. */
 export function cloneChart(chart) {
   return clone(chart);
+}
+
+/** Update the content timestamp after a real content change. */
+export function touchChartMeta(chart) {
+  if (chart.meta && typeof chart.meta === "object") {
+    const previous = Date.parse(chart.meta.modified) || 0;
+    chart.meta.modified = new Date(Math.max(Date.now(), previous + 1)).toISOString();
+  }
 }
 
 /** A fresh id for a new group. */
@@ -149,6 +238,16 @@ export function getColor(chart, row, col) {
   return chart.colors[row - 1]?.[col - 1] ?? null;
 }
 
+/** Convert an internal picture column to the knitter-facing stitch number. */
+export function columnToStitch(chart, col) {
+  return chart.width - col + 1;
+}
+
+/** Convert a knitter-facing stitch number to an internal picture column. */
+export function stitchToColumn(chart, stitch) {
+  return chart.width - stitch + 1;
+}
+
 /** Validate coordinates and return false instead of throwing. */
 export function inBounds(chart, row, col) {
   return Number.isInteger(row) && Number.isInteger(col)
@@ -162,8 +261,10 @@ export function inBounds(chart, row, col) {
  */
 export function setCell(chart, row, col, symbol) {
   if (!inBounds(chart, row, col)) throw new Error("Cell is outside the chart");
+  if (groupAt(chart, row, col)) throw new Error("Cell is covered by a group");
   if (symbol === null || symbol === undefined || symbol === "k") {
     chart.rows[row - 1][col - 1] = null;
+    touchChartMeta(chart);
     return;
   }
   if (isGroupSymbol(symbol)) {
@@ -171,6 +272,7 @@ export function setCell(chart, row, col, symbol) {
   }
   getSymbol(symbol);
   chart.rows[row - 1][col - 1] = symbol;
+  touchChartMeta(chart);
 }
 
 /** Set one colour, or clear it with null. */
@@ -180,6 +282,7 @@ export function setColor(chart, row, col, colorId) {
     throw new Error(`Unknown colour: ${colorId}`);
   }
   chart.colors[row - 1][col - 1] = colorId;
+  touchChartMeta(chart);
 }
 
 /**
@@ -195,6 +298,7 @@ export function toggleMarker(chart, boundary) {
   else markers.splice(index, 1);
   markers.sort((a, b) => a - b);
   chart.options.markers = markers;
+  touchChartMeta(chart);
   return true;
 }
 
@@ -204,11 +308,13 @@ export function setMarkerEvery(chart, every) {
   const markers = [];
   for (let boundary = every; boundary < chart.width; boundary += every) markers.push(boundary);
   chart.options.markers = markers;
+  touchChartMeta(chart);
   return markers;
 }
 
 export function clearMarkers(chart) {
   chart.options.markers = [];
+  touchChartMeta(chart);
 }
 
 /** Find the group that covers a cell, if any. */
@@ -241,6 +347,14 @@ export function addGroup(chart, input) {
   if (col + span - 1 > chart.width) throw new Error("Group does not fit in the chart");
   if (span < 1) throw new Error("Group span must be positive");
 
+  const id = input.id === undefined || input.id === null
+    ? nextGroupId(chart)
+    : String(input.id);
+  if (!id) throw new Error("Group id must not be empty");
+  if (chart.groups.some((group) => group.id === id)) {
+    throw new Error(`Duplicate group id: ${id}`);
+  }
+
   // Check overlap with existing groups first, then empty cells.
   for (const existing of chart.groups) {
     const existingSpan = groupSpan(chart, existing);
@@ -257,7 +371,7 @@ export function addGroup(chart, input) {
   }
 
   const group = {
-    id: input.id || nextGroupId(chart),
+    id,
     row,
     col,
     symbol: input.symbol
@@ -273,6 +387,7 @@ export function addGroup(chart, input) {
   }
   chart.groups.push(group);
   chart.groups.sort((a, b) => (a.row - b.row) || (a.col - b.col));
+  touchChartMeta(chart);
   return group;
 }
 
@@ -281,6 +396,7 @@ export function removeGroup(chart, id) {
   const index = chart.groups.findIndex((group) => group.id === id);
   if (index === -1) return false;
   chart.groups.splice(index, 1);
+  touchChartMeta(chart);
   return true;
 }
 
@@ -297,13 +413,37 @@ export function removeGroupAt(chart, row, col) {
  */
 export function paintCell(chart, row, col, symbol, colorId) {
   if (!inBounds(chart, row, col)) return false;
+
+  const value = symbol === "k" ? null : symbol;
+  if (value !== null) {
+    if (isGroupSymbol(value)) throw new Error(`Symbol ${value} must be placed as a group`);
+    getSymbol(value);
+  }
+  if (colorId !== null && !chart.palette.some((entry) => entry.id === colorId)) {
+    throw new Error(`Unknown colour: ${colorId}`);
+  }
+
   const previousCell = getCell(chart, row, col);
   const previousColor = getColor(chart, row, col);
-  const hadGroup = removeGroupAt(chart, row, col);
-  setCell(chart, row, col, symbol);
-  setColor(chart, row, col, colorId);
+  const group = groupAt(chart, row, col);
+  const groupIndex = group ? chart.groups.indexOf(group) : -1;
+
+  try {
+    if (group) removeGroup(chart, group.id);
+    setCell(chart, row, col, value);
+    setColor(chart, row, col, colorId);
+  } catch (error) {
+    chart.rows[row - 1][col - 1] = previousCell;
+    chart.colors[row - 1][col - 1] = previousColor;
+    if (group && groupIndex >= 0) {
+      chart.groups.splice(groupIndex, 0, group);
+      chart.groups.sort((a, b) => (a.row - b.row) || (a.col - b.col));
+    }
+    throw error;
+  }
+
   const nextCell = getCell(chart, row, col);
-  return hadGroup || previousCell !== nextCell || previousColor !== colorId;
+  return Boolean(group) || previousCell !== nextCell || previousColor !== colorId;
 }
 
 /** Clear a cell and any group covering it. Returns true when changed. */
@@ -314,12 +454,47 @@ export function eraseCell(chart, row, col) {
   const hadGroup = removeGroupAt(chart, row, col);
   chart.rows[row - 1][col - 1] = null;
   chart.colors[row - 1][col - 1] = null;
+  touchChartMeta(chart);
   return hadGroup || previousCell !== null || previousColor !== null;
+}
+
+/** Clamp repeat bounds to the current chart width, or remove them. */
+export function clampRepeat(chart) {
+  const repeat = chart.options?.repeat;
+  if (!repeat) {
+    if (chart.options) chart.options.repeat = null;
+    return null;
+  }
+  const start = Number(repeat.start);
+  const end = Number(repeat.end);
+  if (!Number.isInteger(start) || !Number.isInteger(end) || start < 1 || start > end || start > chart.width) {
+    chart.options.repeat = null;
+    return null;
+  }
+  chart.options.repeat = { start, end: Math.min(end, chart.width) };
+  return chart.options.repeat;
+}
+
+/** Move repeat bounds when a column is inserted at a 0-based position. */
+function repeatAfterInsert(repeat, index) {
+  if (!repeat) return null;
+  const inserted = index + 1;
+  if (inserted <= repeat.start) return { start: repeat.start + 1, end: repeat.end + 1 };
+  if (inserted <= repeat.end) return { start: repeat.start, end: repeat.end + 1 };
+  return { start: repeat.start, end: repeat.end };
+}
+
+/** Move repeat bounds when a 1-based column is deleted. */
+function repeatAfterDelete(repeat, deleted) {
+  if (!repeat) return null;
+  if (deleted < repeat.start) return { start: repeat.start - 1, end: repeat.end - 1 };
+  if (deleted <= repeat.end) return { start: repeat.start, end: repeat.end - 1 };
+  return { start: repeat.start, end: repeat.end };
 }
 
 /** Resize from the bottom-left corner. New space appears right and above. */
 export function resizeChart(chart, width, height) {
-  if (!Number.isInteger(width) || !Number.isInteger(height) || width < MIN_SIZE || height < MIN_SIZE) {
+  if (!validSize(width) || !validSize(height)) {
     throw new Error("Invalid chart size");
   }
 
@@ -349,6 +524,8 @@ export function resizeChart(chart, width, height) {
   chart.colors = nextColors;
   chart.groups = keptGroups;
   chart.options.markers = (chart.options.markers || []).filter((marker) => marker < width);
+  clampRepeat(chart);
+  touchChartMeta(chart);
   return { removedGroups };
 }
 
@@ -363,6 +540,7 @@ export function insertRow(chart, row, side = "above") {
   for (const group of chart.groups) {
     if (group.row > index) group.row += 1;
   }
+  touchChartMeta(chart);
   return index + 1;
 }
 
@@ -382,6 +560,7 @@ export function deleteRow(chart, row) {
     if (group.row > row) group.row -= 1;
     return true;
   });
+  touchChartMeta(chart);
   return removed;
 }
 
@@ -396,6 +575,8 @@ export function insertColumn(chart, col, side = "left") {
   chart.options.markers = (chart.options.markers || [])
     .map((marker) => (marker >= index ? marker + 1 : marker))
     .filter((marker) => marker < chart.width);
+  chart.options.repeat = repeatAfterInsert(chart.options.repeat, index);
+  clampRepeat(chart);
 
   const removed = [];
   chart.groups = chart.groups.filter((group) => {
@@ -408,6 +589,7 @@ export function insertColumn(chart, col, side = "left") {
     if (group.col - 1 >= index) group.col += 1;
     return true;
   });
+  touchChartMeta(chart);
   return removed;
 }
 
@@ -426,6 +608,8 @@ export function deleteColumn(chart, col) {
       return marker - 1;
     })
     .filter((marker) => marker !== null && marker < chart.width);
+  chart.options.repeat = repeatAfterDelete(chart.options.repeat, col);
+  clampRepeat(chart);
 
   const removed = [];
   chart.groups = chart.groups.filter((group) => {
@@ -438,6 +622,7 @@ export function deleteColumn(chart, col) {
     if (group.col - 1 > index) group.col -= 1;
     return true;
   });
+  touchChartMeta(chart);
   return removed;
 }
 
@@ -463,6 +648,9 @@ export function mirrorHorizontal(chart) {
     const next = { ...group, col: chart.width - (group.col - 1) - span + 1 };
     if (next.symbol === "cable") {
       next.direction = next.direction === "front" ? "back" : "front";
+      // left/right describe the bundles in the picture, so they swap too.
+      next.left = group.right;
+      next.right = group.left;
     } else if (next.symbol !== "custom") {
       // A mirrored decrease or increase leans the other way.
       next.symbol = mirrorSymbol(next.symbol);
@@ -472,6 +660,15 @@ export function mirrorHorizontal(chart) {
   chart.options.markers = (chart.options.markers || [])
     .map((marker) => chart.width - marker)
     .sort((a, b) => a - b);
+  const repeat = chart.options.repeat;
+  if (repeat) {
+    chart.options.repeat = {
+      start: chart.width - repeat.end + 1,
+      end: chart.width - repeat.start + 1
+    };
+    clampRepeat(chart);
+  }
+  touchChartMeta(chart);
 }
 
 /** Mirror the whole chart bottom-to-top. */
@@ -479,6 +676,7 @@ export function mirrorVertical(chart) {
   chart.rows = chart.rows.slice().reverse();
   chart.colors = chart.colors.slice().reverse();
   chart.groups = chart.groups.map((group) => ({ ...group, row: chart.height - group.row + 1 }));
+  touchChartMeta(chart);
 }
 
 /**
@@ -492,9 +690,12 @@ export function copySelection(chart, row1, col1, row2, col2) {
   const right = Math.max(col1, col2);
   const rows = [];
   const colors = [];
+  const usedColors = new Set();
   for (let row = top; row <= bottom; row += 1) {
     rows.push(chart.rows[row - 1].slice(left - 1, right));
-    colors.push(chart.colors[row - 1].slice(left - 1, right));
+    const colorRow = chart.colors[row - 1].slice(left - 1, right);
+    for (const color of colorRow) if (color) usedColors.add(color);
+    colors.push(colorRow);
   }
   const groups = chart.groups
     .filter((group) => {
@@ -503,34 +704,112 @@ export function copySelection(chart, row1, col1, row2, col2) {
         && group.col >= left && group.col + span - 1 <= right;
     })
     .map((group) => ({ ...group, row: group.row - top + 1, col: group.col - left + 1 }));
-  return { width: right - left + 1, height: bottom - top + 1, rows, colors, groups };
+  return {
+    width: right - left + 1,
+    height: bottom - top + 1,
+    rows,
+    colors,
+    groups,
+    palette: chart.palette.filter((entry) => usedColors.has(entry.id)).map((entry) => ({ ...entry }))
+  };
+}
+
+/** Allocate a palette id that is not used in the chart. */
+function freePaletteId(palette) {
+  const used = new Set(palette.map((entry) => entry.id));
+  for (const letter of "ABCDEFGHIJKLMNOPQRSTUVWXYZ") {
+    if (!used.has(letter)) return letter;
+  }
+  let index = 1;
+  while (used.has(`C${index}`)) index += 1;
+  return `C${index}`;
 }
 
 /**
  * Paste a fragment with its top-left corner at (row, col). Returns the new
- * groups that were created. Existing symbols are overwritten.
+ * groups that were created. Existing symbols are overwritten, but the
+ * fragment is applied to a working copy first so a bad fragment leaves the
+ * original document untouched.
  */
 export function pasteFragment(chart, fragment, row, col) {
-  if (!fragment || !Array.isArray(fragment.rows)) throw new Error("Invalid fragment");
-  if (row < 1 || col < 1 || row + fragment.height - 1 > chart.height || col + fragment.width - 1 > chart.width) {
+  if (!fragment || !Array.isArray(fragment.rows) || !Array.isArray(fragment.colors)) {
+    throw new Error("Invalid fragment");
+  }
+  const width = Number(fragment.width);
+  const height = Number(fragment.height);
+  if (!Number.isInteger(width) || !Number.isInteger(height) || width < 1 || height < 1) {
+    throw new Error("Invalid fragment size");
+  }
+  if (fragment.rows.length !== height || fragment.colors.length !== height) {
+    throw new Error("Fragment rows do not match its height");
+  }
+  if (row < 1 || col < 1 || row + height - 1 > chart.height || col + width - 1 > chart.width) {
     throw new Error("Fragment does not fit at this position");
   }
-  for (let r = 0; r < fragment.height; r += 1) {
-    for (let c = 0; c < fragment.width; c += 1) {
-      chart.rows[row - 1 + r][col - 1 + c] = fragment.rows[r][c];
-      chart.colors[row - 1 + r][col - 1 + c] = fragment.colors[r]?.[c] ?? null;
+
+  const working = cloneChart(chart);
+  const fragmentPalette = Array.isArray(fragment.palette) ? fragment.palette : [];
+  const usedColors = new Set();
+  for (const colorRow of fragment.colors) {
+    if (!Array.isArray(colorRow) || colorRow.length !== width) throw new Error("Fragment colour row has the wrong width");
+    for (const color of colorRow) if (color) usedColors.add(color);
+  }
+  const colorMap = new Map();
+  for (const id of usedColors) {
+    const source = fragmentPalette.find((entry) => entry.id === id);
+    const existing = working.palette.find((entry) => entry.id === id);
+    if (!source) {
+      if (!existing) throw new Error(`Fragment references unknown colour: ${id}`);
+      colorMap.set(id, id);
+      continue;
+    }
+    if (existing && String(existing.hex).toLowerCase() === String(source.hex).toLowerCase()) {
+      colorMap.set(id, existing.id);
+      continue;
+    }
+    if (!existing) {
+      working.palette.push({ ...source });
+      colorMap.set(id, id);
+      continue;
+    }
+    const nextId = freePaletteId(working.palette);
+    working.palette.push({ id: nextId, name: source.name || nextId, hex: source.hex });
+    colorMap.set(id, nextId);
+  }
+
+  // The fragment carries its own meaning. Remove groups that it would overlap.
+  working.groups = working.groups.filter((group) => {
+    const span = groupSpan(working, group);
+    return !(group.row >= row && group.row < row + height
+      && group.col < col + width && group.col + span - 1 >= col);
+  });
+  for (let r = 0; r < height; r += 1) {
+    if (!Array.isArray(fragment.rows[r]) || fragment.rows[r].length !== width) {
+      throw new Error("Fragment row has the wrong width");
+    }
+    for (let c = 0; c < width; c += 1) {
+      const cell = fragment.rows[r][c];
+      if (cell !== null && (typeof cell !== "string" || !hasSymbol(cell) || isGroupSymbol(cell))) {
+        throw new Error(`Fragment contains an unknown symbol: ${String(cell)}`);
+      }
+      working.rows[row - 1 + r][col - 1 + c] = cell;
+      const color = fragment.colors[r][c];
+      working.colors[row - 1 + r][col - 1 + c] = color ? colorMap.get(color) : null;
     }
   }
-  // Remove groups that overlap the pasted rectangle; they would be ambiguous.
-  chart.groups = chart.groups.filter((group) => {
-    const span = groupSpan(chart, group);
-    return !(group.row >= row && group.row < row + fragment.height
-      && group.col < col + fragment.width && group.col + span - 1 >= col);
-  });
+
   const created = [];
   for (const group of fragment.groups || []) {
-    created.push(addGroup(chart, { ...group, row: row + group.row - 1, col: col + group.col - 1, id: undefined }));
+    created.push(addGroup(working, {
+      ...group,
+      row: row + group.row - 1,
+      col: col + group.col - 1,
+      id: undefined
+    }));
   }
+
+  Object.assign(chart, working);
+  touchChartMeta(chart);
   return created;
 }
 
@@ -596,21 +875,40 @@ export function usedLegendKeys(chart) {
       entries.push(value);
     }
   };
+  const groupsByRow = new Map();
+  for (const group of chart.groups) {
+    if (!groupsByRow.has(group.row)) groupsByRow.set(group.row, []);
+    groupsByRow.get(group.row).push(group);
+  }
   for (let row = 1; row <= chart.height; row += 1) {
-    const groups = chart.groups.filter((group) => group.row === row);
+    const groups = groupsByRow.get(row) || [];
     for (let col = 1; col <= chart.width; col += 1) {
       const color = getColor(chart, row, col);
       if (color) usedColors.add(color);
 
       const group = groups.find((item) => col >= item.col && col < item.col + groupSpan(chart, item));
       if (group) {
-        const key = `group:${group.symbol}:${group.left || ""}:${group.right || ""}:${group.direction || ""}:${group.label || ""}`;
+        const key = JSON.stringify([
+          "group",
+          group.symbol,
+          group.left ?? null,
+          group.right ?? null,
+          group.direction ?? null,
+          group.span ?? null,
+          group.label ?? null,
+          group.legend ?? null
+        ]);
         add(key, { kind: "group", group });
         continue;
       }
       const cell = getCell(chart, row, col);
       if (cell) add(`cell:${cell}`, { kind: "cell", symbol: cell });
     }
+  }
+  // A chart made only of knit stitches still needs an explanation of what an
+  // empty cell means on paper. Add it only when no symbol/group entry exists.
+  if (!entries.some((entry) => entry.kind === "cell" || entry.kind === "group")) {
+    entries.unshift({ kind: "blank" });
   }
   for (const color of chart.palette) {
     if (usedColors.has(color.id)) add(`color:${color.id}`, { kind: "color", color });

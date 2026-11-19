@@ -1,7 +1,7 @@
 # Status
 
 - Stand: 2026-11-19
-- Version: **0.3.0-alpha.1**
+- Version: **0.4.0-alpha.1**
 - Phase: Öffentliche Vorabversion (Alpha)
 - Sichtbarkeit: öffentlich, GitHub Pages:
   <https://stecker1312.github.io/stitchwright/>
@@ -50,37 +50,41 @@
 - Englisch (britisch) als Standardsprache in Oberfläche, Startseite,
   Validierungsmeldungen, CLI, Manifest und README; Beispiel-Charts englisch
 - PWA mit Service Worker, offline getestet
-- 66 Node-Tests grün; Browserprüfung mit Chromium/Playwright
+- 99 Node-Tests grün; Browserprüfung mit Chromium/Playwright
 - Englische Projektseite `about.html` mit Browser-first-Schnellstart, Preisvergleich, Clear-Symbolpack und Planned-Liste
-- Englischer Screenshot, Version 0.3.0-alpha.1
+- Englischer Screenshot, Version 0.4.0-alpha.1
+- Audit-Pakete A, B und C umgesetzt: Dokument-/Speichersicherheit, valide
+  UI-Kommandos, Rohvalidierung, sichere Symbol-Lookups und CLI-Vertrag;
+  zentrale Teile von D, E und F folgen mit den verbleibenden P2-Punkten
 - Beispiel-Charts unter `samples/`
 
 ## In Arbeit / offen
 
 - Umfassender [Code-Audit vom 2026-11-19](docs/audits/2026-11-19-code-audit.md):
-  38 priorisierte Befunde mit Codebelegen, Reproduktionen und Agenten-Arbeitspaketen.
-  Trotz 66 grüner Tests sind Datenintegritäts-, Speicher-, Import-, Bedienungs-
-  und Exportfehler offen. Die obige Featureliste ist keine Zuverlässigkeitsabnahme.
+  38 priorisierte Befunde. Die P1-Pfade (Dokument-, Speicher-, Import-,
+  UI-Kommando- und Exportintegrität) sind behoben und durch Regressionstests
+  abgedeckt. Offen bleiben vor allem P2-Themen: App-Shell-Refactor,
+  vollständige Performance-Messung, mehrsprachige Registry, echte Touch-,
+  Druck- und Strickabnahme. Die Featureliste ist keine Zuverlässigkeitsabnahme.
 - Stabilität und Fehler aus der ersten öffentlichen Alpha
 - Touch/Stift auf echten Geräten prüfen
 - Eigene Symbol-Packs und Symbol-Editor
 - Weitere Sprachen: Infrastruktur steht, Übersetzungen folgen
 - Import/Export mit weiteren offenen Formaten
-- Screenshots und Contribution-Hinweise sind vorhanden; Issue-Vorlagen folgen
+- Screenshots, Contribution-Hinweise und Issue-Vorlagen sind vorhanden
 - Eine reale Abnahme mit einem eigenen Projekt zeichnen
 
 ## Nächster Schritt
 
-1. Audit-Pakete A/B/C: Dokument-/Speichersicherheit, valide UI-Kommandos und
-   verlässlichen Import-/CLI-Vertrag herstellen; Regressionen zuerst.
-2. Weitere Audit-Pakete D/E/F: Interaktion, Export, Offlinefähigkeit und
-   Performance absichern; öffentliche Issues weiter triagieren.
-3. Danach Übersetzungen und Symbol-Packs als Beiträge ermöglichen.
+1. Audit-Restpunkte D/E/F abschließen: App-Shell entflechten, Performance
+   end-to-end messen, i18n-Registry und Export-/Druckabnahme vervollständigen.
+2. Touch/Stift, Druck und eine reale Strickabnahme auf echten Geräten prüfen.
+3. Übersetzungen und Symbol-Packs als Beiträge ermöglichen.
 4. Keine Cloud-Funktion ohne neue ADR.
 
 ## Tests
 
-`npm test`: 66 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
+`npm test`: 99 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
 Einheiten, Viewport, CLI, Performance).
 `npm run check`: Syntax- und JSON-Prüfung plus Tests grün.
 Browser: Zeichnen, Farben, Zöpfe, Rückreihen, Undo, Export, Scrollbalken,

@@ -15,11 +15,13 @@ Netzwerkverbindung brauchen.
 
 - Keine Konten, keine Anmeldung, keine Telemetrie, keine Analyse, keine
   Werbung, keine externen Schriften oder Bibliotheken.
-- Keine Netzwerkaufrufe nach dem ersten Laden; der Service Worker hält
-  alle Assets im Cache.
+- Keine Übertragung von Chartdaten. Service-Worker-Updates und ein
+  Cache-Miss können nach dem ersten Laden Assets nachladen; die App bleibt
+  dabei offline nutzbar.
 - Charts liegen in IndexedDB, Einstellungen in localStorage, Dateien werden
   nur auf ausdrücklichen Befehl exportiert oder importiert.
-- Autosave und ein lokaler Versionsverlauf ersetzen die Cloud.
+- Autosave ersetzt die Cloud. Ein lokaler Versionsverlauf ist geplant, aber
+  noch nicht implementiert.
 - Importierte Daten werden validiert; Texte werden nie als HTML injiziert.
 - Das öffentliche Repository enthält keine persönlichen Charts oder Maße.
 

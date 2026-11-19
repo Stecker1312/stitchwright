@@ -9,6 +9,8 @@
 
 import {
   addGroup,
+  cloneChart,
+  columnToStitch,
   copySelection,
   createChart,
   deleteColumn,
@@ -33,11 +35,11 @@ import {
   clearMarkers,
   visibleRows
 } from "./core/chart.js";
-import { createBrowserI18n, LANGUAGE_META } from "./core/i18n.js";
+import { createBrowserI18n, HTML_LANGUAGE, LANGUAGE_META } from "./core/i18n.js";
 import { renderSvg } from "./core/render-svg.js";
 import { DARK_THEME, LIGHT_THEME } from "./core/render-canvas.js";
 import { MM_PER_INCH } from "./core/units.js";
-import { groupLegend, symbolName } from "./core/symbols.js";
+import { groupLegend, isGroupSymbol, symbolName } from "./core/symbols.js";
 import { hasErrors, validateChart } from "./core/validate.js";
 import { CanvasView } from "./ui/canvas-view.js";
 import { renderInspector, renderLegend } from "./ui/inspector.js";
@@ -50,6 +52,25 @@ import { APP_VERSION } from "./version.js";
 const $ = (id) => document.getElementById(id);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
 const q = (selector) => document.querySelector(selector);
+const MAX_IMPORT_BYTES = 20 * 1024 * 1024;
+const TAB_ID = globalThis.crypto?.randomUUID?.() || `tab-${Math.random().toString(36).slice(2)}`;
+
+function readLocal(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function writeLocal(key, value) {
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 let settings = storage.loadSettings();
 let i18n = null;
@@ -57,9 +78,15 @@ let store = null;
 let canvasView = null;
 let clipboard = null;
 let autosaveTimer = null;
+let autosaveTargetId = null;
+let saveInFlight = null;
+let saveAgain = false;
+let documentSwitchInProgress = false;
+let storageIssue = null;
+let tabChannel = null;
 let toastTimer = null;
 let confirmResolve = null;
-let saving = false;
+let unsavedResolve = null;
 let emptyHintDismissed = false;
 let customGroups = [];
 
@@ -75,10 +102,11 @@ let scrollDrag = null;
 
 async function init() {
   i18n = await createBrowserI18n(settings.language || "en");
+  document.documentElement.lang = HTML_LANGUAGE[i18n.language] || i18n.language;
   i18n.apply(document);
   applyTheme(settings.theme || "system", { persist: false });
   populateLanguages();
-  emptyHintDismissed = localStorage.getItem("stitchwright.emptyHintDismissed") === "1";
+  emptyHintDismissed = readLocal("stitchwright.emptyHintDismissed") === "1";
   customGroups = storage.loadCustomGroups();
 
   const chart = await loadInitialChart();
@@ -104,27 +132,40 @@ async function init() {
   setupMedia();
   setupSidebar();
   setupCanvasScrollbars();
+  setupTabChannel();
 
   renderAll();
   canvasView.mount();
   updateCanvasScrollbars();
   updateEmptyHint();
+  if (storageIssue) showToast(i18n.t("error.storage"), "error");
   registerServiceWorker();
 }
 
 async function loadInitialChart() {
-  const lastId = localStorage.getItem("stitchwright.lastChart");
-  try {
-    if (lastId) {
-      const saved = await storage.loadChart(lastId);
-      if (saved) return normalizeChart(saved);
+  const lastId = readLocal("stitchwright.lastChart");
+  const loadSaved = async (id) => {
+    if (!id) return null;
+    const saved = await storage.loadChart(id);
+    if (!saved) return null;
+    const chart = normalizeChart(saved);
+    const diagnostics = validateChart(chart);
+    if (hasErrors(diagnostics)) {
+      console.warn("Ignoring an invalid local chart", id, diagnostics);
+      return null;
     }
+    return chart;
+  };
+  try {
+    const chart = await loadSaved(lastId);
+    if (chart) return chart;
     const recent = await storage.listCharts();
-    if (recent.length) {
-      const saved = await storage.loadChart(recent[0].id);
-      if (saved) return normalizeChart(saved);
+    for (const entry of recent) {
+      const chart = await loadSaved(entry.id);
+      if (chart) return chart;
     }
   } catch (error) {
+    storageIssue = error;
     console.warn("Local charts are unavailable", error);
   }
   const chart = createChart({ width: 40, height: 24, title: "" });
@@ -240,8 +281,9 @@ function renderSettings() {
   setIfIdle("chart-width", String(chart.width));
   setIfIdle("chart-height", String(chart.height));
   setIfIdle("opt-rows-mode", chart.options.rowsMode);
-  setIfIdle("opt-repeat-start", chart.options.repeat ? String(chart.options.repeat.start) : "");
-  setIfIdle("opt-repeat-end", chart.options.repeat ? String(chart.options.repeat.end) : "");
+  const repeat = chart.options.repeat;
+  setIfIdle("opt-repeat-start", repeat ? String(columnToStitch(chart, repeat.end)) : "");
+  setIfIdle("opt-repeat-end", repeat ? String(columnToStitch(chart, repeat.start)) : "");
   setIfIdle("opt-cell-mm", imperial ? cellValue.toFixed(2) : String(cellValue));
   $("opt-cell-mm").step = imperial ? "0.01" : "0.5";
   $("opt-cell-mm").min = imperial ? "0.08" : "2";
@@ -283,7 +325,7 @@ function renderPalettePanel() {
   });
 }
 
-function mergeCustomGroups(existing, additions) {
+function mergeCustomGroups(existing, additions, { replace = false } = {}) {
   const merged = new Map();
   for (const group of [...existing, ...additions]) {
     if (!group || typeof group.label !== "string") continue;
@@ -293,7 +335,7 @@ function mergeCustomGroups(existing, additions) {
     const legend = typeof group.legend === "string" ? group.legend.trim().slice(0, 160) : "";
     const key = `${label}\u0000${span}`;
     const previous = merged.get(key);
-    merged.set(key, { label, span, legend: legend || previous?.legend || "" });
+    merged.set(key, { label, span, legend: replace ? legend : (legend || previous?.legend || "") });
   }
   return [...merged.values()];
 }
@@ -309,8 +351,8 @@ function customGroupsFromChart(chart) {
     .filter((group) => group.label);
 }
 
-function rememberCustomGroups(additions) {
-  const next = mergeCustomGroups(customGroups, additions);
+function rememberCustomGroups(additions, { replace = false } = {}) {
+  const next = mergeCustomGroups(customGroups, additions, { replace });
   if (JSON.stringify(next) === JSON.stringify(customGroups)) return;
   customGroups = next;
   storage.saveCustomGroups(customGroups);
@@ -363,18 +405,31 @@ function updateStatus() {
   const chart = store.chart;
   if (store.headerSelection) {
     const { kind, index } = store.headerSelection;
+    const value = kind === "row" ? index : columnToStitch(chart, index);
     const label = kind === "row" ? i18n.t("chart.rowLabel") : i18n.t("chart.columnLabel");
-    $("status-cursor").textContent = `${label} ${index} · ${i18n.t("status.selected")}`;
+    $("status-cursor").textContent = `${label} ${value} · ${i18n.t("status.selected")}`;
   } else {
     const cell = store.hover || store.cursor;
     if (cell) {
-      const stitch = chart.width - cell.col + 1;
+      const stitch = columnToStitch(chart, cell.col);
       $("status-cursor").textContent = `${i18n.t("status.row")} ${cell.row} · ${i18n.t("chart.stitchLabel")} ${stitch}`;
     } else {
       $("status-cursor").textContent = i18n.t("status.ready");
     }
   }
   $("status-size").textContent = `${chart.width} × ${chart.height}`;
+  const active = store.hover || store.cursor;
+  if (active) {
+    const group = groupAt(chart, active.row, active.col);
+    const cell = getCell(chart, active.row, active.col);
+    const symbol = group
+      ? groupLegend(group, i18n.language)
+      : (cell ? symbolName(cell, i18n.language) : i18n.t("table.knit"));
+    $("chart-canvas").setAttribute(
+      "aria-label",
+      `${i18n.t("chart.canvas")}. ${i18n.t("status.row")} ${active.row}, ${i18n.t("chart.stitchLabel")} ${columnToStitch(chart, active.col)}, ${symbol}`
+    );
+  }
   updateZoomUI();
   updateSaveIndicator();
 }
@@ -392,8 +447,9 @@ function updateAdders() {
     return;
   }
   const name = selection.kind === "row" ? i18n.t("chart.rowLabel") : i18n.t("chart.columnLabel");
+  const value = selection.kind === "row" ? selection.index : columnToStitch(store.chart, selection.index);
   label.hidden = false;
-  label.textContent = `${name} ${selection.index}`;
+  label.textContent = `${name} ${value}`;
   const atMinimum = selection.kind === "row" ? store.chart.height <= 1 : store.chart.width <= 1;
   button.disabled = atMinimum;
   button.title = i18n.t("chart.deleteHeader");
@@ -576,11 +632,7 @@ function updateEmptyHint() {
 
 function dismissEmptyHint() {
   emptyHintDismissed = true;
-  try {
-    localStorage.setItem("stitchwright.emptyHintDismissed", "1");
-  } catch {
-    // Private mode can block storage; the hint still closes for this session.
-  }
+  writeLocal("stitchwright.emptyHintDismissed", "1");
   updateEmptyHint();
 }
 
@@ -589,12 +641,28 @@ function dismissEmptyHint() {
 /* ------------------------------------------------------------------ */
 
 function setupTopbar() {
-  $("chart-title").addEventListener("input", (event) => {
-    store.chart.title = event.target.value;
-    store.dirty = true;
+  const titleInput = $("chart-title");
+  let titleEditing = false;
+  titleInput.addEventListener("focus", () => {
+    if (titleEditing) return;
+    try {
+      store.begin("Title");
+      titleEditing = true;
+    } catch {
+      // A pointer gesture may still be open; the title is then saved without
+      // a separate undo snapshot.
+    }
+  });
+  titleInput.addEventListener("input", (event) => {
+    store.setTitle(event.target.value);
     document.title = event.target.value ? `${event.target.value} – Stitchwright` : "Stitchwright";
     updateSaveIndicator();
     scheduleAutosave();
+  });
+  titleInput.addEventListener("blur", () => {
+    if (!titleEditing) return;
+    titleEditing = false;
+    store.commit();
   });
 
   $("btn-undo").addEventListener("click", () => store.undo());
@@ -621,7 +689,9 @@ function setupTopbar() {
   });
   $("btn-empty-close").addEventListener("click", dismissEmptyHint);
   $("chart-canvas").addEventListener("pointerdown", dismissEmptyHint, { passive: true });
-  $("btn-empty-sample").addEventListener("click", () => loadChart(createDemoChart(), { save: true }));
+  $("btn-empty-sample").addEventListener("click", async () => {
+    await switchDocument(createDemoChart(), { save: true, fit: true });
+  });
   $("btn-add-row").addEventListener("click", addRowAtTop);
   $("btn-add-col").addEventListener("click", addColumnAtRight);
   $("btn-delete-header").addEventListener("click", deleteSelectedHeader);
@@ -629,33 +699,69 @@ function setupTopbar() {
 
 function setupTools() {
   $$("button[data-tool]").forEach((button) => {
-    button.addEventListener("click", () => store.setTool(button.dataset.tool));
+    button.addEventListener("click", () => {
+      store.setTool(button.dataset.tool);
+      $("chart-canvas").focus();
+    });
   });
   $("symbol-search").addEventListener("input", () => renderPalettePanel());
+  $("palette").addEventListener("click", (event) => {
+    if (event.target instanceof Element && event.target.closest("button")
+      && !document.querySelector("dialog[open]")) $("chart-canvas").focus();
+  });
+  $("colors").addEventListener("click", (event) => {
+    if (event.target instanceof Element && event.target.closest("button")
+      && !document.querySelector("dialog[open]")) $("chart-canvas").focus();
+  });
 }
 
 function setupSidebar() {
   const left = $("left-panel");
   const right = $("right-panel");
   const overlay = $("overlay");
-  const close = () => {
+  const leftButton = $("btn-sidebar-left");
+  const rightButton = $("btn-sidebar-right");
+  const narrow = window.matchMedia?.("(max-width: 900px)");
+  const syncInert = () => {
+    if (!narrow?.matches) {
+      left.inert = false;
+      right.inert = false;
+      return;
+    }
+    left.inert = !left.classList.contains("open");
+    right.inert = !right.classList.contains("open");
+  };
+  const close = (restoreFocus = false) => {
+    const wasLeft = left.classList.contains("open");
+    const wasRight = right.classList.contains("open");
     left.classList.remove("open");
     right.classList.remove("open");
     overlay.hidden = true;
+    leftButton.setAttribute("aria-expanded", "false");
+    rightButton.setAttribute("aria-expanded", "false");
+    syncInert();
+    if ((wasLeft || wasRight) && restoreFocus) (wasLeft ? leftButton : rightButton).focus();
   };
-  $("btn-sidebar-left").addEventListener("click", () => {
-    left.classList.add("open");
-    right.classList.remove("open");
+  const open = (panel, button) => {
+    panel.classList.add("open");
+    (panel === left ? right : left).classList.remove("open");
     overlay.hidden = false;
-  });
-  $("btn-sidebar-right").addEventListener("click", () => {
-    right.classList.add("open");
-    left.classList.remove("open");
-    overlay.hidden = false;
-  });
-  overlay.addEventListener("click", close);
+    leftButton.setAttribute("aria-expanded", String(panel === left));
+    rightButton.setAttribute("aria-expanded", String(panel === right));
+    syncInert();
+    const first = panel.querySelector("button, input, select, a");
+    if (first) first.focus();
+    button.setAttribute("aria-expanded", "true");
+  };
+  leftButton.setAttribute("aria-expanded", "false");
+  rightButton.setAttribute("aria-expanded", "false");
+  narrow?.addEventListener?.("change", syncInert);
+  syncInert();
+  leftButton.addEventListener("click", () => open(left, leftButton));
+  rightButton.addEventListener("click", () => open(right, rightButton));
+  overlay.addEventListener("click", () => close(true));
   window.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") close();
+    if (event.key === "Escape") close(true);
   });
 }
 
@@ -671,6 +777,7 @@ function setupChartSettings() {
       chart.options.rowsMode = event.target.value === "rs" ? "rs" : "all";
     });
     store.setHeaderSelection(null);
+    ensureCursorVisible();
     canvasView.fit();
     const diagnostics = validateChart(store.chart);
     if (diagnostics.some((item) => item.code === "W_HIDDEN_WS")) {
@@ -683,7 +790,7 @@ function setupChartSettings() {
     ["opt-legend", "showLegend"]
   ]) {
     $(id).addEventListener("change", (event) => {
-      store.edit("Anzeige", (chart) => { chart.options[key] = event.target.checked; });
+      store.edit("Display", (chart) => { chart.options[key] = event.target.checked; });
     });
   }
   $("opt-repeat-start").addEventListener("change", () => updateRepeat());
@@ -700,10 +807,10 @@ function setupChartSettings() {
     renderSettings();
   });
   $("opt-paper").addEventListener("change", (event) => {
-    store.edit("Papier", (chart) => { chart.options.paper = event.target.value; });
+    store.edit("Paper", (chart) => { chart.options.paper = event.target.value; });
   });
   $("opt-subtitle").addEventListener("change", (event) => {
-    store.edit("Untertitel", (chart) => { chart.options.subtitle = event.target.value; });
+    store.edit("Subtitle", (chart) => { chart.options.subtitle = event.target.value; });
   });
 
   $("btn-row-above").addEventListener("click", () => insertRowAt("above"));
@@ -735,29 +842,48 @@ async function resizeFromInputs() {
     resizeChart(current, width, height);
   });
   store.setHeaderSelection(null);
+  ensureCursorVisible();
   canvasView.fit();
 }
 
 function updateRepeat() {
-  const start = Number($("opt-repeat-start").value);
-  const end = Number($("opt-repeat-end").value);
+  const fromStitch = Number($("opt-repeat-start").value);
+  const toStitch = Number($("opt-repeat-end").value);
   const chart = store.chart;
-  if (!start && !end) {
-    store.edit("Rapport", (current) => { current.options.repeat = null; });
+  if (!fromStitch && !toStitch) {
+    store.edit("Repeat", (current) => { current.options.repeat = null; });
     return;
   }
-  if (!Number.isInteger(start) || !Number.isInteger(end) || start < 1 || end > chart.width || start > end) {
+  if (!Number.isInteger(fromStitch) || !Number.isInteger(toStitch)
+    || fromStitch < 1 || toStitch > chart.width || fromStitch > toStitch) {
     showToast(i18n.t("error.fix"), "error");
     renderSettings();
     return;
   }
-  store.edit("Rapport", (current) => { current.options.repeat = { start, end }; });
+  store.edit("Repeat", (current) => {
+    current.options.repeat = {
+      start: columnToStitch(current, toStitch),
+      end: columnToStitch(current, fromStitch)
+    };
+  });
+}
+
+function ensureCursorVisible() {
+  const rows = visibleRows(store.chart);
+  const row = Math.min(store.chart.height, store.cursor.row);
+  const col = Math.min(store.chart.width, store.cursor.col);
+  if (!rows.includes(row)) {
+    store.setCursor({ row: rows[0] || 1, col });
+  } else if (row !== store.cursor.row || col !== store.cursor.col) {
+    store.setCursor({ row, col });
+  }
 }
 
 function toggleRowsMode() {
   const next = store.chart.options.rowsMode === "rs" ? "all" : "rs";
   store.edit("Wrong-side rows", (chart) => { chart.options.rowsMode = next; });
   store.setHeaderSelection(null);
+  ensureCursorVisible();
   canvasView.fit();
   if (next === "rs" && validateChart(store.chart).some((item) => item.code === "W_HIDDEN_WS")) {
     showToast(i18n.t("chart.hiddenWS.warning"), "error");
@@ -843,7 +969,7 @@ async function deleteSelectedHeader() {
   const isRow = selection.kind === "row";
   const message = isRow
     ? i18n.t("chart.deleteRowConfirm", { row: selection.index })
-    : i18n.t("chart.deleteColumnConfirm", { column: selection.index });
+    : i18n.t("chart.deleteColumnConfirm", { column: columnToStitch(store.chart, selection.index) });
   if (!(await confirmDialog(message))) return;
   try {
     store.edit(isRow ? "Delete row" : "Delete column", (chart) => {
@@ -851,6 +977,7 @@ async function deleteSelectedHeader() {
       else deleteColumn(chart, selection.index);
     });
     store.setHeaderSelection(null);
+    ensureCursorVisible();
     canvasView.fit();
     renderSettings();
   } catch (error) {
@@ -859,12 +986,12 @@ async function deleteSelectedHeader() {
 }
 
 function mirrorH() {
-  store.edit("Horizontal spiegeln", (chart) => mirrorHorizontal(chart));
+  store.edit("Mirror horizontally", (chart) => mirrorHorizontal(chart));
   store.setHeaderSelection(null);
 }
 
 function mirrorV() {
-  store.edit("Vertikal spiegeln", (chart) => mirrorVertical(chart));
+  store.edit("Mirror vertically", (chart) => mirrorVertical(chart));
   store.setHeaderSelection(null);
 }
 
@@ -886,7 +1013,7 @@ function updateGroup(group, values) {
         label: values.label ?? group.label,
         span: values.span ?? group.span,
         legend: values.legend ?? group.legend ?? ""
-      }]);
+      }], { replace: true });
     }
   } catch (error) {
     showToast(error.message || i18n.t("error.unknown"), "error");
@@ -913,12 +1040,13 @@ function fillSelection() {
   const bounds = selectionBounds();
   if (!bounds) return;
   if (store.symbol.id !== "k" && !store.symbol.id) return;
-  if (["cable", "custom", "k2tog", "ssk", "k3tog", "sk2p", "cdd"].includes(store.symbol.id)) {
+  if (isGroupSymbol(store.symbol.id)) {
     showToast(i18n.t("error.fillGroup"), "error");
     return;
   }
+  const rows = visibleRows(store.chart).filter((row) => row >= bounds.top && row <= bounds.bottom);
   store.begin("Fill selection");
-  for (let row = bounds.top; row <= bounds.bottom; row += 1) {
+  for (const row of rows) {
     for (let col = bounds.left; col <= bounds.right; col += 1) {
       paintCell(store.chart, row, col, store.symbol.id === "k" ? null : store.symbol.id, store.color);
     }
@@ -930,8 +1058,9 @@ function fillSelection() {
 function clearSelection() {
   const bounds = selectionBounds();
   if (!bounds) return;
+  const rows = visibleRows(store.chart).filter((row) => row >= bounds.top && row <= bounds.bottom);
   store.begin("Clear selection");
-  for (let row = bounds.top; row <= bounds.bottom; row += 1) {
+  for (const row of rows) {
     for (let col = bounds.left; col <= bounds.right; col += 1) {
       eraseCell(store.chart, row, col);
     }
@@ -990,6 +1119,12 @@ function cutSelection() {
 /* ------------------------------------------------------------------ */
 
 function setupDialogs() {
+  for (const dialog of $$("dialog")) {
+    const heading = dialog.querySelector("h2");
+    if (!heading) continue;
+    if (!heading.id) heading.id = `${dialog.id}-title`;
+    dialog.setAttribute("aria-labelledby", heading.id);
+  }
   for (const [dialogId, buttonId] of [
     ["dialog-new", "btn-create-chart"],
     ["dialog-custom-group", "btn-custom-add"],
@@ -997,10 +1132,12 @@ function setupDialogs() {
     ["dialog-color", "btn-color-add"]
   ]) {
     $(dialogId).addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        $(buttonId).click();
-      }
+      if (event.key !== "Enter" || event.defaultPrevented) return;
+      const target = event.target;
+      if (target instanceof HTMLTextAreaElement) return;
+      if (target instanceof Element && target.closest("button")) return;
+      event.preventDefault();
+      $(buttonId).click();
     });
   }
 
@@ -1016,6 +1153,7 @@ function setupDialogs() {
     const file = await storage.pickJsonFile();
     if (file) loadFromFile(file);
   });
+  $("btn-restore-previous").addEventListener("click", restorePreviousVersion);
   setupDropZone();
 
   $("settings-language").addEventListener("change", (event) => changeLanguage(event.target.value));
@@ -1063,6 +1201,21 @@ function setupDialogs() {
     if (confirmResolve) confirmResolve(false);
     confirmResolve = null;
   });
+
+  for (const [id, value] of [
+    ["btn-unsaved-cancel", "cancel"],
+    ["btn-unsaved-discard", "discard"],
+    ["btn-unsaved-save", "save"]
+  ]) {
+    $(id).addEventListener("click", () => resolveUnsaved(value));
+  }
+  $("dialog-unsaved").addEventListener("close", () => {
+    if (unsavedResolve) {
+      const resolve = unsavedResolve;
+      unsavedResolve = null;
+      resolve("cancel");
+    }
+  });
 }
 
 function openDialog(id) {
@@ -1077,7 +1230,7 @@ function openNewDialog() {
   openDialog("dialog-new");
 }
 
-function createNewChart() {
+async function createNewChart() {
   const width = Number($("new-width").value);
   const height = Number($("new-height").value);
   if (!Number.isInteger(width) || !Number.isInteger(height) || width < 1 || height < 1 || width > 1000 || height > 1000) {
@@ -1087,8 +1240,7 @@ function createNewChart() {
   const title = $("new-title").value.trim();
   const chart = createChart({ width, height, title });
   chart.id = storage.makeChartId(title || "chart");
-  $("dialog-new").close();
-  loadChart(chart, { save: true, fit: true });
+  if (await switchDocument(chart, { save: true, fit: true })) $("dialog-new").close();
 }
 
 function openExportDialog() {
@@ -1204,33 +1356,92 @@ function confirmDialog(message) {
   });
 }
 
+function unsavedDialog() {
+  return new Promise((resolve) => {
+    unsavedResolve = resolve;
+    openDialog("dialog-unsaved");
+  });
+}
+
+function resolveUnsaved(value) {
+  const resolve = unsavedResolve;
+  unsavedResolve = null;
+  const dialog = $("dialog-unsaved");
+  if (dialog.open) dialog.close();
+  if (resolve) resolve(value);
+}
+
 /* ------------------------------------------------------------------ */
 /* Open / save / export                                                */
 /* ------------------------------------------------------------------ */
 
-function loadChart(chart, { save = false, fit = true } = {}) {
-  emptyHintDismissed = true;
-  try {
-    localStorage.setItem("stitchwright.emptyHintDismissed", "1");
-  } catch {
-    // Ignore storage failures; the current session still dismisses the hint.
+async function ensureSavedBeforeSwitch() {
+  if (!store || !store.dirty) return true;
+  if (settings.autosave) {
+    const saved = await saveLocal(true);
+    if (saved) return true;
   }
+  const choice = await unsavedDialog();
+  if (choice === "cancel") return false;
+  if (choice === "save") return saveLocal(true);
+  return choice === "discard";
+}
+
+async function switchDocument(chart, { save = false, fit = true } = {}) {
+  if (documentSwitchInProgress) return false;
+  documentSwitchInProgress = true;
+  try {
+    clearTimeout(autosaveTimer);
+    autosaveTargetId = null;
+    if (store.pending) store.commit();
+    if (saveInFlight) await saveInFlight;
+    if (!(await ensureSavedBeforeSwitch())) return false;
+    activateChart(chart, { save, fit });
+    return true;
+  } finally {
+    documentSwitchInProgress = false;
+  }
+}
+
+function activateChart(chart, { save = false, fit = true } = {}) {
+  clearTimeout(autosaveTimer);
+  autosaveTargetId = null;
+  emptyHintDismissed = true;
+  writeLocal("stitchwright.emptyHintDismissed", "1");
   customGroups = mergeCustomGroups(customGroups, customGroupsFromChart(chart));
   storage.saveCustomGroups(customGroups);
   store.replace(chart);
   if (fit) canvasView.fit();
-  if (save) saveLocal(true);
   updateEmptyHint();
+  if (save) {
+    saveLocal(true).then((saved) => {
+      if (!saved) {
+        store.dirty = true;
+        updateSaveIndicator();
+        showToast(i18n.t("error.save"), "error");
+      }
+    });
+  }
 }
 
 async function loadFromFile(file) {
   try {
+    if (file.size > MAX_IMPORT_BYTES) {
+      showToast(i18n.t("error.file.size"), "error");
+      return;
+    }
     const text = await storage.readFileText(file);
     let data;
     try {
       data = JSON.parse(text);
     } catch {
       showToast(i18n.t("error.file.parse"), "error");
+      return;
+    }
+    const rawDiagnostics = validateChart(data, { raw: true });
+    if (hasErrors(rawDiagnostics)) {
+      const first = rawDiagnostics.find((item) => item.severity === "error");
+      showToast(`${i18n.t("error.validation")} ${first.path}: ${first.message}`, "error");
       return;
     }
     const chart = normalizeChart(data);
@@ -1240,12 +1451,39 @@ async function loadFromFile(file) {
       showToast(`${i18n.t("error.validation")} ${first.path}: ${first.message}`, "error");
       return;
     }
-    loadChart(chart, { save: true, fit: true });
-    $("dialog-open").close();
-    showToast(i18n.t("dialog.import.success"));
+    // Importing must never silently overwrite a different local chart.
+    if (chart.id !== store.chart.id) {
+      const existing = await storage.loadChart(chart.id).catch(() => null);
+      if (existing) chart.id = storage.makeChartId(chart.title || "chart");
+    }
+    if (await switchDocument(chart, { save: true, fit: true })) {
+      $("dialog-open").close();
+      showToast(i18n.t("dialog.import.success"));
+    }
   } catch (error) {
     console.error(error);
-    showToast(i18n.t("error.file.read"), "error");
+    showToast(error.message || i18n.t("error.file.read"), "error");
+  }
+}
+
+async function restorePreviousVersion() {
+  try {
+    const previous = await storage.loadPreviousChart(store.chart.id);
+    if (!previous) {
+      showToast(i18n.t("dialog.open.noPrevious"), "error");
+      return;
+    }
+    const chart = normalizeChart(previous);
+    const diagnostics = validateChart(chart);
+    if (hasErrors(diagnostics)) {
+      const first = diagnostics.find((item) => item.severity === "error");
+      showToast(`${i18n.t("error.validation")} ${first.path}: ${first.message}`, "error");
+      return;
+    }
+    if (await switchDocument(chart, { save: true, fit: true })) $("dialog-open").close();
+  } catch (error) {
+    console.error(error);
+    showToast(i18n.t("error.storage"), "error");
   }
 }
 
@@ -1271,10 +1509,20 @@ async function renderRecent() {
       meta.textContent = `${chart.width} × ${chart.height} · ${storage.formatDate(chart.savedAt, i18n.language)}`;
       button.append(strong, meta);
       button.addEventListener("click", async () => {
-        const loaded = await storage.loadChart(chart.id);
-        if (loaded) {
-          loadChart(normalizeChart(loaded), { fit: true });
-          $("dialog-open").close();
+        try {
+          const loaded = await storage.loadChart(chart.id);
+          if (!loaded) return;
+          const next = normalizeChart(loaded);
+          const diagnostics = validateChart(next);
+          if (hasErrors(diagnostics)) {
+            const first = diagnostics.find((item) => item.severity === "error");
+            showToast(`${i18n.t("error.validation")} ${first.path}: ${first.message}`, "error");
+            return;
+          }
+          if (await switchDocument(next, { fit: true })) $("dialog-open").close();
+        } catch (error) {
+          console.error(error);
+          showToast(error.message || i18n.t("error.file.read"), "error");
         }
       });
       list.append(button);
@@ -1309,25 +1557,47 @@ function setupDropZone() {
 }
 
 async function saveLocal(silent = false) {
-  if (!store || saving) return;
-  saving = true;
-  try {
-    await storage.saveChart(store.chart);
-    localStorage.setItem("stitchwright.lastChart", store.chart.id);
-    store.markSaved();
-    if (!silent) showToast(i18n.t("message.savedLocal"));
-  } catch (error) {
-    console.warn(error);
-    if (!silent) showToast(i18n.t("error.save"), "error");
-  } finally {
-    saving = false;
+  if (!store) return false;
+  if (saveInFlight) {
+    saveAgain = true;
+    return saveInFlight;
   }
+  const documentId = store.chart.id;
+  const revision = store.revision;
+  const snapshot = cloneChart(store.chart);
+  saveInFlight = (async () => {
+    try {
+      await storage.saveChart(snapshot);
+      writeLocal("stitchwright.lastChart", documentId);
+      tabChannel?.postMessage({ type: "saved", id: documentId, tabId: TAB_ID, revision });
+      const current = store.markSaved(revision, documentId);
+      if (current && !silent) showToast(i18n.t("message.savedLocal"));
+      if (!current && store.chart.id === documentId && store.dirty) {
+        scheduleAutosave();
+      }
+      return current;
+    } catch (error) {
+      console.warn(error);
+      if (!silent) showToast(i18n.t("error.save"), "error");
+      return false;
+    } finally {
+      saveInFlight = null;
+      if (saveAgain) {
+        saveAgain = false;
+        queueMicrotask(() => saveLocal(true));
+      }
+    }
+  })();
+  return saveInFlight;
 }
 
 function scheduleAutosave() {
-  if (!settings.autosave) return;
+  if (!settings.autosave || !store) return;
   clearTimeout(autosaveTimer);
-  autosaveTimer = setTimeout(() => saveLocal(true), 700);
+  autosaveTargetId = store.chart.id;
+  autosaveTimer = setTimeout(() => {
+    if (store && store.chart.id === autosaveTargetId) saveLocal(true);
+  }, 700);
 }
 
 async function exportChart(mode) {
@@ -1335,6 +1605,17 @@ async function exportChart(mode) {
   const includeLegend = $("export-legend").checked;
   const base = safeName(store.chart.title || "strickschrift");
   try {
+    if (mode === "print") {
+      // Printing is independent of the download format. JSON + Print must
+      // still print a chart, not write a file.
+      const printSvgText = renderSvg(store.chart, {
+        lang: i18n.language,
+        unit: settings.units,
+        includeLegend
+      });
+      printSvg(printSvgText, store.chart.options.paper);
+      return;
+    }
     if (format === "json") {
       const text = `${JSON.stringify(store.chart, null, 2)}\n`;
       await storage.saveTextFile(`${base}.strickschrift.json`, text, "application/json");
@@ -1346,16 +1627,13 @@ async function exportChart(mode) {
       unit: settings.units,
       includeLegend
     });
-    if (mode === "print") {
-      printSvg(svg);
-      return;
-    }
     if (format === "svg") {
       await storage.saveTextFile(`${base}.svg`, svg, "image/svg+xml");
     } else if (format === "png") {
       const scale = Number($("export-scale").value) || 2;
-      const blob = await svgToPngBlob(svg, scale);
-      storage.downloadBlob(`${base}.png`, blob);
+      const result = await svgToPngBlob(svg, scale);
+      storage.downloadBlob(`${base}.png`, result.blob);
+      if (result.capped) showToast(i18n.t("dialog.export.pngLimited"), "info");
     }
     $("dialog-export").close();
   } catch (error) {
@@ -1364,15 +1642,16 @@ async function exportChart(mode) {
   }
 }
 
-function printSvg(svg) {
+function printSvg(svg, paper = "A4") {
   const win = window.open("", "_blank");
   if (!win) {
     showToast(i18n.t("error.export"), "error");
     return;
   }
+  const pageSize = paper && paper !== "auto" ? `size: ${paper};` : "";
   win.document.open();
   win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Stitchwright</title><style>
-    @page { margin: 10mm; }
+    @page { ${pageSize} margin: 10mm; }
     html, body { margin: 0; padding: 0; background: #fff; }
     svg { display: block; max-width: 100%; height: auto; margin: 0 auto; }
   </style></head><body>${svg}</body></html>`);
@@ -1400,7 +1679,7 @@ function svgToPngBlob(svg, scale) {
       context.drawImage(image, 0, 0, canvas.width, canvas.height);
       URL.revokeObjectURL(url);
       canvas.toBlob((png) => {
-        if (png) resolve(png);
+        if (png) resolve({ blob: png, capped: factor < scale - 1e-9 });
         else reject(new Error("PNG encoding failed"));
       }, "image/png");
     };
@@ -1431,8 +1710,15 @@ function renderTable() {
   wrap.replaceChildren();
   const chart = store.chart;
   const rows = [];
+  const MAX_TABLE_ROWS = 5000;
+  let truncated = false;
+  outer:
   for (let row = 1; row <= chart.height; row += 1) {
     for (let col = 1; col <= chart.width; col += 1) {
+      if (rows.length >= MAX_TABLE_ROWS) {
+        truncated = true;
+        break outer;
+      }
       const group = groupAt(chart, row, col);
       if (group) {
         rows.push({
@@ -1450,7 +1736,7 @@ function renderTable() {
       rows.push({
         row,
         stitch: chart.width - col + 1,
-        symbol: cell ? symbolName(cell, i18n.language) : "–",
+        symbol: cell ? symbolName(cell, i18n.language) : i18n.t("table.knit"),
         color: color ? colorLabel(color) : "–"
       });
     }
@@ -1486,6 +1772,12 @@ function renderTable() {
   }
   table.append(tbody);
   wrap.append(table);
+  if (truncated) {
+    const p = document.createElement("p");
+    p.className = "muted";
+    p.textContent = i18n.t("table.truncated", { count: MAX_TABLE_ROWS });
+    wrap.append(p);
+  }
 }
 
 function colorLabel(id) {
@@ -1534,13 +1826,30 @@ function canvasTheme() {
   return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? DARK_THEME : LIGHT_THEME;
 }
 
+function setupTabChannel() {
+  if (typeof BroadcastChannel === "undefined") return;
+  tabChannel = new BroadcastChannel("stitchwright");
+  tabChannel.addEventListener("message", (event) => {
+    const data = event.data;
+    if (!data || data.type !== "saved" || data.tabId === TAB_ID) return;
+    if (data.id === store?.chart.id) {
+      showToast(i18n.t("error.otherTab"), "error");
+    }
+  });
+}
+
 function setupMedia() {
   const media = window.matchMedia?.("(prefers-color-scheme: dark)");
   media?.addEventListener?.("change", () => {
     if (settings.theme === "system" && canvasView) canvasView.setTheme(canvasTheme());
   });
   document.addEventListener("visibilitychange", () => {
-    if (document.hidden && settings.autosave) saveLocal(true);
+    if (document.hidden && settings.autosave && store?.dirty) saveLocal(true);
+  });
+  window.addEventListener("beforeunload", (event) => {
+    if (!store?.dirty) return;
+    event.preventDefault();
+    event.returnValue = "";
   });
 }
 
@@ -1550,11 +1859,17 @@ function setupMedia() {
 
 function setupKeyboard() {
   window.addEventListener("keydown", (event) => {
+    if (event.defaultPrevented) return;
     const target = event.target;
-    const typing = target instanceof Element && target.closest("input, textarea, select, [contenteditable='true']");
+    const canvas = $("chart-canvas");
+    const interactive = target instanceof Element
+      && target.closest("button, a, input, textarea, select, summary, [contenteditable='true']");
+    const typing = target instanceof Element
+      && target.closest("input, textarea, select, [contenteditable='true']");
+    const canvasFocused = target === canvas || (target instanceof Element && target.closest("#chart-canvas"));
+    const inDialog = Boolean(document.querySelector("dialog[open]"));
+    if (inDialog) return;
     if (typing) return;
-    if (target instanceof Element && target.closest("[role='scrollbar']")) return;
-    if (document.querySelector("dialog[open]")) return;
 
     const key = event.key;
     const lower = key.toLowerCase();
@@ -1574,37 +1889,44 @@ function setupKeyboard() {
       return;
     }
 
+    // Native controls must receive Enter, Space and arrows themselves.
+    if (interactive && !canvasFocused) return;
+
     if (key === "?") { event.preventDefault(); openHelpDialog(); return; }
     if (key === "+" || key === "=") { event.preventDefault(); canvasView.zoomBy(1.2); return; }
     if (key === "-") { event.preventDefault(); canvasView.zoomBy(1 / 1.2); return; }
     if (key === "0") { event.preventDefault(); canvasView.fit(); return; }
 
-    if (key === "ArrowUp") { event.preventDefault(); canvasView.moveCursor(1, 0); return; }
-    if (key === "ArrowDown") { event.preventDefault(); canvasView.moveCursor(-1, 0); return; }
-    if (key === "ArrowLeft") { event.preventDefault(); canvasView.moveCursor(0, -1); return; }
-    if (key === "ArrowRight") { event.preventDefault(); canvasView.moveCursor(0, 1); return; }
-    if (key === " " || key === "Enter") { event.preventDefault(); canvasView.paintCursor(); return; }
-    if (key === "Delete" || key === "Backspace") {
+    if (key === "ArrowUp" || key === "ArrowDown" || key === "ArrowLeft" || key === "ArrowRight"
+      || key === " " || key === "Enter" || key === "Delete" || key === "Backspace") {
+      if (!canvasFocused) return;
+      if (key === "ArrowUp") { event.preventDefault(); canvasView.moveCursor(1, 0); return; }
+      if (key === "ArrowDown") { event.preventDefault(); canvasView.moveCursor(-1, 0); return; }
+      if (key === "ArrowLeft") { event.preventDefault(); canvasView.moveCursor(0, -1); return; }
+      if (key === "ArrowRight") { event.preventDefault(); canvasView.moveCursor(0, 1); return; }
+      if (key === " " || key === "Enter") { event.preventDefault(); canvasView.paintCursor(); return; }
       event.preventDefault();
       if (store.headerSelection) {
         deleteSelectedHeader();
         return;
       }
-      store.begin("Radieren");
+      store.begin("Erase");
       canvasView.eraseAt(store.cursor.row, store.cursor.col);
       store.commit();
       return;
     }
     if (key === "Escape") {
-      store.setSelection(null);
-      store.setHeaderSelection(null);
+      if (canvasFocused) {
+        store.setSelection(null);
+        store.setHeaderSelection(null);
+      }
       return;
     }
 
-    if (lower === "v") { store.setTool("select"); return; }
-    if (lower === "p") { store.setTool("pencil"); return; }
-    if (lower === "e") { store.setTool("eraser"); return; }
-    if (lower === "h") { store.setTool("pan"); return; }
+    if (lower === "v") { store.setTool("select"); $("chart-canvas").focus(); return; }
+    if (lower === "p") { store.setTool("pencil"); $("chart-canvas").focus(); return; }
+    if (lower === "e") { store.setTool("eraser"); $("chart-canvas").focus(); return; }
+    if (lower === "h") { store.setTool("pan"); $("chart-canvas").focus(); return; }
     if (lower === "t") { openTableDialog(); return; }
     if (lower === "m") { if (event.shiftKey) mirrorV(); else mirrorH(); return; }
   });

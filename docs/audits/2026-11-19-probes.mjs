@@ -152,7 +152,7 @@ probe("SW-25", () => {
   return { edits: 6, elapsedMs: Math.round(performance.now() - before),
     retainedSnapshots: store.undoStack.length,
     retainedJsonCharacters: store.undoStack.reduce((sum, e) => sum + JSON.stringify(e.before).length, 0),
-    declaredBudgetBytes: 40 * 1024 * 1024 };
+    declaredBudgetBytes: 32 * 1024 * 1024 };
 });
 probe("SW-30", () => {
   const chart = fresh(); const before = chart.meta.modified;
@@ -177,9 +177,21 @@ probe("SW-30", () => {
   });
   let operation;
   handlers.install({ waitUntil: promise => { operation = promise; } });
-  await operation;
-  handlers.activate({ waitUntil: promise => { operation = promise; } });
-  await operation;
-  results["SW-24"] = { installedDespiteAllAssetsFailing: skipped, deletedCacheNames: deleted, claimed };
+  let installError = null;
+  try {
+    await operation;
+  } catch (error) {
+    installError = error.message;
+  }
+  if (!installError) {
+    handlers.activate({ waitUntil: promise => { operation = promise; } });
+    await operation;
+  }
+  results["SW-24"] = {
+    installRejected: Boolean(installError),
+    skippedWaitingAfterFailure: skipped,
+    deletedCacheNames: deleted,
+    claimed
+  };
 }
 console.log(JSON.stringify({ node: process.version, results }, null, 2));

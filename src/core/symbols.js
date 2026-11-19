@@ -97,8 +97,11 @@ export function cableGlyph({ left, right, direction = "front" }) {
   }
 
   const span = left + right;
-  const gap = 0.12;
-  const strandWidth = 0.055;
+  const maxStrands = Math.max(left, right);
+  // Keep the whole bundle inside the row even for 12/12 cables.
+  const gap = maxStrands > 1 ? Math.min(0.12, 0.4 / (maxStrands - 1)) : 0;
+  const strandWidth = Math.max(0.018, Math.min(0.055, gap * 0.6));
+  const haloWidth = Math.max(0.025, Math.min(0.085, gap * 1.4));
 
   function bundle(count, fromX, toX, fromY, toY) {
     const strands = [];
@@ -119,8 +122,8 @@ export function cableGlyph({ left, right, direction = "front" }) {
     return strands;
   }
 
-  const leftBundle = bundle(left, 0.12, span - 0.12, 0.8, 0.2);
-  const rightBundle = bundle(right, span - 0.12, 0.12, 0.8, 0.2);
+  const leftBundle = bundle(left, 0.12, span - 0.12, 0.78, 0.22);
+  const rightBundle = bundle(right, span - 0.12, 0.12, 0.78, 0.22);
   const front = direction === "front" ? rightBundle : leftBundle;
   const back = direction === "front" ? leftBundle : rightBundle;
 
@@ -128,7 +131,7 @@ export function cableGlyph({ left, right, direction = "front" }) {
   // Halo first, then the front strands. The renderer resolves `halo` to the
   // cell background colour, so the crossing stays readable on coloured cells.
   for (const strand of front) {
-    primitives.push({ ...strand, width: strand.width + 0.085, halo: true });
+    primitives.push({ ...strand, width: strand.width + haloWidth, halo: true });
   }
   primitives.push(...front);
   return primitives;
@@ -154,7 +157,7 @@ function customGlyph({ label = "", span = 1 }) {
 }
 
 /** The individual symbols. Order is the palette order. */
-const DEFINITIONS = {
+const DEFINITIONS = Object.assign(Object.create(null), {
   p: {
     id: "p",
     category: "basic",
@@ -368,7 +371,7 @@ const DEFINITIONS = {
     legend: { de: "eigene Gruppe", en: "custom group" },
     render: customGlyph
   }
-};
+});
 
 /** Public, read-only view of the pack. */
 export const SYMBOLS = Object.freeze(DEFINITIONS);
@@ -397,15 +400,20 @@ export const CABLE_PRESETS = [
 
 /** Return a symbol definition or throw a helpful error. */
 export function getSymbol(id) {
-  const symbol = SYMBOLS[id];
-  if (!symbol) throw new Error(`Unknown symbol: ${id}`);
-  return symbol;
+  if (!hasSymbol(id)) throw new Error(`Unknown symbol: ${id}`);
+  return SYMBOLS[id];
+}
+
+/** True when a symbol id is an own property of the registry. */
+export function hasSymbol(id) {
+  return typeof id === "string" && Object.hasOwn(SYMBOLS, id);
 }
 
 /** True when the symbol can only be placed as a multi-cell group. */
 export function isGroupSymbol(id) {
+  if (!hasSymbol(id)) return false;
   const symbol = SYMBOLS[id];
-  return Boolean(symbol && (symbol.group || symbol.span > 1));
+  return Boolean(symbol.group || symbol.span > 1);
 }
 
 /** Number of cells a symbol consumes. Cable and custom need parameters. */

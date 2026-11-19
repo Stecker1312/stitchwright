@@ -14,7 +14,8 @@ import {
   groupAt,
   paintCell,
   setColor,
-  toggleMarker
+  toggleMarker,
+  visibleRows
 } from "../core/chart.js";
 import { isGroupSymbol, symbolSpan } from "../core/symbols.js";
 import { drawChart } from "../core/render-canvas.js";
@@ -26,6 +27,34 @@ import {
   panBy,
   zoomAt
 } from "../core/viewport.js";
+
+/** Grid cells on the straight line between two cell coordinates. */
+function lineCells(from, to) {
+  const cells = [];
+  let x0 = from.col;
+  let y0 = from.row;
+  const x1 = to.col;
+  const y1 = to.row;
+  const dx = Math.abs(x1 - x0);
+  const dy = -Math.abs(y1 - y0);
+  const sx = x0 < x1 ? 1 : -1;
+  const sy = y0 < y1 ? 1 : -1;
+  let error = dx + dy;
+  for (;;) {
+    cells.push({ row: y0, col: x0 });
+    if (x0 === x1 && y0 === y1) break;
+    const e2 = 2 * error;
+    if (e2 >= dy) {
+      error += dy;
+      x0 += sx;
+    }
+    if (e2 <= dx) {
+      error += dx;
+      y0 += sy;
+    }
+  }
+  return cells;
+}
 
 export class CanvasView {
   constructor({ canvas, wrap, store, theme, onError, onCursor, onResize }) {
@@ -55,7 +84,8 @@ export class CanvasView {
     this.canvas.addEventListener("pointerdown", (event) => this.pointerDown(event));
     this.canvas.addEventListener("pointermove", (event) => this.pointerMove(event));
     this.canvas.addEventListener("pointerup", (event) => this.pointerUp(event));
-    this.canvas.addEventListener("pointercancel", (event) => this.pointerUp(event));
+    this.canvas.addEventListener("pointercancel", (event) => this.pointerCancel(event));
+    this.canvas.addEventListener("lostpointercapture", (event) => this.pointerCancel(event));
     this.canvas.addEventListener("pointerleave", () => {
       this.store.setHover(null);
       this.canvas.style.cursor = "";
@@ -148,14 +178,14 @@ export class CanvasView {
       this.eraseAt(cell.row, cell.col);
       return;
     }
-    if (event.button !== 0) return;
+    if (event.button !== 0 && event.button !== 1) return;
 
     const point = this.localPoint(event);
     this.pointers.set(event.pointerId, point);
     this.canvas.setPointerCapture(event.pointerId);
 
     if (this.pointers.size === 2) {
-      this.commitGesture();
+      this.cancelGesture();
       this.startPinch();
       return;
     }
@@ -221,6 +251,13 @@ export class CanvasView {
     this.gesture = null;
   }
 
+  cancelGesture() {
+    if (this.gesture && (this.gesture.type === "paint" || this.gesture.type === "erase")) {
+      this.store.cancel();
+    }
+    this.gesture = null;
+  }
+
   pointerMove(event) {
     const point = this.localPoint(event);
     if (this.pointers.has(event.pointerId)) this.pointers.set(event.pointerId, point);
@@ -254,15 +291,15 @@ export class CanvasView {
 
     if (this.gesture?.type === "paint") {
       if (this.gesture.last.row !== cell.row || this.gesture.last.col !== cell.col) {
+        this.paintLine(this.gesture.last, cell);
         this.gesture.last = { ...cell };
-        this.paintAt(cell.row, cell.col);
       }
       return;
     }
     if (this.gesture?.type === "erase") {
       if (this.gesture.last.row !== cell.row || this.gesture.last.col !== cell.col) {
+        this.eraseLine(this.gesture.last, cell);
         this.gesture.last = { ...cell };
-        this.eraseAt(cell.row, cell.col);
       }
       return;
     }
@@ -293,6 +330,11 @@ export class CanvasView {
     } else if (this.gesture?.type === "pan") {
       this.gesture = null;
     }
+  }
+
+  pointerCancel(event) {
+    this.pointers.delete(event.pointerId);
+    this.cancelGesture();
   }
 
   startPinch() {
@@ -346,18 +388,23 @@ export class CanvasView {
       const span = symbolSpan(symbol.id, symbol);
       const startCol = Math.max(1, Math.min(col, chart.width - span + 1));
       try {
-        const group = addGroup(chart, {
-          row,
-          col: startCol,
-          symbol: symbol.id,
-          ...symbol
-        });
+        const input = { row, col: startCol, symbol: symbol.id };
+        if (symbol.id === "cable") {
+          input.left = symbol.left;
+          input.right = symbol.right;
+          input.direction = symbol.direction;
+        } else if (symbol.id === "custom") {
+          input.span = span;
+          input.label = symbol.label;
+          input.legend = symbol.legend;
+        }
+        const group = addGroup(chart, input);
         // A cable or a multi-stitch decrease should sit on the current colour
         // just like a single stitch does.
         for (let offset = 0; offset < span; offset += 1) {
           setColor(chart, row, startCol + offset, this.store.color);
         }
-        this.gesture.placed = true;
+        if (this.gesture) this.gesture.placed = true;
         this.store.selectGroup(group.id);
         this.store.touch();
       } catch (error) {
@@ -367,10 +414,23 @@ export class CanvasView {
     }
 
     const value = symbol.id === "k" ? null : symbol.id;
-    if (getCell(chart, row, col) === value && getColor(chart, row, col) === this.store.color) {
+    const group = groupAt(chart, row, col);
+    if (!group && getCell(chart, row, col) === value && getColor(chart, row, col) === this.store.color) {
       return;
     }
     if (paintCell(chart, row, col, value, this.store.color)) this.store.touch();
+  }
+
+  /** Paint every cell between two pointer samples, so fast strokes stay solid. */
+  paintLine(from, to) {
+    const cells = lineCells(from, to);
+    for (const cell of cells) this.paintAt(cell.row, cell.col);
+  }
+
+  /** Erase every cell between two pointer samples. */
+  eraseLine(from, to) {
+    const cells = lineCells(from, to);
+    for (const cell of cells) this.eraseAt(cell.row, cell.col);
   }
 
   eraseAt(row, col) {
@@ -386,6 +446,10 @@ export class CanvasView {
 
   /** Paint or erase at the keyboard cursor. */
   paintCursor() {
+    if (this.store.tool === "marker") {
+      this.toggleMarkerAt(this.store.cursor.col);
+      return;
+    }
     if (this.store.tool === "eraser") {
       this.store.begin("Erase");
       this.eraseAt(this.store.cursor.row, this.store.cursor.col);
@@ -399,7 +463,10 @@ export class CanvasView {
 
   moveCursor(deltaRow, deltaCol) {
     const chart = this.store.chart;
-    const row = Math.max(1, Math.min(chart.height, this.store.cursor.row + deltaRow));
+    const rows = visibleRows(chart);
+    const currentIndex = Math.max(0, rows.indexOf(this.store.cursor.row));
+    const nextIndex = Math.max(0, Math.min(rows.length - 1, currentIndex + deltaRow));
+    const row = rows[nextIndex];
     const col = Math.max(1, Math.min(chart.width, this.store.cursor.col + deltaCol));
     this.store.setCursor({ row, col });
     this.ensureVisible(row, col);

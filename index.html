@@ -206,7 +206,7 @@
         </div>
 
         <footer class="statusbar">
-          <span id="status-cursor">–</span>
+          <span id="status-cursor" aria-live="polite">–</span>
           <span class="status-sep"></span>
           <span id="status-size">–</span>
           <span class="status-sep"></span>
@@ -397,6 +397,9 @@
       </div>
       <h3 data-i18n="dialog.open.recent">Recently opened</h3>
       <div class="recent-list" id="recent-list"></div>
+      <footer class="dialog-actions">
+        <button class="button" id="btn-restore-previous" type="button" data-i18n="dialog.open.previous">Restore previous version of this chart</button>
+      </footer>
     </form>
   </dialog>
 
@@ -509,6 +512,20 @@
       </header>
       <p data-i18n="dialog.table.description"></p>
       <div class="table-wrap" id="table-view"></div>
+    </form>
+  </dialog>
+
+  <dialog id="dialog-unsaved" class="dialog">
+    <form method="dialog" class="dialog-inner">
+      <header class="dialog-head">
+        <h2 data-i18n="chart.unsaved.title">Unsaved changes</h2>
+      </header>
+      <p data-i18n="chart.unsaved.text">This chart has changes that are not saved yet.</p>
+      <footer class="dialog-actions">
+        <button class="button" id="btn-unsaved-cancel" value="cancel" type="button" data-i18n="app.cancel">Cancel</button>
+        <button class="button danger" id="btn-unsaved-discard" value="discard" type="button" data-i18n="chart.unsaved.discard">Discard</button>
+        <button class="button primary" id="btn-unsaved-save" value="save" type="button" data-i18n="chart.unsaved.save">Save and continue</button>
+      </footer>
     </form>
   </dialog>
 

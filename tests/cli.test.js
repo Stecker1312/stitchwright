@@ -65,3 +65,61 @@ test("CLI reports invalid charts with a non-zero exit code", () => {
     fs.rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test("CLI boolean flags do not consume the chart path", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "stitchwright-"));
+  const chartFile = path.join(dir, "chart.json");
+  try {
+    assert.equal(run(["new", "--width", "8", "--height", "6", "--out", chartFile]).status, 0);
+    const result = run(["validate", "--json", chartFile]);
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(JSON.parse(result.stdout).ok, true);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("CLI reports file and JSON errors as JSON when requested", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "stitchwright-"));
+  const missing = path.join(dir, "missing.json");
+  const broken = path.join(dir, "broken.json");
+  try {
+    fs.writeFileSync(broken, "{ nope");
+    const missingResult = run(["validate", "--json", missing]);
+    assert.equal(missingResult.status, 1);
+    assert.equal(JSON.parse(missingResult.stdout).error.code, "E_FILE");
+    const brokenResult = run(["validate", "--json", broken]);
+    assert.equal(brokenResult.status, 1);
+    assert.equal(JSON.parse(brokenResult.stdout).error.code, "E_JSON");
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("CLI rejects unknown flags and invalid new sizes", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "stitchwright-"));
+  const chartFile = path.join(dir, "chart.json");
+  try {
+    assert.equal(run(["validate", "--bogus", chartFile]).status, 1);
+    const invalid = run(["new", "--width", "0", "--height", "6", "--out", chartFile]);
+    assert.equal(invalid.status, 1);
+    assert.equal(fs.existsSync(chartFile), false);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("CLI new charts get unique ids", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "stitchwright-"));
+  const first = path.join(dir, "first.json");
+  const second = path.join(dir, "second.json");
+  try {
+    assert.equal(run(["new", "--width", "8", "--height", "6", "--out", first]).status, 0);
+    assert.equal(run(["new", "--width", "8", "--height", "6", "--out", second]).status, 0);
+    const a = JSON.parse(fs.readFileSync(first, "utf8"));
+    const b = JSON.parse(fs.readFileSync(second, "utf8"));
+    assert.notEqual(a.id, b.id);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});

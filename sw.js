@@ -1,27 +1,29 @@
 /**
  * Offline cache.
  *
- * The app is static. After the first visit every asset is cached locally, so
- * the editor keeps working without a network. There are no external origins
- * and no analytics to cache or leak.
+ * The app is static. After the first visit every required asset is cached
+ * locally, so the editor keeps working without a network. Optional pages are
+ * cached separately: a missing optional file must not block the core app.
+ * Failed installations keep the last complete cache active.
  */
 
-const CACHE = "stitchwright-v0.3.0";
+const CACHE_PREFIX = "stitchwright-";
+const CACHE = `${CACHE_PREFIX}v0.4.0`;
 
-const SHELL = [
+// A failed core asset means the app cannot start. Installation must fail and
+// leave the previous cache in place.
+const REQUIRED = [
   "./",
   "index.html",
-  "about.html",
-  "about.css",
   "manifest.webmanifest",
   "favicon.ico",
   "assets/icon.svg",
   "assets/icon-192.png",
   "assets/icon-512.png",
-  "assets/screenshot-editor.png",
   "src/styles.css",
   "src/app.js",
   "src/demo.js",
+  "src/version.js",
   "src/core/chart.js",
   "src/core/color.js",
   "src/core/i18n.js",
@@ -37,28 +39,39 @@ const SHELL = [
   "src/ui/palette.js",
   "src/ui/persistence.js",
   "src/ui/store.js",
-  "src/version.js",
   "src/locales/de.json",
   "src/locales/en.json"
 ];
 
+const OPTIONAL = [
+  "about.html",
+  "about.css",
+  "assets/screenshot-editor.png"
+];
+
+function isOurs(key) {
+  return key.startsWith(CACHE_PREFIX);
+}
+
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE).then(async (cache) => {
-      // Cache each file separately. A single missing optional asset must not
-      // block the whole offline installation.
-      await Promise.all(SHELL.map((url) => cache.add(url).catch(() => {})));
-      await self.skipWaiting();
-    })
-  );
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE);
+    // Required assets are atomic: one failure aborts the installation.
+    await Promise.all(REQUIRED.map((url) => cache.add(url)));
+    // Optional assets may be absent without making the editor unusable.
+    await Promise.all(OPTIONAL.map((url) => cache.add(url).catch(() => {})));
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => Promise.all(
-      keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))
-    )).then(() => self.clients.claim())
-  );
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys
+      .filter((key) => isOurs(key) && key !== CACHE)
+      .map((key) => caches.delete(key)));
+    await self.clients.claim();
+  })());
 });
 
 self.addEventListener("fetch", (event) => {
@@ -67,19 +80,27 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
+  // Explicit development bypass. A query flag must bypass an already active
+  // service worker too, not only new registrations.
+  if (url.searchParams.has("nosw")) {
+    event.respondWith(fetch(request));
+    return;
+  }
+
   event.respondWith((async () => {
-    const cached = await caches.match(request);
+    const cache = await caches.open(CACHE);
+    const cached = await cache.match(request);
     if (cached) return cached;
     try {
       const response = await fetch(request);
       if (response.ok) {
-        const cache = await caches.open(CACHE);
-        cache.put(request, response.clone());
+        event.waitUntil(cache.put(request, response.clone()));
       }
       return response;
     } catch {
       if (request.mode === "navigate") {
-        return caches.match("index.html");
+        const shell = await cache.match("index.html");
+        if (shell) return shell;
       }
       throw new Error("Offline and not cached");
     }

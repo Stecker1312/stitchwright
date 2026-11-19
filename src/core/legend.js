@@ -12,6 +12,18 @@ import { glyphFor, symbolLegend, symbolName } from "./symbols.js";
 /** Build localised legend entries for the chart. */
 export function legendEntries(chart, lang = "en") {
   return usedLegendKeys(chart).map((entry) => {
+    if (entry.kind === "blank") {
+      const blank = lang === "de"
+        ? { name: "re", text: "leere Zelle" }
+        : { name: "knit", text: "empty cell" };
+      return {
+        kind: "blank",
+        glyph: [],
+        span: 1,
+        name: blank.name,
+        text: blank.text
+      };
+    }
     if (entry.kind === "cell") {
       const name = symbolName(entry.symbol, lang);
       const text = symbolLegend(entry.symbol, lang);

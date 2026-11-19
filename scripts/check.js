@@ -26,7 +26,7 @@ function walk(dir, result = []) {
 const files = walk(ROOT);
 let errors = 0;
 
-for (const file of files.filter((name) => name.endsWith(".js"))) {
+for (const file of files.filter((name) => name.endsWith(".js") || name.endsWith(".mjs"))) {
   try {
     execFileSync(process.execPath, ["--check", file], { stdio: "pipe" });
   } catch (error) {
@@ -49,4 +49,10 @@ if (errors) {
   console.error(errors === 1 ? "1 error." : `${errors} errors.`);
   process.exit(1);
 }
-console.log(`OK: ${files.filter((name) => name.endsWith(".js")).length} JS files, ${files.filter((name) => name.endsWith(".json")).length} JSON files.`);
+const packageJson = JSON.parse(fs.readFileSync(path.join(ROOT, "package.json"), "utf8"));
+const versionSource = fs.readFileSync(path.join(ROOT, "src/version.js"), "utf8");
+if (!versionSource.includes(`APP_VERSION = "${packageJson.version}"`)) {
+  console.error("Version mismatch between package.json and src/version.js.");
+  process.exit(1);
+}
+console.log(`OK: ${files.filter((name) => name.endsWith(".js") || name.endsWith(".mjs")).length} JS files, ${files.filter((name) => name.endsWith(".json")).length} JSON files.`);
