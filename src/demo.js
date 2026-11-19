@@ -7,7 +7,7 @@
 import { addGroup, createChart, groupSpan, setCell, setColor } from "./core/chart.js";
 
 export function createDemoChart() {
-  const chart = createChart({ width: 32, height: 20, title: "Klar – example" });
+  const chart = createChart({ width: 32, height: 20, title: "Clear – example" });
   chart.id = "klar-beispiel";
   chart.options.subtitle = "Cables, yarn over, decrease, colours";
   chart.options.repeat = { start: 3, end: 10 };

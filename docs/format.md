@@ -1,16 +1,16 @@
-# Chart-Format `strickschrift/1`
+# Chart format `strickschrift/1`
 
-Stand: 2026-11-18. Das Format ist offenes JSON. Es ist die Quelle; SVG und
-PNG sind Exporte. Das JSON-Schema für Editoren und Agenten liegt unter
+Updated 19 November 2026. The format is open JSON. It is the source; SVG and
+PNG are exports. The JSON Schema for editors and agents is at
 [`schema/strickschrift.schema.json`](../schema/strickschrift.schema.json).
 
-## Beispiel
+## Example
 
 ```json
 {
   "schema": "strickschrift/1",
-  "id": "v-probe",
-  "title": "V-Probe",
+  "id": "example-chart",
+  "title": "Example chart",
   "width": 12,
   "height": 8,
   "rows": [
@@ -54,50 +54,49 @@ PNG sind Exporte. Das JSON-Schema für Editoren und Agenten liegt unter
     "source": "",
     "license": "GPL-3.0",
     "notes": "",
-    "created": "2026-11-18T00:00:00.000Z",
-    "modified": "2026-11-18T00:00:00.000Z"
+    "created": "2026-11-19T00:00:00.000Z",
+    "modified": "2026-11-19T00:00:00.000Z"
   }
 }
 ```
 
-## Reihenfolge
+## Order
 
-`rows[0]` ist **Reihe 1**, die unterste gestrickte Reihe. Die letzte Zeile im
-Array ist die oberste Reihe. Das entspricht der Strickrichtung und der
-Leserichtung von unten nach oben.
+`rows[0]` is **row 1**, the lowest knitted row. The last item in the array is
+the top row. This matches the knitting direction and the usual reading
+direction from bottom to top.
 
-Innerhalb einer Reihe ist `rows[row][0]` die **linke Masche im Bild**. Die
-Array-Reihenfolge folgt also der Bildansicht von links nach rechts. Die
-Maschennummern laufen aus Strickgründen von rechts nach links: Masche 1 ist
-die rechte Randmasche. Das ist die übliche Leserichtung von Hinreihen und
-macht das Zeichnen mit der Maus einfach.
+Inside a row, `rows[row][0]` is the **left stitch in the picture**. The array
+order therefore follows the picture from left to right. Stitch numbers run
+from right to left for knitting reasons: stitch 1 is the right edge stitch.
+That is the usual reading direction for right-side rows and makes drawing
+with the mouse simple.
 
-## Zellen
+## Cells
 
-- `null` = glatt rechts auf der Außenseite. Wird nicht als Symbol gezeichnet.
-- String = Symbol-ID aus `src/core/symbols.js`, z. B. `"p"`, `"yo"`, `"bobble"`.
-- Ein Symbol mit `span > 1` darf **nicht** als Zellwert stehen. Es ist eine
-  Gruppe.
+- `null` = plain knit on the right side. Nothing is drawn as a symbol.
+- String = symbol ID from `src/core/symbols.js`, for example `"p"`, `"yo"`,
+  `"bobble"`.
+- A symbol with `span > 1` **must not** be used as a cell value. It is a group.
 
-## Farben
+## Colours
 
-`colors` ist eine zweite Matrix gleicher Größe. Werte sind `null` oder eine
-ID aus `palette`. Die Matrix darf fehlen; dann ist alles `null`.
+`colors` is a second matrix of the same size. Values are `null` or an ID from
+`palette`. The matrix may be missing; then everything is `null`.
 
 ```json
 "palette": [
-  { "id": "A", "name": "Natur", "hex": "#f5f0e6" },
-  { "id": "B", "name": "Rot", "hex": "#b3261e" }
+  { "id": "A", "name": "Natural", "hex": "#f5f0e6" },
+  { "id": "B", "name": "Red", "hex": "#b3261e" }
 ]
 ```
 
-Die Palette ist Teil des Charts. Farben werden nie über den Index, sondern
-über die ID referenziert. So bleibt eine Datei lesbar, auch wenn die Palette
-umsortiert wird.
+The palette is part of the chart. Colours are always referenced by ID, never
+by index. That keeps a file readable even if the palette is reordered.
 
-## Gruppen
+## Groups
 
-Eine Gruppe ist ein Symbol, das mehrere Maschen in einer Reihe verbraucht.
+A group is a symbol that takes several stitches in one row.
 
 ```json
 "groups": [
@@ -123,78 +122,75 @@ Eine Gruppe ist ein Symbol, das mehrere Maschen in einer Reihe verbraucht.
     "symbol": "custom",
     "span": 3,
     "label": "TL",
-    "legend": "zwei Maschen auf Hilfsnadel vor die Arbeit"
+    "legend": "two stitches on a cable needle held in front"
   }
 ]
 ```
 
-- `row` und `col` sind 1-basiert.
-- `col` ist die linke Masche der Gruppe im Bild.
-- `symbol` ist die Symbol-ID.
-- `cable`: `left`, `right`, `direction` (`front` oder `back`). Spannweite =
+- `row` and `col` are 1-based.
+- `col` is the left stitch of the group in the picture.
+- `symbol` is the symbol ID.
+- `cable`: `left`, `right`, `direction` (`front` or `back`). Span =
   `left + right`.
-- `custom`: `span` und `label` sind Pflicht; `legend` ist optional und
-  erscheint als Erklärung in der Legende.
-- Alle anderen Gruppen haben eine feste Spannweite aus der Symboldefinition.
-- Gruppen liegen in genau einer Reihe. Mehrzeilige Symbole sind für eine
-  spätere Schemaversion vorgesehen.
-- Die Zellen unter einer Gruppe müssen `null` sein. Farben dürfen gesetzt
-  sein.
+- `custom`: `span` and `label` are required; `legend` is optional and appears
+  as the explanation in the legend.
+- All other groups have a fixed span from the symbol definition.
+- Groups sit in exactly one row. Multi-row symbols are reserved for a later
+  schema version.
+- The cells under a group must be `null`. Colours may be set.
 
-## Optionen
+## Options
 
-| Feld | Typ | Bedeutung |
+| Field | Type | Meaning |
 |---|---|---|
-| `rowsMode` | `"all"` oder `"rs"` | alle Reihen oder nur Hinreihen (1, 3, 5 …) |
-| `showRowNumbers` | boolean | Reihennummern am Rand |
-| `showStitchNumbers` | boolean | Maschennummern unten |
-| `showLegend` | boolean | Legende im Export |
-| `repeat` | `null` oder `{start,end}` | Rapport, 1-basiert, inklusiv |
-| `markers` | Array von Zahlen | Maschenmarker nach Masche N, nur Zeichenhilfe |
-| `cellMm` | Zahl 2…20 | Zellgröße für den Druck |
-| `paper` | `"A4"`, `"A3"`, `"Letter"`, `"auto"` | Papierhinweis |
-| `subtitle` | String | kurze Zeile unter dem Titel |
+| `rowsMode` | `"all"` or `"rs"` | all rows or right-side rows only (1, 3, 5 …) |
+| `showRowNumbers` | boolean | row numbers at the edge |
+| `showStitchNumbers` | boolean | stitch numbers at the bottom |
+| `showLegend` | boolean | legend in the export |
+| `repeat` | `null` or `{start,end}` | repeat, 1-based, inclusive |
+| `markers` | array of numbers | stitch markers after stitch N, a drawing guide only |
+| `cellMm` | number 2…20 | cell size for printing |
+| `paper` | `"A4"`, `"A3"`, `"Letter"`, `"auto"` | paper hint |
+| `subtitle` | string | short line under the title |
 
-`markers` sind reine Zeichenhilfen: `[10, 20]` zeichnet gestrichelte Linien
-nach Masche 10 und 20. Sie werden nicht gestrickt und erscheinen nicht in der
-Legende.
+`markers` are drawing guides only: `[10, 20]` draws dashed lines after
+stitches 10 and 20. They are not knitted and do not appear in the legend.
 
 ## Meta
 
-Alle Felder optional. `created` und `modified` sind ISO-8601-Strings.
-`license` ist standardmäßig `"GPL-3.0"`. `notes` ist ein kurzer Hinweis, keine
-Strickanleitung.
+All fields are optional. `created` and `modified` are ISO 8601 strings.
+`license` defaults to `"GPL-3.0"`. `notes` is a short note, not knitting
+instructions.
 
-## Validierung
+## Validation
 
-Die CLI und die App nutzen dieselben Regeln:
+The CLI and the app use the same rules:
 
-- `schema` muss `strickschrift/1` sein.
-- `width` und `height` sind ganze Zahlen von 1 bis 1000.
-- `rows` hat `height` Zeilen mit je `width` Zellen.
-- Symbol-IDs müssen bekannt sein.
-- Symbole mit `span > 1` dürfen nicht als Zellwert vorkommen.
-- Gruppen liegen im Raster, überlappen nicht und passen zu ihrer Spannweite.
-- Zellen unter Gruppen sind `null`.
-- Paletten-IDs sind eindeutig; Hex-Werte haben die Form `#rrggbb`.
-- `repeat.start <= repeat.end` und beide innerhalb des Rasters.
-- `rowsMode` ist `"all"` oder `"rs"`.
+- `schema` must be `strickschrift/1`.
+- `width` and `height` are whole numbers from 1 to 1000.
+- `rows` has `height` rows with `width` cells each.
+- Symbol IDs must be known.
+- Symbols with `span > 1` must not appear as a cell value.
+- Groups are inside the grid, do not overlap and match their span.
+- Cells under groups are `null`.
+- Palette IDs are unique; hex values use the form `#rrggbb`.
+- `repeat.start <= repeat.end` and both are inside the grid.
+- `rowsMode` is `"all"` or `"rs"`.
 
-Diagnosen haben einen Code, einen Pfad und eine deutsche Meldung. Die CLI
-gibt sie mit `--json` maschinenlesbar aus.
+Diagnostics have a code, a path and an English message. The CLI prints them as
+machine-readable JSON with `--json`.
 
-## Versionierung
+## Versioning
 
-`strickschrift/1` ist die erste Version. Eine neue Version gibt es nur, wenn
-sich die Bedeutung bestehender Felder ändert. Dann liefert die App eine
-Migration und die CLI einen Hinweis. Unbekannte Felder werden ignoriert,
-damit neuere Dateien nicht sofort unlesbar sind. Das JSON-Schema dient
-Editoren und Agenten als Orientierung; verbindlich ist der Validator in
-`src/core/validate.js`.
+`strickschrift/1` is the first version. A new version only appears when the
+meaning of existing fields changes. In that case the app provides a migration
+and the CLI prints a warning. Unknown fields are ignored so newer files do not
+become unreadable at once. The JSON Schema helps editors and agents; the
+validator in `src/core/validate.js` is authoritative.
 
 ## Performance
 
-- `null` ist der häufigste Wert und wird nicht gerendert.
-- Der Canvas-Editor zeichnet nur den sichtbaren Ausschnitt.
-- Der SVG-Export gruppiert gleiche Symbole in `<defs>` und nutzt `<use>`.
-- Für sehr große Farbflächen werden gleiche Farben pro Zeile zusammengefasst.
+- `null` is the most common value and is not rendered.
+- The Canvas editor draws only the visible area.
+- The SVG export groups equal symbols in `<defs>` and uses `<use>`.
+- For very large colour areas, equal colours in a row are merged.

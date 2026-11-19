@@ -36,6 +36,6 @@ node cli/stitchwright.js legend chart.strickschrift.json
 ## Beispiel
 
 ```bash
-node cli/stitchwright.js validate samples/v-probe.strickschrift.json --json
-node cli/stitchwright.js render samples/v-probe.strickschrift.json /tmp/v-probe.svg
+node cli/stitchwright.js validate samples/example-chart.strickschrift.json --json
+node cli/stitchwright.js render samples/example-chart.strickschrift.json /tmp/example-chart.svg
 ```

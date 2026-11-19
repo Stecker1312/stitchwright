@@ -1,7 +1,7 @@
 # Status
 
 - Stand: 2026-11-19
-- Version: **0.2.0-alpha.1**
+- Version: **0.3.0-alpha.1**
 - Phase: Öffentliche Vorabversion (Alpha)
 - Sichtbarkeit: öffentlich, GitHub Pages:
   <https://stecker1312.github.io/stitchwright/>
@@ -10,7 +10,7 @@
 
 ## Entschieden
 
-- Name **Stitchwright**, Standard-Symbolpack **Klar**
+- Name **Stitchwright**, Standard-Symbolpack **Klar** (englisch **Clear**)
 - Statische Web-App/PWA, kein Backend, keine Cloud, keine Konten, keine
   Telemetrie, keine Kollaboration
 - Vanilla JavaScript, Canvas-Editor, SVG-Export, keine Laufzeitabhängigkeiten
@@ -27,8 +27,8 @@
 
 - Projektordner, Git-Repository, GPL-3.0
 - Projektregeln, README, Status, Journal, Roadmap, Changelog
-- ADRs D001–D009, SOPs 001–005
-- Symbolsprache Klar mit 20 Symbolen und Zopf-Generator
+- ADRs D001–D010, SOPs 001–005
+- Symbolsprache Klar (englisch Clear) mit 20 Symbolen und Zopf-Generator
 - Chart-Modell, Validierung, JSON-Schema
 - SVG-Export und Node-CLI (`validate`, `render`, `new`, `legend`)
 - Canvas-Editor: Raster, Pan/Zoom, Stifte, Radierer, Auswahl, Gruppen,
@@ -51,7 +51,9 @@
   Validierungsmeldungen, CLI, Manifest und README; Beispiel-Charts englisch
 - PWA mit Service Worker, offline getestet
 - 66 Node-Tests grün; Browserprüfung mit Chromium/Playwright
-- Beispiel-Charts unter `samples/`, Projektseite `about.html`
+- Englische Projektseite `about.html` mit Browser-first-Schnellstart, Preisvergleich, Clear-Symbolpack und Planned-Liste
+- Englischer Screenshot, Version 0.3.0-alpha.1
+- Beispiel-Charts unter `samples/`
 
 ## In Arbeit / offen
 
@@ -61,15 +63,14 @@
 - Weitere Sprachen: Infrastruktur steht, Übersetzungen folgen
 - Import/Export mit weiteren offenen Formaten
 - Screenshots und Contribution-Hinweise sind vorhanden; Issue-Vorlagen folgen
-- V-Probe als reale Abnahme zeichnen
+- Eine reale Abnahme mit einem eigenen Projekt zeichnen
 
 ## Nächster Schritt
 
-1. Englische Projektseite `about.html` mit Daniels Text umsetzen.
-2. Öffentliche Alpha beobachten und Issues triagieren.
-3. Fehler beheben, Tests erweitern.
-4. Übersetzungen und Symbol-Packs als Beiträge ermöglichen.
-5. Keine Cloud-Funktion ohne neue ADR.
+1. Öffentliche Alpha 0.3.0-alpha.1 beobachten und Issues triagieren.
+2. Fehler beheben, Tests erweitern.
+3. Übersetzungen und Symbol-Packs als Beiträge ermöglichen.
+4. Keine Cloud-Funktion ohne neue ADR.
 
 ## Tests
 

@@ -14,7 +14,7 @@ sollen als Kompatibilitäts-Pack möglich bleiben.
 
 ## Entscheidung
 
-Das Standard-Pack heißt **Klar**. Es folgt diesen Regeln:
+Das Standard-Pack heißt **Klar**; auf Englisch heißt es **Clear**. Die Symbol-IDs bleiben gleich. Es folgt diesen Regeln:
 
 1. Drei gelernte Anker bleiben: leeres Kästchen = re, Punkt = li,
    Kreis = Umschlag.

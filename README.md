@@ -3,7 +3,7 @@
 **Knit charts, local and free.** An editor for knitting diagrams that runs in
 the browser, works offline and sends nothing anywhere.
 
-> **Early alpha 0.2.0-alpha.1 (18 November 2026).**
+> **Early alpha 0.3.0-alpha.1 (19 November 2026).**
 > Not ready for important work. Bugs, rough edges and changes to the file
 > format are likely. Please keep an extra JSON copy of charts you care about.
 >
@@ -25,7 +25,7 @@ command-line tool.
 ## What it does
 
 - Grids of any size, including large patterns
-- The **Klar** symbol set: knit, purl, yarn over, decreases, increases, cables,
+- The **Clear** symbol set: knit, purl, yarn over, decreases, increases, cables,
   bobbles, short rows and colour fills
 - Multi-stitch symbols as one group: a six-stitch cable is one symbol, not six
   boxes
@@ -115,7 +115,7 @@ projects. Notes on translations, symbols and code are in
 ## Documentation
 
 - [Project page](https://stecker1312.github.io/stitchwright/about.html)
-- [The Klar symbol set](docs/symbols.md)
+- [The Clear symbol set](docs/symbols.md)
 - [Chart format](docs/format.md)
 - [Decisions (ADRs)](docs/adr/)
 - [Workflows (SOPs)](docs/sop/)

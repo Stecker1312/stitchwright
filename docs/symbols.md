@@ -1,114 +1,114 @@
-# Symbolsprache „Klar“
+# The Clear symbol set
 
-Stand: 2026-11-18. Diese Datei ist die verbindliche Beschreibung des
-Standard-Packs. Die Implementierung liegt in `src/core/symbols.js`.
-## Prinzipien
+Updated 19 November 2026. This file is the authoritative description of the
+standard pack. The implementation is in `src/core/symbols.js`.
 
-1. **Drei Anker bleiben:** leeres Kästchen = re, Punkt = li, Kreis =
-   Umschlag. Sie sind gelernt und werden nicht neu erfunden.
-2. **Eine Strichstärke, eine Punktgröße.** Gezeichnet wird in Zellkoordinaten
-   (0…1 pro Masche), mit runden Enden.
-3. **Fläche = Maschenzahl.** Ein Symbol über sechs Maschen spannt sechs
-   Kästchen. Es wird einmal gezeichnet, nicht sechsmal.
-4. **Richtung ist Form, nicht Farbe.** Neigungen haben eine Pfeilspitze,
-   Zöpfe ein sichtbares Oben/Unten. Schwarzweiß muss reichen.
-5. **Zöpfe sind Seile.** Das vordere Seil ist durchgezogen, das hintere wird
-   an der Kreuzung unterbrochen. Die Zahl der Einzelstränge je Seite ist die
-   Zahl der Maschen.
-6. **Text nur als Ausnahme.** Beschriftete Gruppen (z. B. `TL`) sind erlaubt,
-   aber nicht der Normalfall.
-7. **Legende ist Pflicht.** Jedes Chart erzeugt automatisch eine Legende aus
-   den verwendeten Zeichen.
+## Principles
 
-## Koordinaten
+1. **Three anchors stay:** an empty box = knit, a dot = purl, a circle = yarn
+   over. They are already learned and are not reinvented.
+2. **One stroke width, one dot size.** Drawing uses cell coordinates (0…1 per
+   stitch) with round caps.
+3. **Area = stitch count.** A symbol across six stitches spans six boxes. It
+   is drawn once, not six times.
+4. **Direction is shape, not colour.** Slants have an arrowhead; cables have a
+   visible top and bottom. Black and white must be enough.
+5. **Cables are ropes.** The front rope is continuous; the back rope is broken
+   at the crossing. The number of strands on each side is the number of
+   stitches.
+6. **Text only as an exception.** Labelled groups (for example `TL`) are
+   allowed, but not the normal case.
+7. **The legend is required.** Every chart builds a legend from the symbols it
+   uses.
 
-- Ein Symbol wird in einem Raster von `0…span` in x-Richtung und `0…1` in
-  y-Richtung definiert.
-- Strichstärke: `0.09` Zellen, runde Enden.
-- Pfeilspitzen: Länge `0.16`, Winkel etwa 30°.
-- Text: `0.38` Zellen hoch, mittig, fett.
-- Canvas und SVG-Export nutzen dieselben Pfade. Canvas skaliert mit der
-  Zellgröße; SVG schreibt die Pfade in den ViewBox.
+## Coordinates
 
-## Grundzeichen
+- A symbol is defined in a grid of `0…span` in the x direction and `0…1` in
+  the y direction.
+- Stroke width: `0.09` cells, round caps.
+- Arrowheads: length `0.16`, angle about 30°.
+- Text: `0.38` cells high, centred, bold.
+- Canvas and SVG export use the same paths. Canvas scales with the cell size;
+  SVG writes the paths into the viewBox.
 
-| ID | Span | Zeichen | Bedeutung | Legende (de) |
+## Basic stitches
+
+| ID | Span | Symbol | Meaning | Legend (en) |
 |---|---|---|---|---|
-| `p` | 1 | Punkt | li auf der Außenseite | linke Masche |
-| `yo` | 1 | offener Kreis | Umschlag | Umschlag |
-| `m1l` | 1 | Pfeil nach links oben | Zunahme, links geneigt | M1L, links geneigte Zunahme |
-| `m1r` | 1 | Pfeil nach rechts oben | Zunahme, rechts geneigt | M1R, rechts geneigte Zunahme |
-| `kfb` | 1 | gegabeltes V | aus einer Masche zwei | kfb, vorn und hinten stricken |
-| `tbl` | 1 | V mit gekreuzten Beinen | verschränkte Masche | k1tbl, verschränkt |
-| `slip` | 1 | Schleife mit Pfeil | Masche abheben | Masche abheben |
-| `bobble` | 1 | Wollknäuel | Bobbel | Bobbel |
-| `bead` | 1 | Raute mit Punkt | Perle | Perle |
-| `nostitch` | 1 | graues Feld mit × | keine Masche | keine Masche |
-| `shortrow` | 1 | U-Turn-Pfeil | Wende | verkürzte Reihe, wenden |
-| `bindoff` | 1 | dicker Balken oben | abketten | abketten |
-| `caston` | 1 | dicker Balken unten | anschlagen | anschlagen |
+| `p` | 1 | dot | purl on the right side | purl |
+| `yo` | 1 | open circle | yarn over | yarn over |
+| `m1l` | 1 | arrow up and left | increase leaning left | M1L, left-leaning increase |
+| `m1r` | 1 | arrow up and right | increase leaning right | M1R, right-leaning increase |
+| `kfb` | 1 | forked V | two stitches from one | kfb, knit front and back |
+| `tbl` | 1 | V with crossed legs | twisted stitch | k1tbl, twisted |
+| `slip` | 1 | loop with arrow | slip a stitch | slip a stitch |
+| `bobble` | 1 | ball of yarn | bobble | bobble |
+| `bead` | 1 | diamond with dot | bead | bead |
+| `nostitch` | 1 | grey cell with × | no stitch | no stitch |
+| `shortrow` | 1 | U-turn arrow | turn | short row, turn |
+| `bindoff` | 1 | thick bar at the top | bind off | bind off |
+| `caston` | 1 | thick bar at the bottom | cast on | cast on |
 
-`null` bedeutet glatt rechts und wird nicht als Symbol gezeichnet.
+`null` means stocking stitch on the right side and is not drawn as a symbol.
 
-## Abnahmen
+## Decreases
 
-| ID | Span | Zeichen | Bedeutung |
+| ID | Span | Symbol | Meaning |
 |---|---|---|---|
-| `k2tog` | 2 | Diagonale nach rechts oben, Pfeil | zwei Maschen rechts zusammen |
-| `ssk` | 2 | Diagonale nach links oben, Pfeil | zwei Maschen links geneigt zusammen |
-| `k3tog` | 3 | drei Linien auf einen Punkt rechts | drei Maschen rechts zusammen |
-| `sk2p` | 3 | drei Linien auf einen Punkt links | drei Maschen links geneigt zusammen |
-| `cdd` | 3 | zwei Linien symmetrisch auf die Mitte | mittige doppelte Abnahme |
+| `k2tog` | 2 | diagonal up and right, arrow | knit two together |
+| `ssk` | 2 | diagonal up and left, arrow | slip, slip, knit (left-leaning decrease) |
+| `k3tog` | 3 | three lines to one point on the right | knit three together |
+| `sk2p` | 3 | three lines to one point on the left | slip one, knit two together, pass |
+| `cdd` | 3 | two lines symmetrical to the centre | centred double decrease |
 
-Die Diagonale folgt der Neigung der entstehenden Masche. Die Pfeilspitze
-sitzt am Ziel. So bleibt die Richtung auch klein und in Graustufen lesbar.
+The diagonal follows the lean of the resulting stitch. The arrowhead sits at
+the target. That keeps the direction readable when small and in greyscale.
 
-## Zöpfe
+## Cables
 
-Ein Zopf ist eine Gruppe mit `symbol: "cable"` und Parametern:
+A cable is a group with `symbol: "cable"` and parameters:
 
 ```json
 { "symbol": "cable", "left": 2, "right": 2, "direction": "front" }
 ```
 
-- `left` und `right` sind die Maschenzahlen der beiden Stränge im Bild.
-  Die zuerst gestrickte Masche steht in einer Hinreihe **rechts**.
-- `direction: "front"` heißt: die zuerst gestrickten Maschen (im Bild
-  rechts) liegen vorne, also ist das **rechte Bündel durchgezogen** (C4F).
-- `direction: "back"` heißt: die zuerst gestrickten Maschen liegen hinten,
-  also ist das **linke Bündel durchgezogen** (C4B).
-- Die Spannweite ist `left + right`.
-- Jeder Strang wird als Bündel aus `left` bzw. `right` parallelen Linien
-  gezeichnet. Das vordere Bündel bekommt eine Hintergrundkontur, damit das
-  hintere sichtbar unterbrochen wird.
-- Die Stränge verlaufen als weiche Kurven und kreuzen sich in der Mitte.
+- `left` and `right` are the stitch counts of the two bundles in the picture.
+  In a right-side row, the first-knitted stitch is on the **right**.
+- `direction: "front"` means the first-knitted stitches (on the right in the
+  picture) lie in front, so the **right bundle is continuous** (C4F).
+- `direction: "back"` means the first-knitted stitches lie behind, so the
+  **left bundle is continuous** (C4B).
+- The span is `left + right`.
+- Each bundle is drawn as `left` or `right` parallel lines. The front bundle
+  gets a background outline so the back bundle is visibly interrupted.
+- The strands run as soft curves and cross in the middle.
 
-Damit sind 1/1, 2/2, 3/3 und 4/4 ohne neue Glyphen darstellbar. Die Legende
-nennt die genaue Ausführung.
+This covers 1/1, 2/2, 3/3 and 4/4 without new glyphs. The legend gives the
+exact direction.
 
-## Beschriftete Gruppen
+## Labelled groups
 
-Für Sonderfälle gibt es `symbol: "custom"` mit `label`, `span` und optional
-`legend`. Das Zeichen ist ein dünner Rahmen mit Text. Es ist ausdrücklich die
-Ausnahme, nicht der Standard. Die Legende übernimmt `legend`, sonst den
-Beschriftungstext.
+For special cases there is `symbol: "custom"` with `label`, `span` and an
+optional `legend`. The symbol is a thin frame with text. It is explicitly the
+exception, not the standard. The legend uses `legend`, otherwise the label
+text.
 
-## Farben
+## Colours
 
-Farbe ist eine eigene Ebene. Jede Zelle kann eine Paletten-ID tragen.
+Colour is its own layer. Each cell may carry a palette ID.
 
-- Die Palette ist Teil des Charts: `{ "id": "A", "name": "Weiß", "hex": "#ffffff" }`.
-- `null` bedeutet keine Farbe (Papierfarbe).
-- Symbole werden schwarz oder weiß gezeichnet, je nach Helligkeit der
-  Hintergrundfarbe. Farbe ist nie das einzige Unterscheidungsmerkmal.
-- Die Legende zeigt Farbfelder mit Namen, nicht nur Hex-Werte.
+- The palette is part of the chart:
+  `{ "id": "A", "name": "Natural", "hex": "#ffffff" }`.
+- `null` means no colour (paper colour).
+- Symbols are drawn black or white, depending on the brightness of the
+  background. Colour is never the only way to tell things apart.
+- The legend shows colour swatches with names, not only hex values.
 
-## Eigene Packs
+## Custom packs
 
-Ein Symbol-Pack ist eine Datenstruktur mit `id`, `name`, `symbols`. Die App
-lädt später weitere Packs. Ein Pack darf die IDs des Klar-Packs überschreiben,
-muss aber im Chart vermerkt sein, damit alte Dateien reproduzierbar bleiben.
+A symbol pack is a data structure with `id`, `name` and `symbols`. The app
+will load more packs later. A pack may override the IDs of the Clear pack, but
+this must be recorded in the chart so old files stay reproducible.
 
-Für die erste Version ist nur Klar eingebaut. Die Struktur ist so angelegt,
-dass ein „Klassisch“-Pack und eigene Packs ohne Eingriff in den Editor
-dazukommen können.
+The first version has only Clear built in. The structure is ready for a
+“Classic” pack and custom packs without changes to the editor.

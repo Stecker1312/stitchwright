@@ -319,8 +319,8 @@ footer {
   main { width: min(100% - 24px, 1120px); padding-top: 24px; }
   .grid, .split { grid-template-columns: 1fr; }
   .roadmap-item { grid-template-columns: 1fr; gap: 4px; }
-  .site-nav { gap: 10px; font-size: 13px; }
-  .site-header { padding-inline: 12px; }
+  .site-header { flex-wrap: wrap; padding-inline: 12px; padding-block: 10px; row-gap: 8px; }
+  .site-nav { width: 100%; flex-wrap: wrap; justify-content: flex-start; gap: 6px 16px; font-size: 13px; }
 }
 
 @media print {

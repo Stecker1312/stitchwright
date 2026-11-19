@@ -59,7 +59,7 @@ SVG-Export bleibt vollständig. Das hält große Charts flüssig.
 SVG-Export, PNG-Export, Sprachwechsel, dunkles Theme, Offline-Neuladen.
 
 **Offen:** Zopf-Über-/Unterführung optisch verfeinern, Touch auf echten
-Geräten, eigene Symbol-Packs, Übersetzungen, V-Probe als Abnahme.
+Geräten, eigene Symbol-Packs, Übersetzungen und eine reale Abnahme.
 
 ## 2026-11-18 – Rückmeldung aus dem ersten Test
 
@@ -200,3 +200,28 @@ ist das die falsche erste Begegnung.
 - Browserprüfung: Start englisch, Wechsel auf Deutsch aktualisiert alle
   Bereiche inklusive Zeichenfläche und Legende, Reload behält Deutsch,
   Rückwechsel auf Englisch funktioniert, Beispiel lädt mit englischem Titel.
+
+## 2026-11-19 – Englische Projektseite und 0.3.0-alpha.1
+
+**Beobachtet:** Daniel hat den Text für die Projektseite freigegeben. Die
+Seite soll ohne CLI-Hürde funktionieren, den Preisvergleich nennen, das
+Symbolpack auf Englisch **Clear** heißen und automatische Anleitungen als
+langfristige Idee unter „Planned“ führen.
+
+**Getan:**
+
+- `about.html` vollständig auf Englisch neu geschrieben: hero, Feature-Karten,
+  Browser-Schnellstart, „Run it yourself“, Agenten-CLI, Status, Planned,
+  Contributing, Technik, Dokumentation, Datenschutz, Transparenz und Lizenz.
+- Windows- und macOS-Nutzer brauchen weder Node noch CLI: Live-Demo öffnen
+  oder PWA installieren; der lokale Start und die CLI sind klar optional.
+- „Automatic written instructions from a drawn chart“ steht unter „Planned“.
+- Symbolpack heißt auf Englisch **Clear**, auf Deutsch weiter **Klar**.
+- `docs/format.md` und `docs/symbols.md` auf Englisch übersetzt; interne ADRs,
+  SOPs, Status und Journal bleiben deutsch und werden auf der Seite als
+  interne Notizen gekennzeichnet.
+- Neuer englischer Screenshot (1440 × 900) aus dem Beispiel-Chart.
+- Version auf `0.3.0-alpha.1` gesetzt, Changelog und Service-Worker-Cache
+  aktualisiert; mobile Kopfzeile der Projektseite umgebrochen.
+- Öffentliche Dateien von privaten Projektverweisen bereinigt.
+- 66 Tests grün; Browserprüfung hell/dunkel, Desktop und 390 px Breite.

@@ -6,9 +6,9 @@
 ## Neues Chart
 
 ```bash
-node cli/stitchwright.js new --width 40 --height 24 --title "V-Probe" \
-  --out samples/v-probe.strickschrift.json
-node cli/stitchwright.js validate samples/v-probe.strickschrift.json
+node cli/stitchwright.js new --width 40 --height 24 --title "Example chart" \
+  --out samples/example-chart.strickschrift.json
+node cli/stitchwright.js validate samples/example-chart.strickschrift.json
 ```
 
 Im Editor: „Neu“, Breite und Höhe eingeben, zeichnen, speichern.

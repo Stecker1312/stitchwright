@@ -11,7 +11,7 @@ Keine Datumsversprechen. Die Reihenfolge ist wichtig, die Dauer nicht.
 ## M1 – Kern und Editor-MVP (erledigt)
 
 - Chart-Modell, Validierung, JSON-Schema
-- Symbolpack Klar als Glyphen
+- Symbolpack Klar/Clear als Glyphen
 - SVG-Export und Node-CLI
 - Canvas-Editor: Raster, Pan/Zoom, Malen, Radieren, Auswahl
 - Gruppen für Zöpfe und Mehrfachsymbole
@@ -20,7 +20,7 @@ Keine Datumsversprechen. Die Reihenfolge ist wichtig, die Dauer nicht.
 - Tastatur, Maus, Touch, Stift
 - Deutsch/Englisch, hell/dunkel/system, metrisch/imperial
 
-**Abnahme:** Der Editor ist benutzbar; die Gugel-V-Probe als reale
+**Abnahme:** Der Editor ist benutzbar; eine reale
 Strickabnahme bleibt offen.
 
 ## M2 – Vorzeigbar (Alpha veröffentlicht)

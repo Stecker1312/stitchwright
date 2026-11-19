@@ -1,5 +1,5 @@
 /**
- * The "Klar" symbol pack.
+ * The "Clear" symbol pack (German: "Klar").
  *
  * A symbol is described once and drawn by two renderers:
  *   - Canvas for the editor viewport (fast, only visible cells).

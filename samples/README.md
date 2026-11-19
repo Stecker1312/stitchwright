@@ -1,19 +1,19 @@
-# Beispiele
+# Examples
 
-Synthetische Charts, keine persönlichen Projektdaten.
+Synthetic charts, no personal project data.
 
-| Datei | Inhalt |
+| File | Contents |
 |---|---|
-| `empty.strickschrift.json` | leeres 24 × 16 Chart, zum Testen von Import und CLI |
-| `klar-demo.strickschrift.json` | 32 × 20 mit Zöpfen, Abnahmen, Farben, Rapport |
-| `klar-demo.svg` | gerenderte Fassung des Demo-Charts |
+| `empty.strickschrift.json` | empty 24 × 16 chart, for testing import and the CLI |
+| `klar-demo.strickschrift.json` | 32 × 20 with cables, decreases, colours and a repeat |
+| `klar-demo.svg` | rendered version of the demo chart |
 
-## Neu rendern
+## Render again
 
 ```bash
 node cli/stitchwright.js render samples/klar-demo.strickschrift.json \
   samples/klar-demo.svg --force
 ```
 
-Die SVG-Datei ist ein Beispiel für das Ausgabeformat, nicht die Quelle.
-Quelle ist immer die JSON-Datei.
+The SVG file is an example of the output format, not the source. The JSON file
+is always the source.

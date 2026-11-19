@@ -61,7 +61,7 @@ Es gibt keine Installation, keinen Build-Schritt und keine Server-Datenbank.
 | `src/core/` | Modell, Symbole, Validierung, SVG-Export, Einheiten, i18n |
 | `src/ui/` | Canvas-Editor, Werkzeuge, Panels, Persistenz |
 | `src/locales/` | UI-Texte, de und en gepflegt |
-| `src/core/symbols.js` | Symboldefinitionen des Standard-Packs „Klar“ |
+| `src/core/symbols.js` | Symboldefinitionen des Standard-Packs „Klar“ (englisch „Clear“) |
 | `cli/` | Agenten-CLI: prüfen, rendern, neu anlegen |
 | `tests/` | Node-Tests für Kern und CLI |
 | `docs/adr/` | warum etwas so ist |

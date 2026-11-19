@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.3.0-alpha.1 – 19 November 2026
 
 - **English first:** British English is now the default and presentation
   language for the app, the manifest, the README and the command-line output.
@@ -8,6 +8,10 @@
 - All built-in page text, validation messages and example charts are in
   English. The language switch also updates toolbars, sidebars and the canvas
   label.
+- New English project page with a browser-first quick start, a plain-language
+  status and roadmap, and a refreshed English screenshot.
+- The standard symbol set is called **Clear** in English; German keeps
+  **Klar**.
 - 66 Node tests; browser check for the language switch and persistence.
 
 ## 0.2.0-alpha.1 – 18 November 2026
