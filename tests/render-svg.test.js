@@ -22,7 +22,7 @@ test("SVG contains title, grid, symbols and legend", () => {
   assert.match(svg, /Testchart/);
   assert.match(svg, /Untertitel/);
   assert.match(svg, /sym-p/);
-  assert.match(svg, /Legende/);
+  assert.match(svg, /Legend/);
   assert.match(svg, /C0392B/i);
 });
 
@@ -46,7 +46,13 @@ test("rows mode rs hides even rows and numbers odd rows", () => {
 test("legend can be disabled", () => {
   const chart = sample();
   const svg = renderSvg(chart, { includeLegend: false });
-  assert.doesNotMatch(svg, /Legende/);
+  assert.doesNotMatch(svg, /Legend/);
+});
+
+test("SVG follows the language option", () => {
+  const svg = renderSvg(sample(), { lang: "de" });
+  assert.match(svg, /Legende/);
+  assert.match(svg, /Raster/);
 });
 
 test("colour contrast chooses readable glyph colour", () => {

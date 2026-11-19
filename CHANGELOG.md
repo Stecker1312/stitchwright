@@ -1,55 +1,65 @@
 # Changelog
 
-## 0.2.0-alpha.1 – 2026-11-18
+## Unreleased
 
-Zweite öffentliche Vorabversion. Keine Produktionsreife.
+- **English first:** British English is now the default and presentation
+  language for the app, the manifest, the README and the command-line output.
+  German stays available as a full translation in the settings.
+- All built-in page text, validation messages and example charts are in
+  English. The language switch also updates toolbars, sidebars and the canvas
+  label.
+- 66 Node tests; browser check for the language switch and persistence.
 
-### Neu
+## 0.2.0-alpha.1 – 18 November 2026
 
-- **Maschenmarker:** gestrichelte vertikale Hilfslinien nach wählbaren Maschen.
-  Einzelne Marker per Marker-Werkzeug setzen/entfernen oder „Marker alle N“
-  erzeugen. Marker sind reine Zeichenhilfen, keine Strickanweisung.
-- **Bereiche kopieren und einfügen:** Auswahlwerkzeug, Ziehen, Kopieren,
-  Zielzelle anklicken, Einfügen. Farben und Gruppen werden mitkopiert.
-- Sichtbare Kopieren-/Einfügen-Buttons in der Werkzeugleiste.
+Second public alpha. Not ready for production.
 
-### Behoben / verbessert
+### New
 
-- Werkzeugauswahl traf auch die Zeichenfläche statt nur die Werkzeugbuttons.
-- 64 Node-Tests; Browserprüfung für Marker und Bereichs-Kopieren.
+- **Stitch markers:** dashed vertical guide lines after chosen stitches. Place
+  or remove single markers with the marker tool, or use “Marker every N”.
+  Markers are drawing guides, not knitting instructions.
+- **Copy and paste areas:** select tool, drag, copy, click the target cell,
+  paste. Colours and groups are copied too.
+- Visible copy and paste buttons in the toolbar.
 
-## 0.1.0-alpha.1 – 2026-11-18
+### Fixed / improved
 
-Erste öffentliche Vorabversion. Keine Produktionsreife.
+- The tool picker also matched the canvas instead of only the tool buttons.
+- 64 Node tests; browser check for markers and copying areas.
 
-### Enthalten
+## 0.1.0-alpha.1 – 18 November 2026
 
-- Editor für Strickdiagramme als statische Web-App/PWA
-- Symbolsprache „Klar“ mit Grundzeichen, Zu-/Abnahmen, Zöpfen, Textur und
-  Hilfszeichen
-- Parametrisierte Zöpfe von 1/1 bis 4/4, vorne und hinten
-- Farbflächen pro Masche, Farbpalette und Farb-Legende
-- Hin- und Rückreihen oder nur Hinreihen
-- Rapport, Reihen-/Maschennummern, Legende
-- Eigene beschriftete Gruppen mit optionalem Legendentext, lokal gespeichert
-- Rückgängig/Wiederholen, Kopieren, Spiegeln, Reihen/Spalten einfügen und löschen
-- SVG-, PNG- und JSON-Export, Druck über den Browser
-- Horizontale und vertikale Scrollbalken für große Charts
-- Deutsch/Englisch, hell/dunkel/System/hoher Kontrast, metrisch/imperial
-- Tastatur-, Maus-, Touch- und Stiftbedienung
-- Offline-Betrieb über Service Worker
-- Node-CLI: `validate`, `render`, `new`, `legend`
-- 60 Node-Tests; Browserprüfung mit Playwright
+First public alpha. Not ready for production.
 
-### Bekannte Grenzen
+### Included
 
-- Frühe Alpha: Fehler und Formatänderungen möglich.
-- Nur Deutsch und Englisch sind fachlich gepflegt.
-- Eigene Symbol-Packs und Theme-Editor fehlen noch.
-- Touch/Stift ist noch nicht auf allen Geräten erprobt.
-- Keine Cloud, keine Konten, keine Kollaboration, keine Telemetrie.
+- Knitting chart editor as a static web app/PWA
+- The “Klar” symbol set with basic stitches, increases, decreases, cables,
+  texture and utility symbols
+- Parametric cables from 1/1 to 4/4, to the front and to the back
+- Colour fills per stitch, colour palette and colour legend
+- Right-side and wrong-side rows, or right-side rows only
+- Repeat, row and stitch numbers, legend
+- Custom labelled groups with an optional legend note, stored locally
+- Undo/redo, copy, mirror, insert and delete rows or columns
+- SVG, PNG and JSON export; printing through the browser
+- Horizontal and vertical scrollbars for large charts
+- English/German, light/dark/system/high contrast, metric/imperial
+- Keyboard, mouse, touch and stylus input
+- Offline use through a service worker
+- Node CLI: `validate`, `render`, `new`, `legend`
+- 60 Node tests; browser check with Playwright
 
-### Dateiformat
+### Known limits
 
-`strickschrift/1`. Gruppen sind einreihig; eigene Gruppen haben `label`,
-`span` und optional `legend`.
+- Early alpha: bugs and format changes are possible.
+- Only English and German are maintained.
+- Custom symbol packs and a theme editor are still missing.
+- Touch and stylus have not been tried on every device.
+- No cloud, no accounts, no collaboration, no telemetry.
+
+### File format
+
+`strickschrift/1`. Groups cover a single row; custom groups have `label`,
+`span` and optionally `legend`.

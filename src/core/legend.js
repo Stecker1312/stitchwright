@@ -10,7 +10,7 @@ import { usedLegendKeys, groupSpan } from "./chart.js";
 import { glyphFor, symbolLegend, symbolName } from "./symbols.js";
 
 /** Build localised legend entries for the chart. */
-export function legendEntries(chart, lang = "de") {
+export function legendEntries(chart, lang = "en") {
   return usedLegendKeys(chart).map((entry) => {
     if (entry.kind === "cell") {
       const name = symbolName(entry.symbol, lang);

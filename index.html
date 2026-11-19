@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="de" data-theme="system">
+<html lang="en-GB" data-theme="system">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#2563eb">
-  <meta name="description" content="Stitchwright – freier, lokaler Strickschrift-Editor">
+  <meta name="description" content="Stitchwright – a free, local knitting chart editor">
   <title>Stitchwright</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="favicon.ico" sizes="32x32">
@@ -49,7 +49,7 @@
   <div class="app" id="app">
     <header class="topbar">
       <div class="brand">
-        <button class="icon-button mobile-only" id="btn-sidebar-left" type="button" data-i18n-title="app.tools" data-i18n-aria-label="app.tools" aria-label="Werkzeuge" title="Werkzeuge">
+        <button class="icon-button mobile-only" id="btn-sidebar-left" type="button" data-i18n-title="app.tools" data-i18n-aria-label="app.tools" aria-label="Tools" title="Tools">
           <svg class="icon"><use href="#i-panel-left"/></svg>
         </button>
         <a class="brand-link" href="./" aria-label="Stitchwright">
@@ -59,60 +59,60 @@
       </div>
 
       <div class="title-wrap">
-        <input id="chart-title" class="chart-title" type="text" maxlength="120" data-i18n-aria-label="chart.title" data-i18n-placeholder="chart.untitled" aria-label="Chart-Titel" placeholder="Unbenanntes Chart">
+        <input id="chart-title" class="chart-title" type="text" maxlength="120" data-i18n-aria-label="chart.title" data-i18n-placeholder="chart.untitled" aria-label="Chart title" placeholder="Untitled chart">
         <span class="save-indicator" id="save-indicator" aria-live="polite"></span>
       </div>
 
       <div class="top-actions">
-        <button class="icon-button" id="btn-undo" type="button" data-i18n-title="app.undo" data-i18n-aria-label="app.undo" title="Rückgängig">
+        <button class="icon-button" id="btn-undo" type="button" data-i18n-title="app.undo" data-i18n-aria-label="app.undo" title="Undo">
           <svg class="icon"><use href="#i-undo"/></svg>
         </button>
-        <button class="icon-button" id="btn-redo" type="button" data-i18n-title="app.redo" data-i18n-aria-label="app.redo" title="Wiederholen">
+        <button class="icon-button" id="btn-redo" type="button" data-i18n-title="app.redo" data-i18n-aria-label="app.redo" title="Redo">
           <svg class="icon"><use href="#i-redo"/></svg>
         </button>
         <span class="divider"></span>
-        <button class="icon-button" id="btn-new" type="button" data-i18n-title="app.new" data-i18n-aria-label="app.new" title="Neu">
+        <button class="icon-button" id="btn-new" type="button" data-i18n-title="app.new" data-i18n-aria-label="app.new" title="New">
           <svg class="icon"><use href="#i-file-plus"/></svg>
         </button>
-        <button class="icon-button" id="btn-open" type="button" data-i18n-title="app.open" data-i18n-aria-label="app.open" title="Öffnen">
+        <button class="icon-button" id="btn-open" type="button" data-i18n-title="app.open" data-i18n-aria-label="app.open" title="Open">
           <svg class="icon"><use href="#i-folder"/></svg>
         </button>
-        <button class="icon-button" id="btn-save" type="button" data-i18n-title="app.save" data-i18n-aria-label="app.save" title="Speichern">
+        <button class="icon-button" id="btn-save" type="button" data-i18n-title="app.save" data-i18n-aria-label="app.save" title="Save">
           <svg class="icon"><use href="#i-save"/></svg>
         </button>
-        <button class="button primary" id="btn-export" type="button" data-i18n-aria-label="app.export" data-i18n-title="app.export" aria-label="Exportieren" title="Exportieren">
+        <button class="button primary" id="btn-export" type="button" data-i18n-aria-label="app.export" data-i18n-title="app.export" aria-label="Export" title="Export">
           <svg class="icon"><use href="#i-download"/></svg>
-          <span data-i18n="app.export">Exportieren</span>
+          <span data-i18n="app.export">Export</span>
         </button>
-        <button class="icon-button" id="btn-settings" type="button" data-i18n-title="app.settings" data-i18n-aria-label="app.settings" title="Einstellungen">
+        <button class="icon-button" id="btn-settings" type="button" data-i18n-title="app.settings" data-i18n-aria-label="app.settings" title="Settings">
           <svg class="icon"><use href="#i-settings"/></svg>
         </button>
-        <button class="icon-button" id="btn-help" type="button" data-i18n-title="app.help" data-i18n-aria-label="app.help" title="Hilfe">
+        <button class="icon-button" id="btn-help" type="button" data-i18n-title="app.help" data-i18n-aria-label="app.help" title="Help">
           <svg class="icon"><use href="#i-help"/></svg>
         </button>
-        <button class="icon-button mobile-only" id="btn-sidebar-right" type="button" data-i18n-title="app.properties" data-i18n-aria-label="app.properties" aria-label="Eigenschaften" title="Eigenschaften">
+        <button class="icon-button mobile-only" id="btn-sidebar-right" type="button" data-i18n-title="app.properties" data-i18n-aria-label="app.properties" aria-label="Properties" title="Properties">
           <svg class="icon"><use href="#i-panel-right"/></svg>
         </button>
       </div>
     </header>
 
     <main class="workspace">
-      <aside class="sidebar left" id="left-panel" aria-label="Werkzeuge und Symbole">
+      <aside class="sidebar left" id="left-panel" data-i18n-aria-label="app.toolsAndSymbols" aria-label="Tools and symbols">
         <div class="panel-section tools-section">
-          <div class="segmented" role="toolbar" aria-label="Werkzeuge">
-            <button class="tool-button" data-tool="pencil" type="button" data-i18n-title="tool.pencil.hint" data-i18n-aria-label="tool.pencil" title="Zeichnen">
+          <div class="segmented" role="toolbar" data-i18n-aria-label="app.tools" aria-label="Tools">
+            <button class="tool-button" data-tool="pencil" type="button" data-i18n-title="tool.pencil.hint" data-i18n-aria-label="tool.pencil" title="Draw">
               <svg class="icon"><use href="#i-pencil"/></svg>
             </button>
-            <button class="tool-button" data-tool="eraser" type="button" data-i18n-title="tool.eraser.hint" data-i18n-aria-label="tool.eraser" title="Radieren">
+            <button class="tool-button" data-tool="eraser" type="button" data-i18n-title="tool.eraser.hint" data-i18n-aria-label="tool.eraser" title="Erase">
               <svg class="icon"><use href="#i-eraser"/></svg>
             </button>
-            <button class="tool-button" data-tool="select" type="button" data-i18n-title="tool.select.hint" data-i18n-aria-label="tool.select" title="Auswählen">
+            <button class="tool-button" data-tool="select" type="button" data-i18n-title="tool.select.hint" data-i18n-aria-label="tool.select" title="Select">
               <svg class="icon"><use href="#i-cursor"/></svg>
             </button>
-            <button class="tool-button" data-tool="pan" type="button" data-i18n-title="tool.pan.hint" data-i18n-aria-label="tool.pan" title="Verschieben">
+            <button class="tool-button" data-tool="pan" type="button" data-i18n-title="tool.pan.hint" data-i18n-aria-label="tool.pan" title="Pan">
               <svg class="icon"><use href="#i-hand"/></svg>
             </button>
-            <button class="tool-button" data-tool="marker" type="button" data-i18n-title="tool.marker.hint" data-i18n-aria-label="tool.marker" title="Maschenmarker setzen">
+            <button class="tool-button" data-tool="marker" type="button" data-i18n-title="tool.marker.hint" data-i18n-aria-label="tool.marker" title="Place stitch markers">
               <svg class="icon"><use href="#i-marker"/></svg>
             </button>
           </div>
@@ -120,15 +120,15 @@
 
         <div class="panel-section grow">
           <div class="section-head">
-            <h2 data-i18n="palette.title">Symbole</h2>
+            <h2 data-i18n="palette.title">Symbols</h2>
           </div>
-          <input class="search" id="symbol-search" type="search" data-i18n-placeholder="palette.search" placeholder="Symbole suchen …">
+          <input class="search" id="symbol-search" type="search" data-i18n-placeholder="palette.search" placeholder="Search symbols …">
           <div class="palette" id="palette"></div>
         </div>
 
         <div class="panel-section">
           <div class="section-head">
-            <h2 data-i18n="palette.colors">Farben</h2>
+            <h2 data-i18n="palette.colors">Colours</h2>
           </div>
           <div class="colors" id="colors"></div>
         </div>
@@ -137,69 +137,69 @@
       <section class="stage">
         <div class="stage-toolbar">
           <div class="zoom-group">
-            <button class="icon-button small" id="zoom-out" type="button" data-i18n-title="chart.zoomOut" data-i18n-aria-label="chart.zoomOut" title="Verkleinern">
+            <button class="icon-button small" id="zoom-out" type="button" data-i18n-title="chart.zoomOut" data-i18n-aria-label="chart.zoomOut" title="Zoom out">
               <svg class="icon"><use href="#i-minus"/></svg>
             </button>
             <span class="zoom-label" id="zoom-label">100 %</span>
-            <button class="icon-button small" id="zoom-in" type="button" data-i18n-title="chart.zoomIn" data-i18n-aria-label="chart.zoomIn" title="Vergrößern">
+            <button class="icon-button small" id="zoom-in" type="button" data-i18n-title="chart.zoomIn" data-i18n-aria-label="chart.zoomIn" title="Zoom in">
               <svg class="icon"><use href="#i-plus"/></svg>
             </button>
-            <button class="icon-button small" id="zoom-fit" type="button" data-i18n-title="chart.zoomFit" data-i18n-aria-label="chart.zoomFit" title="Einpassen">
+            <button class="icon-button small" id="zoom-fit" type="button" data-i18n-title="chart.zoomFit" data-i18n-aria-label="chart.zoomFit" title="Fit">
               <svg class="icon"><use href="#i-fit"/></svg>
             </button>
           </div>
           <div class="stage-meta">
-            <span class="pill" id="rows-mode-pill">Alle Reihen</span>
-            <button class="button subtle small" id="btn-rows-mode" type="button">Nur Hinreihen</button>
-            <button class="icon-button small" id="btn-table" type="button" data-i18n-title="dialog.table.title" data-i18n-aria-label="dialog.table.title" title="Tabellenansicht">
+            <span class="pill" id="rows-mode-pill">All rows</span>
+            <button class="button subtle small" id="btn-rows-mode" type="button">Right-side rows only</button>
+            <button class="icon-button small" id="btn-table" type="button" data-i18n-title="dialog.table.title" data-i18n-aria-label="dialog.table.title" title="Table view">
               <svg class="icon"><use href="#i-table"/></svg>
             </button>
-            <button class="icon-button small" id="btn-copy-selection" type="button" data-i18n-title="chart.copy" data-i18n-aria-label="chart.copy" title="Kopieren" disabled>
+            <button class="icon-button small" id="btn-copy-selection" type="button" data-i18n-title="chart.copy" data-i18n-aria-label="chart.copy" title="Copy" disabled>
               <svg class="icon"><use href="#i-copy"/></svg>
             </button>
-            <button class="icon-button small" id="btn-paste-selection" type="button" data-i18n-title="chart.paste" data-i18n-aria-label="chart.paste" title="Einfügen" disabled>
+            <button class="icon-button small" id="btn-paste-selection" type="button" data-i18n-title="chart.paste" data-i18n-aria-label="chart.paste" title="Paste" disabled>
               <svg class="icon"><use href="#i-paste"/></svg>
             </button>
-            <button class="icon-button small" id="btn-mirror-h" type="button" data-i18n-title="chart.mirrorHorizontal" data-i18n-aria-label="chart.mirrorHorizontal" title="Horizontal spiegeln">
+            <button class="icon-button small" id="btn-mirror-h" type="button" data-i18n-title="chart.mirrorHorizontal" data-i18n-aria-label="chart.mirrorHorizontal" title="Mirror horizontally">
               <svg class="icon"><use href="#i-mirror"/></svg>
             </button>
-            <button class="icon-button small" id="btn-mirror-v" type="button" data-i18n-title="chart.mirrorVertical" data-i18n-aria-label="chart.mirrorVertical" title="Vertikal spiegeln">
+            <button class="icon-button small" id="btn-mirror-v" type="button" data-i18n-title="chart.mirrorVertical" data-i18n-aria-label="chart.mirrorVertical" title="Mirror vertically">
               <svg class="icon rotate-90"><use href="#i-mirror"/></svg>
             </button>
           </div>
         </div>
 
         <div class="canvas-wrap" id="canvas-wrap">
-          <canvas id="chart-canvas" tabindex="0" role="img" aria-label="Strickschrift"></canvas>
-          <div class="canvas-adders" role="group" data-i18n-aria-label="chart.extendGrid" aria-label="Raster erweitern">
-            <button class="button subtle small" id="btn-add-row" type="button" data-i18n-title="chart.addRowHint" data-i18n-aria-label="chart.addRowHint" title="Reihe oben anhängen">
-              + <span data-i18n="chart.addRowShort">Reihe</span>
+          <canvas id="chart-canvas" tabindex="0" role="img" data-i18n-aria-label="chart.canvas" aria-label="Knitting chart"></canvas>
+          <div class="canvas-adders" role="group" data-i18n-aria-label="chart.extendGrid" aria-label="Extend grid">
+            <button class="button subtle small" id="btn-add-row" type="button" data-i18n-title="chart.addRowHint" data-i18n-aria-label="chart.addRowHint" title="Append a row at the top">
+              + <span data-i18n="chart.addRowShort">Row</span>
             </button>
-            <button class="button subtle small" id="btn-add-col" type="button" data-i18n-title="chart.addColumnHint" data-i18n-aria-label="chart.addColumnHint" title="Spalte rechts anhängen">
-              + <span data-i18n="chart.addColumnShort">Spalte</span>
+            <button class="button subtle small" id="btn-add-col" type="button" data-i18n-title="chart.addColumnHint" data-i18n-aria-label="chart.addColumnHint" title="Append a column on the right">
+              + <span data-i18n="chart.addColumnShort">Column</span>
             </button>
             <span class="adder-divider"></span>
             <span class="header-selection" id="header-selection" hidden></span>
-            <button class="icon-button small" id="btn-delete-header" type="button" aria-label="Ausgewählte Reihe oder Spalte löschen" title="Ausgewählte Reihe oder Spalte löschen" disabled>
+            <button class="icon-button small" id="btn-delete-header" type="button" aria-label="Delete selected row or column" title="Delete selected row or column" disabled>
               <svg class="icon"><use href="#i-trash"/></svg>
             </button>
           </div>
-          <div class="canvas-scrollbar canvas-scrollbar-h" id="scroll-h" role="scrollbar" aria-controls="chart-canvas" aria-orientation="horizontal" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" data-i18n-aria-label="scroll.horizontal" aria-label="Horizontale Scrollposition" tabindex="0" hidden>
+          <div class="canvas-scrollbar canvas-scrollbar-h" id="scroll-h" role="scrollbar" aria-controls="chart-canvas" aria-orientation="horizontal" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" data-i18n-aria-label="scroll.horizontal" aria-label="Horizontal scroll position" tabindex="0" hidden>
             <div class="canvas-scrollbar-thumb" id="scroll-h-thumb"></div>
           </div>
-          <div class="canvas-scrollbar canvas-scrollbar-v" id="scroll-v" role="scrollbar" aria-controls="chart-canvas" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" data-i18n-aria-label="scroll.vertical" aria-label="Vertikale Scrollposition" tabindex="0" hidden>
+          <div class="canvas-scrollbar canvas-scrollbar-v" id="scroll-v" role="scrollbar" aria-controls="chart-canvas" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" data-i18n-aria-label="scroll.vertical" aria-label="Vertical scroll position" tabindex="0" hidden>
             <div class="canvas-scrollbar-thumb" id="scroll-v-thumb"></div>
           </div>
           <div class="empty-hint" id="empty-hint" hidden>
             <div class="empty-card">
-              <button class="icon-button empty-close" id="btn-empty-close" type="button" data-i18n-aria-label="app.close" aria-label="Schließen">
+              <button class="icon-button empty-close" id="btn-empty-close" type="button" data-i18n-aria-label="app.close" aria-label="Close">
                 <svg class="icon"><use href="#i-close"/></svg>
               </button>
-              <h2 data-i18n="chart.empty.title">Noch ist das Chart leer</h2>
-              <p data-i18n="chart.empty.text">Wähle ein Symbol und male die erste Masche.</p>
+              <h2 data-i18n="chart.empty.title">The chart is still empty</h2>
+              <p data-i18n="chart.empty.text">Pick a symbol and paint the first stitch. Empty cells mean knit. Or load an example.</p>
               <div class="button-row">
-                <button class="button primary" id="btn-empty-start" type="button" data-i18n="onboard.draw">Jetzt zeichnen</button>
-                <button class="button" id="btn-empty-sample" type="button" data-i18n="chart.empty.sample">Beispiel laden</button>
+                <button class="button primary" id="btn-empty-start" type="button" data-i18n="onboard.draw">Start drawing</button>
+                <button class="button" id="btn-empty-sample" type="button" data-i18n="chart.empty.sample">Load example</button>
               </div>
             </div>
           </div>
@@ -216,90 +216,90 @@
         </footer>
       </section>
 
-      <aside class="sidebar right" id="right-panel" aria-label="Eigenschaften">
+      <aside class="sidebar right" id="right-panel" data-i18n-aria-label="app.properties" aria-label="Properties">
         <div class="panel-section">
           <div class="section-head">
-            <h2 data-i18n="inspector.title">Eigenschaften</h2>
+            <h2 data-i18n="inspector.title">Properties</h2>
           </div>
           <div id="inspector"></div>
         </div>
 
         <div class="panel-section">
           <div class="section-head">
-            <h2 data-i18n="chart.legend">Legende</h2>
+            <h2 data-i18n="chart.legend">Legend</h2>
           </div>
           <div id="legend" class="legend"></div>
         </div>
 
         <div class="panel-section">
           <div class="section-head">
-            <h2 data-i18n="chart.size">Größe</h2>
+            <h2 data-i18n="chart.size">Size</h2>
           </div>
           <div class="settings-grid">
             <label class="field compact">
-              <span class="field-label" data-i18n="chart.width">Breite</span>
+              <span class="field-label" data-i18n="chart.width">Width</span>
               <input id="chart-width" type="number" min="1" max="1000" step="1">
             </label>
             <label class="field compact">
-              <span class="field-label" data-i18n="chart.height">Höhe</span>
+              <span class="field-label" data-i18n="chart.height">Height</span>
               <input id="chart-height" type="number" min="1" max="1000" step="1">
             </label>
           </div>
           <div class="button-row wrap">
-            <button class="button subtle small" id="btn-row-above" type="button">+ Reihe ↑</button>
-            <button class="button subtle small" id="btn-row-below" type="button">+ Reihe ↓</button>
-            <button class="button subtle small" id="btn-col-left" type="button">+ Spalte ←</button>
-            <button class="button subtle small" id="btn-col-right" type="button">+ Spalte →</button>
+            <button class="button subtle small" id="btn-row-above" type="button">+ Row ↑</button>
+            <button class="button subtle small" id="btn-row-below" type="button">+ Row ↓</button>
+            <button class="button subtle small" id="btn-col-left" type="button">+ Column ←</button>
+            <button class="button subtle small" id="btn-col-right" type="button">+ Column →</button>
           </div>
           <label class="field">
-            <span class="field-label" data-i18n="chart.rowsMode">Rückreihen</span>
+            <span class="field-label" data-i18n="chart.rowsMode">Wrong-side rows</span>
             <select id="opt-rows-mode">
-              <option value="all" data-i18n="chart.rowsMode.all">Alle Reihen zeichnen</option>
-              <option value="rs" data-i18n="chart.rowsMode.rs">Nur Hinreihen</option>
+              <option value="all" data-i18n="chart.rowsMode.all">Draw all rows</option>
+              <option value="rs" data-i18n="chart.rowsMode.rs">Right-side rows only</option>
             </select>
           </label>
           <p class="hint" data-i18n="chart.rowsMode.hint"></p>
           <label class="check">
             <input id="opt-row-numbers" type="checkbox">
-            <span data-i18n="chart.showRowNumbers">Reihennummern</span>
+            <span data-i18n="chart.showRowNumbers">Row numbers</span>
           </label>
           <label class="check">
             <input id="opt-stitch-numbers" type="checkbox">
-            <span data-i18n="chart.showStitchNumbers">Maschennummern</span>
+            <span data-i18n="chart.showStitchNumbers">Stitch numbers</span>
           </label>
           <label class="check">
             <input id="opt-legend" type="checkbox">
-            <span data-i18n="chart.showLegend">Legende</span>
+            <span data-i18n="chart.showLegend">Legend</span>
           </label>
 
           <div class="settings-grid">
             <label class="field compact">
-              <span class="field-label" data-i18n="chart.repeat.start">Von Masche</span>
+              <span class="field-label" data-i18n="chart.repeat.start">From stitch</span>
               <input id="opt-repeat-start" type="number" min="1" step="1">
             </label>
             <label class="field compact">
-              <span class="field-label" data-i18n="chart.repeat.end">Bis Masche</span>
+              <span class="field-label" data-i18n="chart.repeat.end">To stitch</span>
               <input id="opt-repeat-end" type="number" min="1" step="1">
             </label>
           </div>
           <div class="settings-grid">
             <label class="field compact">
-              <span class="field-label" data-i18n="chart.markerEvery">Marker alle</span>
+              <span class="field-label" data-i18n="chart.markerEvery">Marker every</span>
               <input id="opt-marker-every" type="number" min="1" max="1000" step="1" placeholder="10">
             </label>
-            <button class="button subtle small" id="btn-marker-every" type="button" data-i18n="chart.markerSet">Setzen</button>
+            <button class="button subtle small" id="btn-marker-every" type="button" data-i18n="chart.markerSet">Set</button>
           </div>
           <div class="button-row wrap">
-            <button class="button subtle small" id="btn-marker-clear" type="button" data-i18n="chart.markerClear">Marker löschen</button>
+            <button class="button subtle small" id="btn-marker-clear" type="button" data-i18n="chart.markerClear">Clear markers</button>
             <span class="hint" id="marker-count"></span>
           </div>
           <p class="hint" data-i18n="chart.markerHint"></p>
           <label class="field">
-            <span class="field-label" data-i18n="chart.cellSize">Zellgröße</span>
+            <span class="field-label" data-i18n="chart.cellSize">Cell size</span>
             <input id="opt-cell-mm" type="number" min="2" max="20" step="0.5">
           </label>
           <label class="field">
-            <span class="field-label" data-i18n="chart.paper">Papier</span>
+            <span class="field-label" data-i18n="chart.paper">Paper</span>
             <select id="opt-paper">
               <option value="A4">A4</option>
               <option value="A3">A3</option>
@@ -308,7 +308,7 @@
             </select>
           </label>
           <label class="field">
-            <span class="field-label" data-i18n="chart.subtitle">Untertitel</span>
+            <span class="field-label" data-i18n="chart.subtitle">Subtitle</span>
             <input id="opt-subtitle" type="text" maxlength="120">
           </label>
         </div>
@@ -322,28 +322,28 @@
   <dialog id="dialog-new" class="dialog">
     <form method="dialog" class="dialog-inner">
       <header class="dialog-head">
-        <h2 data-i18n="chart.new.title">Neues Chart anlegen</h2>
-        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+        <h2 data-i18n="chart.new.title">Create a new chart</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Close">
           <svg class="icon"><use href="#i-close"/></svg>
         </button>
       </header>
       <label class="field">
-        <span class="field-label" data-i18n="chart.title">Titel</span>
-        <input id="new-title" type="text" maxlength="120" placeholder="Mein Chart">
+        <span class="field-label" data-i18n="chart.title">Title</span>
+        <input id="new-title" type="text" maxlength="120" placeholder="My chart">
       </label>
       <div class="settings-grid">
         <label class="field">
-          <span class="field-label" data-i18n="chart.new.width">Breite in Maschen</span>
+          <span class="field-label" data-i18n="chart.new.width">Width in stitches</span>
           <input id="new-width" type="number" min="1" max="1000" value="40">
         </label>
         <label class="field">
-          <span class="field-label" data-i18n="chart.new.height">Höhe in Reihen</span>
+          <span class="field-label" data-i18n="chart.new.height">Height in rows</span>
           <input id="new-height" type="number" min="1" max="1000" value="24">
         </label>
       </div>
       <footer class="dialog-actions">
-        <button class="button" value="cancel" type="submit" data-i18n="app.cancel">Abbrechen</button>
-        <button class="button primary" id="btn-create-chart" value="default" type="button" data-i18n="chart.new.create">Chart anlegen</button>
+        <button class="button" value="cancel" type="submit" data-i18n="app.cancel">Cancel</button>
+        <button class="button primary" id="btn-create-chart" value="default" type="button" data-i18n="chart.new.create">Create chart</button>
       </footer>
     </form>
   </dialog>
@@ -351,21 +351,21 @@
   <dialog id="dialog-export" class="dialog">
     <form method="dialog" class="dialog-inner">
       <header class="dialog-head">
-        <h2 data-i18n="dialog.export.title">Exportieren</h2>
-        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+        <h2 data-i18n="dialog.export.title">Export</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Close">
           <svg class="icon"><use href="#i-close"/></svg>
         </button>
       </header>
       <label class="field">
         <span class="field-label" data-i18n="dialog.export.format">Format</span>
         <select id="export-format">
-          <option value="svg" data-i18n="dialog.export.svg">SVG (Vektor, zum Drucken)</option>
-          <option value="png" data-i18n="dialog.export.png">PNG (Bild)</option>
-          <option value="json" data-i18n="dialog.export.json">JSON (Quelldatei)</option>
+          <option value="svg" data-i18n="dialog.export.svg">SVG (vector, for printing)</option>
+          <option value="png" data-i18n="dialog.export.png">PNG (image)</option>
+          <option value="json" data-i18n="dialog.export.json">JSON (source file)</option>
         </select>
       </label>
       <label class="field" id="export-scale-field">
-        <span class="field-label" data-i18n="dialog.export.scale">Auflösung</span>
+        <span class="field-label" data-i18n="dialog.export.scale">Resolution</span>
         <select id="export-scale">
           <option value="1">1×</option>
           <option value="2" selected>2×</option>
@@ -374,11 +374,11 @@
       </label>
       <label class="check">
         <input id="export-legend" type="checkbox" checked>
-        <span data-i18n="dialog.export.legend">Legende einbetten</span>
+        <span data-i18n="dialog.export.legend">Embed legend</span>
       </label>
       <footer class="dialog-actions">
-        <button class="button" id="btn-export-print" type="button" data-i18n="dialog.export.print">Drucken</button>
-        <button class="button primary" id="btn-export-download" type="button" data-i18n="dialog.export.download">Herunterladen</button>
+        <button class="button" id="btn-export-print" type="button" data-i18n="dialog.export.print">Print</button>
+        <button class="button primary" id="btn-export-download" type="button" data-i18n="dialog.export.download">Download</button>
       </footer>
     </form>
   </dialog>
@@ -386,16 +386,16 @@
   <dialog id="dialog-open" class="dialog">
     <form method="dialog" class="dialog-inner">
       <header class="dialog-head">
-        <h2 data-i18n="dialog.open.title">Chart öffnen</h2>
-        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+        <h2 data-i18n="dialog.open.title">Open chart</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Close">
           <svg class="icon"><use href="#i-close"/></svg>
         </button>
       </header>
       <div class="drop-zone" id="drop-zone">
-        <p data-i18n="dialog.open.drop">Chart-Datei hier ablegen</p>
-        <button class="button" id="btn-open-file" type="button" data-i18n="dialog.open.browse">Datei wählen</button>
+        <p data-i18n="dialog.open.drop">Drop a chart file here</p>
+        <button class="button" id="btn-open-file" type="button" data-i18n="dialog.open.browse">Choose file</button>
       </div>
-      <h3 data-i18n="dialog.open.recent">Zuletzt geöffnet</h3>
+      <h3 data-i18n="dialog.open.recent">Recently opened</h3>
       <div class="recent-list" id="recent-list"></div>
     </form>
   </dialog>
@@ -403,28 +403,28 @@
   <dialog id="dialog-settings" class="dialog">
     <form method="dialog" class="dialog-inner">
       <header class="dialog-head">
-        <h2 data-i18n="settings.title">Einstellungen</h2>
-        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+        <h2 data-i18n="settings.title">Settings</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Close">
           <svg class="icon"><use href="#i-close"/></svg>
         </button>
       </header>
       <label class="field">
-        <span class="field-label" data-i18n="settings.language">Sprache</span>
+        <span class="field-label" data-i18n="settings.language">Language</span>
         <select id="settings-language"></select>
       </label>
       <label class="field">
-        <span class="field-label" data-i18n="settings.theme">Darstellung</span>
+        <span class="field-label" data-i18n="settings.theme">Appearance</span>
         <select id="settings-theme">
           <option value="system" data-i18n="app.theme.system">System</option>
-          <option value="light" data-i18n="app.theme.light">Hell</option>
-          <option value="dark" data-i18n="app.theme.dark">Dunkel</option>
-          <option value="high-contrast" data-i18n="app.theme.highContrast">Hoher Kontrast</option>
+          <option value="light" data-i18n="app.theme.light">Light</option>
+          <option value="dark" data-i18n="app.theme.dark">Dark</option>
+          <option value="high-contrast" data-i18n="app.theme.highContrast">High contrast</option>
         </select>
       </label>
       <label class="field">
-        <span class="field-label" data-i18n="settings.units">Einheiten</span>
+        <span class="field-label" data-i18n="settings.units">Units</span>
         <select id="settings-units">
-          <option value="metric" data-i18n="app.units.metric">Metrisch</option>
+          <option value="metric" data-i18n="app.units.metric">Metric</option>
           <option value="imperial" data-i18n="app.units.imperial">Imperial</option>
         </select>
       </label>
@@ -434,9 +434,9 @@
       </label>
       <p class="hint" data-i18n="settings.aiNotice"></p>
       <footer class="dialog-actions">
-        <button class="button" id="btn-settings-reset" type="button" data-i18n="settings.reset">Einstellungen zurücksetzen</button>
-        <button class="button" id="btn-open-about" type="button" data-i18n="app.about">Über Stitchwright</button>
-        <button class="button primary" value="default" type="submit" data-i18n="app.close">Schließen</button>
+        <button class="button" id="btn-settings-reset" type="button" data-i18n="settings.reset">Reset settings</button>
+        <button class="button" id="btn-open-about" type="button" data-i18n="app.about">About Stitchwright</button>
+        <button class="button primary" value="default" type="submit" data-i18n="app.close">Close</button>
       </footer>
     </form>
   </dialog>
@@ -444,35 +444,35 @@
   <dialog id="dialog-help" class="dialog wide">
     <form method="dialog" class="dialog-inner">
       <header class="dialog-head">
-        <h2 data-i18n="app.help">Hilfe</h2>
-        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+        <h2 data-i18n="app.help">Help</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Close">
           <svg class="icon"><use href="#i-close"/></svg>
         </button>
       </header>
       <p data-i18n="help.intro"></p>
       <div class="help-grid">
         <section>
-          <h3 data-i18n="dialog.help.mouse">Maus</h3>
+          <h3 data-i18n="dialog.help.mouse">Mouse</h3>
           <p data-i18n="help.mouse"></p>
           <p data-i18n="help.selection"></p>
           <h3 data-i18n="dialog.help.touch">Touch</h3>
           <p data-i18n="help.touch"></p>
         </section>
         <section>
-          <h3 data-i18n="dialog.help.rows">Rückreihen</h3>
+          <h3 data-i18n="dialog.help.rows">Wrong-side rows</h3>
           <p data-i18n="help.rows"></p>
           <p data-i18n="help.markers"></p>
-          <h3 data-i18n="dialog.help.colors">Farben</h3>
+          <h3 data-i18n="dialog.help.colors">Colours</h3>
           <p data-i18n="help.colors"></p>
         </section>
         <section>
           <h3 data-i18n="dialog.help.export">Export</h3>
           <p data-i18n="help.export"></p>
-          <h3 data-i18n="dialog.help.privacy">Datenschutz</h3>
+          <h3 data-i18n="dialog.help.privacy">Privacy</h3>
           <p data-i18n="help.privacy"></p>
         </section>
       </div>
-      <h3 data-i18n="dialog.help.shortcuts">Tastenkürzel</h3>
+      <h3 data-i18n="dialog.help.shortcuts">Keyboard shortcuts</h3>
       <div class="shortcut-grid" id="shortcut-list"></div>
       <p class="hint" data-i18n="help.ai"></p>
       <p class="hint" data-i18n="dialog.about.license"></p>
@@ -482,19 +482,19 @@
   <dialog id="dialog-about" class="dialog">
     <form method="dialog" class="dialog-inner">
       <header class="dialog-head">
-        <h2 data-i18n="dialog.about.title">Über Stitchwright</h2>
-        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+        <h2 data-i18n="dialog.about.title">About Stitchwright</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Close">
           <svg class="icon"><use href="#i-close"/></svg>
         </button>
       </header>
       <p data-i18n="dialog.about.text"></p>
-      <p><a href="about.html" target="_blank" rel="noopener" data-i18n="about.more">Mehr über Stitchwright</a></p>
+      <p><a href="about.html" target="_blank" rel="noopener" data-i18n="about.more">More about Stitchwright</a></p>
       <p data-i18n="dialog.about.privacy"></p>
       <p data-i18n="dialog.about.ai"></p>
       <p class="muted" id="about-version"></p>
       <p class="muted" data-i18n="dialog.about.license"></p>
       <footer class="dialog-actions">
-        <button class="button primary" value="default" type="submit" data-i18n="app.close">Schließen</button>
+        <button class="button primary" value="default" type="submit" data-i18n="app.close">Close</button>
       </footer>
     </form>
   </dialog>
@@ -502,8 +502,8 @@
   <dialog id="dialog-table" class="dialog wide">
     <form method="dialog" class="dialog-inner">
       <header class="dialog-head">
-        <h2 data-i18n="dialog.table.title">Tabellenansicht</h2>
-        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+        <h2 data-i18n="dialog.table.title">Table view</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Close">
           <svg class="icon"><use href="#i-close"/></svg>
         </button>
       </header>
@@ -515,15 +515,15 @@
   <dialog id="dialog-confirm" class="dialog">
     <form method="dialog" class="dialog-inner">
       <header class="dialog-head">
-        <h2 data-i18n="dialog.confirm.title">Bestätigen</h2>
-        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+        <h2 data-i18n="dialog.confirm.title">Confirm</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Close">
           <svg class="icon"><use href="#i-close"/></svg>
         </button>
       </header>
       <p id="confirm-text"></p>
       <footer class="dialog-actions">
-        <button class="button" value="cancel" type="submit" data-i18n="dialog.confirm.cancel">Abbrechen</button>
-        <button class="button danger" id="btn-confirm-ok" value="default" type="button" data-i18n="dialog.confirm.ok">Fortfahren</button>
+        <button class="button" value="cancel" type="submit" data-i18n="dialog.confirm.cancel">Cancel</button>
+        <button class="button danger" id="btn-confirm-ok" value="default" type="button" data-i18n="dialog.confirm.ok">Continue</button>
       </footer>
     </form>
   </dialog>
@@ -531,27 +531,27 @@
   <dialog id="dialog-custom-group" class="dialog">
     <form method="dialog" class="dialog-inner">
       <header class="dialog-head">
-        <h2 data-i18n="palette.customGroup">Eigene Gruppe</h2>
-        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+        <h2 data-i18n="palette.customGroup">Custom group</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Close">
           <svg class="icon"><use href="#i-close"/></svg>
         </button>
       </header>
       <label class="field">
-        <span class="field-label" data-i18n="palette.label">Beschriftung</span>
+        <span class="field-label" data-i18n="palette.label">Label</span>
         <input id="custom-label" type="text" maxlength="24" data-i18n-placeholder="palette.namePlaceholder" placeholder="Name">
       </label>
       <label class="field">
-        <span class="field-label" data-i18n="palette.span">Breite in Maschen</span>
+        <span class="field-label" data-i18n="palette.span">Width in stitches</span>
         <input id="custom-span" type="number" min="1" max="12" value="3">
       </label>
       <label class="field">
-        <span class="field-label" data-i18n="inspector.group.legend">Legendentext</span>
-        <textarea id="custom-legend" rows="2" maxlength="160" data-i18n-placeholder="palette.legendPlaceholder" placeholder="z. B. zwei Maschen auf Hilfsnadel vor die Arbeit"></textarea>
+        <span class="field-label" data-i18n="inspector.group.legend">Legend note</span>
+        <textarea id="custom-legend" rows="2" maxlength="160" data-i18n-placeholder="palette.legendPlaceholder" placeholder="e.g. two stitches on a cable needle held in front"></textarea>
       </label>
       <p class="hint" data-i18n="palette.legendHint"></p>
       <footer class="dialog-actions">
-        <button class="button" value="cancel" type="submit" data-i18n="app.cancel">Abbrechen</button>
-        <button class="button primary" id="btn-custom-add" value="default" type="button" data-i18n="palette.add">Hinzufügen</button>
+        <button class="button" value="cancel" type="submit" data-i18n="app.cancel">Cancel</button>
+        <button class="button primary" id="btn-custom-add" value="default" type="button" data-i18n="palette.add">Add</button>
       </footer>
     </form>
   </dialog>
@@ -559,31 +559,31 @@
   <dialog id="dialog-cable" class="dialog">
     <form method="dialog" class="dialog-inner">
       <header class="dialog-head">
-        <h2 data-i18n="palette.cablePresets">Zöpfe</h2>
-        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+        <h2 data-i18n="palette.cablePresets">Cables</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Close">
           <svg class="icon"><use href="#i-close"/></svg>
         </button>
       </header>
       <div class="settings-grid">
         <label class="field">
-          <span class="field-label" data-i18n="inspector.group.left">Linke Seite</span>
+          <span class="field-label" data-i18n="inspector.group.left">Left side</span>
           <input id="cable-left" type="number" min="1" max="12" value="2">
         </label>
         <label class="field">
-          <span class="field-label" data-i18n="inspector.group.right">Rechte Seite</span>
+          <span class="field-label" data-i18n="inspector.group.right">Right side</span>
           <input id="cable-right" type="number" min="1" max="12" value="2">
         </label>
       </div>
       <label class="field">
-        <span class="field-label" data-i18n="inspector.group.direction">Richtung</span>
+        <span class="field-label" data-i18n="inspector.group.direction">Direction</span>
         <select id="cable-direction">
-          <option value="front" data-i18n="inspector.group.direction.front">Vorne</option>
-          <option value="back" data-i18n="inspector.group.direction.back">Hinten</option>
+          <option value="front" data-i18n="inspector.group.direction.front">Front</option>
+          <option value="back" data-i18n="inspector.group.direction.back">Back</option>
         </select>
       </label>
       <footer class="dialog-actions">
-        <button class="button" value="cancel" type="submit" data-i18n="app.cancel">Abbrechen</button>
-        <button class="button primary" id="btn-cable-add" value="default" type="button" data-i18n="palette.add">Hinzufügen</button>
+        <button class="button" value="cancel" type="submit" data-i18n="app.cancel">Cancel</button>
+        <button class="button primary" id="btn-cable-add" value="default" type="button" data-i18n="palette.add">Add</button>
       </footer>
     </form>
   </dialog>
@@ -591,22 +591,22 @@
   <dialog id="dialog-color" class="dialog">
     <form method="dialog" class="dialog-inner">
       <header class="dialog-head">
-        <h2 data-i18n="palette.addColor">Farbe hinzufügen</h2>
-        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Schließen">
+        <h2 data-i18n="palette.addColor">Add colour</h2>
+        <button class="icon-button" value="cancel" type="submit" data-i18n-aria-label="app.close" aria-label="Close">
           <svg class="icon"><use href="#i-close"/></svg>
         </button>
       </header>
       <label class="field">
         <span class="field-label" data-i18n="color.name">Name</span>
-        <input id="color-name" type="text" maxlength="40" placeholder="Rot">
+        <input id="color-name" type="text" maxlength="40" placeholder="Red">
       </label>
       <label class="field">
-        <span class="field-label" data-i18n="color.hex">Hex-Wert</span>
+        <span class="field-label" data-i18n="color.hex">Hex value</span>
         <input id="color-hex" type="color" value="#b3261e">
       </label>
       <footer class="dialog-actions">
-        <button class="button" value="cancel" type="submit" data-i18n="app.cancel">Abbrechen</button>
-        <button class="button primary" id="btn-color-add" value="default" type="button" data-i18n="palette.add">Hinzufügen</button>
+        <button class="button" value="cancel" type="submit" data-i18n="app.cancel">Cancel</button>
+        <button class="button primary" id="btn-color-add" value="default" type="button" data-i18n="palette.add">Add</button>
       </footer>
     </form>
   </dialog>

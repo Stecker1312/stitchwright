@@ -2,10 +2,16 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 
-import { createI18n } from "../src/core/i18n.js";
+import { createI18n, DEFAULT_LANGUAGE, HTML_LANGUAGE } from "../src/core/i18n.js";
 
 const de = JSON.parse(fs.readFileSync(new URL("../src/locales/de.json", import.meta.url)));
 const en = JSON.parse(fs.readFileSync(new URL("../src/locales/en.json", import.meta.url)));
+
+test("English is the default presentation language", () => {
+  assert.equal(DEFAULT_LANGUAGE, "en");
+  assert.equal(HTML_LANGUAGE.en, "en-GB");
+  assert.equal(HTML_LANGUAGE.de, "de");
+});
 
 test("German and English have the same keys", () => {
   const deKeys = Object.keys(de).filter((key) => key !== "_meta").sort();

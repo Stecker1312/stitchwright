@@ -74,7 +74,7 @@ let scrollDrag = null;
 /* ------------------------------------------------------------------ */
 
 async function init() {
-  i18n = await createBrowserI18n(settings.language || "de");
+  i18n = await createBrowserI18n(settings.language || "en");
   i18n.apply(document);
   applyTheme(settings.theme || "system", { persist: false });
   populateLanguages();
@@ -667,7 +667,7 @@ function setupChartSettings() {
   $("chart-width").addEventListener("change", () => resizeFromInputs());
   $("chart-height").addEventListener("change", () => resizeFromInputs());
   $("opt-rows-mode").addEventListener("change", (event) => {
-    store.edit("Rückreihen", (chart) => {
+    store.edit("Wrong-side rows", (chart) => {
       chart.options.rowsMode = event.target.value === "rs" ? "rs" : "all";
     });
     store.setHeaderSelection(null);
@@ -696,7 +696,7 @@ function setupChartSettings() {
       renderSettings();
       return;
     }
-    store.edit("Zellgröße", (chart) => { chart.options.cellMm = Math.round(value * 100) / 100; });
+    store.edit("Cell size", (chart) => { chart.options.cellMm = Math.round(value * 100) / 100; });
     renderSettings();
   });
   $("opt-paper").addEventListener("change", (event) => {
@@ -731,7 +731,7 @@ async function resizeFromInputs() {
       return;
     }
   }
-  store.edit("Größe", (current) => {
+  store.edit("Size", (current) => {
     resizeChart(current, width, height);
   });
   store.setHeaderSelection(null);
@@ -756,7 +756,7 @@ function updateRepeat() {
 
 function toggleRowsMode() {
   const next = store.chart.options.rowsMode === "rs" ? "all" : "rs";
-  store.edit("Rückreihen", (chart) => { chart.options.rowsMode = next; });
+  store.edit("Wrong-side rows", (chart) => { chart.options.rowsMode = next; });
   store.setHeaderSelection(null);
   canvasView.fit();
   if (next === "rs" && validateChart(store.chart).some((item) => item.code === "W_HIDDEN_WS")) {
@@ -769,7 +769,7 @@ function insertRowAt(side) {
   dismissEmptyHint();
   store.setHeaderSelection(null);
   try {
-    store.edit("Reihe einfügen", (chart) => {
+    store.edit("Insert row", (chart) => {
       insertRow(chart, row, side);
     });
     renderSettings();
@@ -783,7 +783,7 @@ function insertColumnAt(side) {
   dismissEmptyHint();
   store.setHeaderSelection(null);
   try {
-    store.edit("Spalte einfügen", (chart) => {
+    store.edit("Insert column", (chart) => {
       insertColumn(chart, col, side);
     });
     renderSettings();
@@ -796,7 +796,7 @@ function addRowAtTop() {
   dismissEmptyHint();
   store.setHeaderSelection(null);
   try {
-    store.edit("Reihe hinzufügen", (chart) => {
+    store.edit("Add row", (chart) => {
       insertRow(chart, chart.height, "above");
     });
     canvasView.fit();
@@ -809,7 +809,7 @@ function addColumnAtRight() {
   dismissEmptyHint();
   store.setHeaderSelection(null);
   try {
-    store.edit("Spalte hinzufügen", (chart) => {
+    store.edit("Add column", (chart) => {
       insertColumn(chart, chart.width, "right");
     });
     canvasView.fit();
@@ -824,14 +824,14 @@ function setMarkerGrid() {
     showToast(i18n.t("error.fix"), "error");
     return;
   }
-  store.edit("Maschenmarker", (chart) => {
+  store.edit("Stitch markers", (chart) => {
     setMarkerEvery(chart, every);
   });
   renderSettings();
 }
 
 function clearAllMarkers() {
-  store.edit("Maschenmarker löschen", (chart) => {
+  store.edit("Clear stitch markers", (chart) => {
     clearMarkers(chart);
   });
   renderSettings();
@@ -846,7 +846,7 @@ async function deleteSelectedHeader() {
     : i18n.t("chart.deleteColumnConfirm", { column: selection.index });
   if (!(await confirmDialog(message))) return;
   try {
-    store.edit(isRow ? "Reihe löschen" : "Spalte löschen", (chart) => {
+    store.edit(isRow ? "Delete row" : "Delete column", (chart) => {
       if (isRow) deleteRow(chart, selection.index);
       else deleteColumn(chart, selection.index);
     });
@@ -874,7 +874,7 @@ function mirrorV() {
 
 function updateGroup(group, values) {
   try {
-    store.edit("Gruppe ändern", (chart) => {
+    store.edit("Change group", (chart) => {
       const index = chart.groups.findIndex((item) => item.id === group.id);
       if (index === -1) return false;
       chart.groups.splice(index, 1);
@@ -894,7 +894,7 @@ function updateGroup(group, values) {
 }
 
 function removeSelectedGroup(group) {
-  store.edit("Gruppe entfernen", (chart) => {
+  store.edit("Remove group", (chart) => {
     removeGroup(chart, group.id);
   });
 }
@@ -917,7 +917,7 @@ function fillSelection() {
     showToast(i18n.t("error.fillGroup"), "error");
     return;
   }
-  store.begin("Auswahl füllen");
+  store.begin("Fill selection");
   for (let row = bounds.top; row <= bounds.bottom; row += 1) {
     for (let col = bounds.left; col <= bounds.right; col += 1) {
       paintCell(store.chart, row, col, store.symbol.id === "k" ? null : store.symbol.id, store.color);
@@ -930,7 +930,7 @@ function fillSelection() {
 function clearSelection() {
   const bounds = selectionBounds();
   if (!bounds) return;
-  store.begin("Auswahl leeren");
+  store.begin("Clear selection");
   for (let row = bounds.top; row <= bounds.bottom; row += 1) {
     for (let col = bounds.left; col <= bounds.right; col += 1) {
       eraseCell(store.chart, row, col);
@@ -964,7 +964,7 @@ function pasteClipboard() {
   const startRow = store.cursor.row;
   const startCol = store.cursor.col;
   try {
-    store.edit("Einfügen", (chart) => {
+    store.edit("Paste", (chart) => {
       pasteFragment(chart, clipboard, startRow, startCol);
     });
     store.setSelection({
@@ -1033,7 +1033,7 @@ function setupDialogs() {
   });
   $("btn-settings-reset").addEventListener("click", async () => {    if (!(await confirmDialog(i18n.t("settings.reset.confirm")))) return;
     settings = {
-      language: "de",
+      language: "en",
       theme: "system",
       units: "metric",
       autosave: true,
@@ -1189,7 +1189,7 @@ function addColor() {
     if (!used.has(letter)) { id = letter; break; }
   }
   if (used.has(id) && store.chart.palette.length >= 26) id = `C${store.chart.palette.length + 1}`;
-  store.edit("Farbe hinzufügen", (chart) => {
+  store.edit("Add colour", (chart) => {
     chart.palette.push({ id, name, hex });
   });
   store.setColor(id);

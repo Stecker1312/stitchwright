@@ -38,6 +38,7 @@
   "app.online": "Online",
   "app.menu": "Menü",
   "app.tools": "Werkzeuge",
+  "app.toolsAndSymbols": "Werkzeuge und Symbole",
   "app.properties": "Eigenschaften",
   "app.more": "Mehr",
 
@@ -83,6 +84,7 @@
   "category.custom": "Eigene",
 
   "chart.title": "Titel",
+  "chart.canvas": "Strickschrift",
   "chart.untitled": "Unbenanntes Chart",
   "chart.new": "Neues Chart",
   "chart.new.title": "Neues Chart anlegen",

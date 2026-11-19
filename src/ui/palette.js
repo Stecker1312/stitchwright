@@ -59,7 +59,7 @@ function symbolButton({ id, params = {}, span, label, description, store, t, onC
  * Render the palette. Returns nothing; call again after a language change or
  * a palette change.
  */
-export function renderPalette({ symbolsEl, colorsEl, store, t, lang = "de", customGroups = [], onCustomGroup, onCustomLabel, onSelectCustomGroup, onAddColor }) {
+export function renderPalette({ symbolsEl, colorsEl, store, t, lang = "en", customGroups = [], onCustomGroup, onCustomLabel, onSelectCustomGroup, onAddColor }) {
   const query = (symbolsEl.dataset.query || "").trim().toLowerCase();
   symbolsEl.replaceChildren();
 
@@ -149,9 +149,9 @@ export function renderPalette({ symbolsEl, colorsEl, store, t, lang = "de", cust
   // Reusable custom groups. They are stored outside the chart so the same
   // "TL"/"TR" group can be placed again without recreating it.
   const customMatches = customGroups.filter((group) => (
-    !query || group.label.toLowerCase().includes(query) || "eigene custom".includes(query)
+    !query || group.label.toLowerCase().includes(query) || "eigene custom own".includes(query)
   ));
-  if (!query || customMatches.length || "eigene custom".includes(query)) {
+  if (!query || customMatches.length || "eigene custom own".includes(query)) {
     symbolsEl.append(element("h3", "palette-category", t("category.custom")));
     const grid = element("div", "palette-grid");
     for (const group of customMatches) {
@@ -160,7 +160,7 @@ export function renderPalette({ symbolsEl, colorsEl, store, t, lang = "de", cust
         params: { span: group.span, label: group.label, legend: group.legend },
         span: group.span,
         label: group.label,
-        description: group.legend || `${group.label} · ${group.span} M`,
+        description: group.legend || `${group.label} · ${t("palette.groupBadge", { count: group.span })}`,
         store,
         t,
         onClick: () => {

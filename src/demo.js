@@ -7,9 +7,9 @@
 import { addGroup, createChart, groupSpan, setCell, setColor } from "./core/chart.js";
 
 export function createDemoChart() {
-  const chart = createChart({ width: 32, height: 20, title: "Klar – Beispiel" });
+  const chart = createChart({ width: 32, height: 20, title: "Klar – example" });
   chart.id = "klar-beispiel";
-  chart.options.subtitle = "Zöpfe, Umschlag, Abnahme, Farben";
+  chart.options.subtitle = "Cables, yarn over, decrease, colours";
   chart.options.repeat = { start: 3, end: 10 };
 
   // Place groups first. The cells under a group must stay empty.

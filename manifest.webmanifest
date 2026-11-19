@@ -1,8 +1,8 @@
 {
   "name": "Stitchwright",
   "short_name": "Stitchwright",
-  "description": "Freier, lokaler Strickschrift-Editor für Menschen und Agenten.",
-  "lang": "de",
+  "description": "A free, local knitting chart editor for people and agents.",
+  "lang": "en-GB",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

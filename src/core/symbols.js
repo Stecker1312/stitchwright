@@ -435,13 +435,13 @@ export function glyphFor(id, params = {}) {
 }
 
 /** Localised symbol name. Falls back to English, then to the id. */
-export function symbolName(id, lang = "de") {
+export function symbolName(id, lang = "en") {
   const symbol = getSymbol(id);
   return symbol.name[lang] || symbol.name.en || id;
 }
 
 /** Localised legend text. */
-export function symbolLegend(id, lang = "de") {
+export function symbolLegend(id, lang = "en") {
   const symbol = getSymbol(id);
   return symbol.legend[lang] || symbol.legend.en || id;
 }
@@ -450,7 +450,7 @@ export function symbolLegend(id, lang = "de") {
  * Legend text for a group. Cables include the split and direction, because
  * the drawing alone cannot tell whether the designer meant 2/2 or 3/1.
  */
-export function groupLegend(group, lang = "de") {
+export function groupLegend(group, lang = "en") {
   if (group.symbol === "cable") {
     const side = lang === "de" ? "nach" : "to";
     const where = group.direction === "front"

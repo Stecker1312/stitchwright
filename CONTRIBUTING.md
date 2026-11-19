@@ -1,47 +1,47 @@
-# Mitmachen
+# Contributing
 
-Stitchwright ist ein offenes Projekt unter GPL-3.0. Beiträge sind willkommen,
-solange sie die Grundsätze respektieren: lokal, datensparsam, ohne Cloud,
-ohne Konten, ohne Telemetrie.
+Stitchwright is an open project under GPL-3.0. Contributions are welcome as
+long as they respect the principles: local, data-sparing, no cloud, no
+accounts, no telemetry.
 
-## Fehler melden
+## Reporting bugs
 
-Bitte ein Issue mit folgenden Angaben öffnen:
+Please open an issue with:
 
-- Browser und Betriebssystem
-- Schritte zum Nachstellen
-- erwartetes und tatsächliches Verhalten
-- wenn möglich: die Chart-Datei (JSON), aber **keine persönlichen Daten**
-  und keine vertraulichen Projekte
+- your browser and operating system
+- the steps to reproduce the problem
+- what you expected and what actually happened
+- if possible, the chart file (JSON), but **no personal data** and no
+  confidential projects
 
 ## Code
 
-- Vanilla JavaScript, ES Modules, keine Laufzeitabhängigkeiten.
-- `npm test` und `npm run check` müssen grün sein.
-- Kleine, nachvollziehbare Änderungen. Neue dauerhafte Entscheidungen
-  brauchen eine ADR unter `docs/adr/`.
-- Keine neuen Abhängigkeiten ohne vorherige Entscheidung.
-- Keine Netzwerkaufrufe, keine externen Schriften, keine Analyse.
-- Symbole und Lokalisierung sind Daten, kein Sonderfall im Code.
+- Vanilla JavaScript, ES modules, no runtime dependencies.
+- `npm test` and `npm run check` must pass.
+- Small, understandable changes. New long-term decisions need an ADR under
+  `docs/adr/`.
+- No new dependencies without a decision first.
+- No network calls, no external fonts, no analytics.
+- Symbols and localisation are data, not special cases in the code.
 
-## Übersetzungen
+## Translations
 
-- Locale-Dateien liegen in `src/locales/`.
-- Fehlende Schlüssel fallen auf Englisch zurück.
-- Neue Sprachen mit Status `machine` oder `partial` markieren, bis ein
-  Muttersprachler die Strickbegriffe geprüft hat.
-- Abkürzungen im Diagramm bleiben englisch (`k`, `p`, `yo`, `k2tog`, `ssk`);
-  die Erklärung wird übersetzt.
+- Locale files live in `src/locales/`.
+- Missing keys fall back to English.
+- Mark new languages as `machine` or `partial` until a native speaker has
+  checked the knitting terms.
+- Chart abbreviations stay in English (`k`, `p`, `yo`, `k2tog`, `ssk`); the
+  explanation is translated.
 
-## Symbol-Packs und Beispiele
+## Symbol packs and examples
 
-- Neue Symbole gehören in `src/core/symbols.js` und `docs/symbols.md`.
-- Beispiele unter `samples/` müssen synthetisch sein oder ausdrücklich
-  freigegeben. Keine persönlichen Charts.
-- Tests für neue Symbole und Golden Charts ergänzen.
+- New symbols belong in `src/core/symbols.js` and `docs/symbols.md`.
+- Examples under `samples/` must be synthetic or explicitly approved. No
+  personal charts.
+- Add tests for new symbols and golden charts.
 
-## Transparenz
+## Transparency
 
-Der Code wird von einem KI-Agenten geschrieben und von Menschen geprüft.
-Beiträge werden nach denselben Regeln behandelt: Lesbarkeit, Tests,
-Nachvollziehbarkeit und Datenschutz vor Tempo.
+The code is written by an AI agent and reviewed by people. Contributions are
+treated by the same rules: readability, tests, traceability and privacy before
+speed.

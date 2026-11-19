@@ -176,8 +176,27 @@ einen ausgewählten Bereich.
 - 64 Tests grün; Browserprüfung: Marker alle 5 gesetzt und einzeln entfernt,
   3×3-Bereich kopiert und an anderer Stelle eingefügt.
 
+## 2026-11-19 – Englisch als Präsentationssprache
 
+**Beobachtet:** Daniel will Stitchwright international präsentieren. Die App
+war zwar zweisprachig, startete aber auf Deutsch – inklusive Startseite,
+Manifest und README. Für ein Publikum außerhalb des deutschsprachigen Raums
+ist das die falsche erste Begegnung.
 
+**Getan:**
 
-
-
+- Englisch (britisch, einfach) ist Standardsprache: `DEFAULT_LANGUAGE = "en"`,
+  neue Einstellungen starten englisch, `lang="en-GB"` in HTML und Manifest.
+- Deutsch bleibt vollständig gepflegt und im Einstellungsdialog wählbar;
+  gespeicherte deutsche Einstellungen bleiben erhalten.
+- Alle fest eingebauten deutschen Texte in `index.html` übersetzt; fehlende
+  `data-i18n`-Anker für Werkzeugleiste, Seitenleisten und Zeichenfläche
+  ergänzt, damit der Umschalter auch diese Bereiche aktualisiert.
+- Validierungsmeldungen und CLI-Ausgaben englisch; CLI rendert und legt die
+  Legende standardmäßig auf Englisch an.
+- Beispiel-Chart und Beispiel-Dateien englisch; README und CONTRIBUTING
+  übersetzt.
+- 66 Tests grün (zwei neue: Standardsprache und SVG-Sprachwahl).
+- Browserprüfung: Start englisch, Wechsel auf Deutsch aktualisiert alle
+  Bereiche inklusive Zeichenfläche und Legende, Reload behält Deutsch,
+  Rückwechsel auf Englisch funktioniert, Beispiel lädt mit englischem Titel.

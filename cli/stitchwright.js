@@ -57,7 +57,7 @@ function readChart(file) {
 
 function printDiagnostics(diagnostics) {
   for (const item of diagnostics) {
-    const label = item.severity === "error" ? "Fehler" : "Hinweis";
+    const label = item.severity === "error" ? "Error" : "Warning";
     console.log(`${label} ${item.code} ${item.path}: ${item.message}`);
   }
 }
@@ -77,7 +77,7 @@ function commandValidate(args) {
   } else if (diagnostics.length) {
     printDiagnostics(diagnostics);
   } else {
-    console.log(`Gültig: ${chart.width} × ${chart.height}, ${chart.groups.length} Gruppen.`);
+    console.log(`Valid: ${chart.width} × ${chart.height}, ${chart.groups.length} groups.`);
   }
   return hasErrors(diagnostics) ? 1 : 0;
 }
@@ -93,11 +93,11 @@ function commandRender(args) {
   const out = path.resolve(args.positional[1]);
   ensureWritable(out, Boolean(args.flags.force));
   const svg = renderSvg(chart, {
-    lang: args.flags.lang === "en" ? "en" : "de",
+    lang: args.flags.lang === "de" ? "de" : "en",
     unit: args.flags.unit === "imperial" ? "imperial" : "metric"
   });
   fs.writeFileSync(out, svg, "utf8");
-  console.log(`Geschrieben: ${out}`);
+  console.log(`Wrote ${out}`);
   return 0;
 }
 
@@ -109,14 +109,14 @@ function commandNew(args) {
   ensureWritable(path.resolve(out), Boolean(args.flags.force));
   const chart = createChart({ width, height, title: args.flags.title || "" });
   fs.writeFileSync(path.resolve(out), JSON.stringify(chart, null, 2) + "\n", "utf8");
-  console.log(`Geschrieben: ${path.resolve(out)}`);
+  console.log(`Wrote ${path.resolve(out)}`);
   return 0;
 }
 
 function commandLegend(args) {
   if (!args.positional[0]) throw new Error("Missing chart file");
   const chart = readChart(args.positional[0]);
-  const entries = legendEntries(chart, args.flags.lang === "en" ? "en" : "de");
+  const entries = legendEntries(chart, args.flags.lang === "de" ? "de" : "en");
   if (args.flags.json) {
     console.log(JSON.stringify(entries.map((entry) => ({
       kind: entry.kind,
@@ -146,7 +146,7 @@ function main() {
     if (command === "legend") return commandLegend(args);
     throw new Error(`Unknown command: ${command}`);
   } catch (error) {
-    console.error(`Fehler: ${error.message}`);
+    console.error(`Error: ${error.message}`);
     return 1;
   }
 }

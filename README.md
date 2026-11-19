@@ -1,60 +1,57 @@
 # Stitchwright
 
-**Strickschriften zeichnen, lokal und frei.** Ein Editor für Strickdiagramme,
-der im Browser läuft, offline funktioniert und niemandem etwas nach Hause
-schickt.
+**Knit charts, local and free.** An editor for knitting diagrams that runs in
+the browser, works offline and sends nothing anywhere.
 
-> **Frühe Vorabversion 0.2.0-alpha.1 (2026-11-18).**
-> Noch nicht für Produktivdaten. Fehler, unfertige Ecken und Änderungen am
-> Dateiformat sind möglich. Bitte wichtige Charts zusätzlich als JSON-Datei
-> sichern.
+> **Early alpha 0.2.0-alpha.1 (18 November 2026).**
+> Not ready for important work. Bugs, rough edges and changes to the file
+> format are likely. Please keep an extra JSON copy of charts you care about.
 >
-> **Live-Demo:** <https://stecker1312.github.io/stitchwright/>  
-> **Ausführliche Projektseite:** <https://stecker1312.github.io/stitchwright/about.html>
+> **Live demo:** <https://stecker1312.github.io/stitchwright/>
+>
+> **Project page:** <https://stecker1312.github.io/stitchwright/about.html>
 
-## Was ist Stitchwright?
+## What is Stitchwright?
 
-Stitchwright ersetzt das Kästchenpapier: Du setzt Symbole in ein Raster,
-zeichnest Zöpfe über mehrere Maschen, markierst Rapporte und exportierst das
-Ergebnis als sauberes SVG. Die App ist kein Anleitungsgenerator – das Diagramm
-ist das Produkt.
+Stitchwright replaces graph paper. You place symbols on a grid, draw cables
+across several stitches, mark repeats and export the result as a clean SVG.
+The app is not an instruction generator: the diagram is the product.
 
-Das Projekt ist bewusst lokal-first: keine Cloud, keine Konten, keine
-Telemetrie. Charts liegen im Browser oder in Dateien, die du selbst speicherst.
-Dasselbe offene JSON-Format kann von Menschen im Editor und von Agenten über
-eine kleine CLI benutzt werden.
+The project is deliberately local-first: no cloud, no accounts, no telemetry.
+Charts live in the browser or in files you save yourself. People can use the
+same open JSON format in the editor, and agents can use it through a small
+command-line tool.
 
-## Was es kann
+## What it does
 
-- Raster beliebiger Größe, auch für große Muster
-- Symbolsprache **Klar**: re, li, Umschlag, Abnahmen, Zunahmen, Zöpfe,
-  Bobbel, verkürzte Reihen, Farbflächen
-- Mehrfachsymbole als eine Gruppe: ein Zopf über sechs Maschen ist ein
-  Symbol, nicht sechs Kästchen
-- Eigene beschriftete Gruppen bleiben in einer lokalen Bibliothek; sie können
-  einen eigenen Legendentext bekommen
-- Maschenmarker als Zeichenhilfe: einzeln oder alle N Maschen
-- Bereiche auswählen, kopieren und einfügen, inklusive Farben und Gruppen
-- Hin- und Rückreihen oder nur Hinreihen mit Nummerierung 1, 3, 5 …
-- Rapport markieren, Legende automatisch erzeugen
-- Farben pro Masche, auch für Fair Isle und Intarsien
-- Export als SVG, PNG und JSON, Druck über den Browser
-- Horizontale und vertikale Scrollbalken für große Charts
-- Hell/Dunkel/System, metrisch/imperial, Deutsch/Englisch
-- Tastatur, Maus, Touch und Stift
-- Offline als PWA installierbar
+- Grids of any size, including large patterns
+- The **Klar** symbol set: knit, purl, yarn over, decreases, increases, cables,
+  bobbles, short rows and colour fills
+- Multi-stitch symbols as one group: a six-stitch cable is one symbol, not six
+  boxes
+- Your own labelled groups stay in a local library and can carry their own
+  legend note
+- Stitch markers as a drawing guide: one at a time or every N stitches
+- Select, copy and paste areas, including colours and groups
+- Right-side and wrong-side rows, or right-side rows only numbered 1, 3, 5 …
+- Mark a repeat and build the legend automatically
+- Colour for each stitch, including Fair Isle and intarsia
+- Export as SVG, PNG and JSON; print from the browser
+- Horizontal and vertical scrollbars for large charts
+- Light/dark/system, metric/imperial, English/German
+- Keyboard, mouse, touch and stylus
+- Installable offline as a PWA
 
-## Was es bewusst nicht ist
+## What it is not
 
-Keine Strickanleitung, kein Pattern-Rechner, kein Row-Counter, keine Cloud,
-keine Konten, keine Kollaboration. Anleitung, Rechnen und Row-Counter könnten
-später als getrennte optionale Module entstehen; Cloud, Konten und
-Kollaboration bleiben ausgeschlossen. Der Kern bleibt schlank.
+No written instructions, no pattern calculator, no row counter, no cloud, no
+accounts, no collaboration. Instructions, calculations and a row counter could
+later appear as separate optional modules; cloud, accounts and collaboration
+stay out. The core stays small.
 
-## Schnellstart
+## Quick start
 
-Voraussetzung: Node.js 20 oder neuer. Keine Installation, keine
-Laufzeitabhängigkeiten.
+Requirement: Node.js 20 or newer. No install step, no runtime dependencies.
 
 ```bash
 git clone https://github.com/Stecker1312/stitchwright.git
@@ -62,18 +59,18 @@ cd stitchwright
 npm start
 ```
 
-Dann <http://localhost:8080> öffnen. Ohne lokalen Server lässt sich die
-Live-Demo benutzen.
+Then open <http://localhost:8080>. If you do not want to run a local server,
+use the live demo.
 
 ```bash
-npm test      # 64 Node-Tests
-npm run check # Tests und Syntaxprüfung
+npm test      # 66 Node tests
+npm run check # tests and syntax checks
 ```
 
-## Für Agenten
+## For agents
 
-Das Chart-Format ist versioniertes JSON. Die CLI prüft und rendert ohne
-Browser und ohne Netzwerk:
+The chart format is versioned JSON. The command-line tool validates and
+renders without a browser and without a network:
 
 ```bash
 node cli/stitchwright.js validate chart.strickschrift.json
@@ -82,62 +79,61 @@ node cli/stitchwright.js new --width 40 --height 24 --out chart.strickschrift.js
 node cli/stitchwright.js legend chart.strickschrift.json
 ```
 
-Details: [`docs/format.md`](docs/format.md), Schema:
+Details: [`docs/format.md`](docs/format.md). Schema:
 [`schema/strickschrift.schema.json`](schema/strickschrift.schema.json).
 
-## Status und Grenzen
+## Status and limits
 
-- **Alpha:** benutzbar, aber nicht fertig. Fehler sind wahrscheinlich.
-- **Dateiformat:** `strickschrift/1`; Änderungen können eine Migration brauchen.
-- **Sprachen:** Deutsch und Englisch sind gepflegt; weitere Sprachen sind
-  vorbereitet, aber noch nicht fachlich geprüft.
-- **Geräte:** Im Browser getestet; Touch und Stift sind implementiert, aber
-  noch nicht auf allen Tablets und Browsern erprobt.
-- **Eigene Symbol-Packs und Theme-Editor:** geplant, noch nicht gebaut.
-- **Kein Support-Versprechen:** offenes Einzelprojekt, kein kommerzieller Dienst.
+- **Alpha:** usable, but not finished. Bugs are likely.
+- **File format:** `strickschrift/1`; changes may need a migration.
+- **Languages:** English and German are maintained; more languages are
+  prepared but not yet checked by native speakers.
+- **Devices:** tested in the browser; touch and stylus are implemented but not
+  yet tried on every tablet and browser.
+- **Custom symbol packs and theme editor:** planned, not built.
+- **No support promise:** an open one-person project, not a commercial service.
 
-Mehr dazu auf der [Projektseite](https://stecker1312.github.io/stitchwright/about.html).
+More on the [project page](https://stecker1312.github.io/stitchwright/about.html).
 
-## Mitmachen
+## Contributing
 
-Fehler und Wünsche bitte als Issue im Repository melden. Hilfreich sind
-Browser, Betriebssystem, Schritte zum Nachstellen und – wenn möglich – die
-Chart-Datei. Bitte keine persönlichen Daten oder vertraulichen Projekte
-anhängen. Hinweise zu Übersetzungen, Symbolen und Code stehen in
+Please report bugs and wishes as an issue in the repository. It helps to
+include your browser, operating system, the steps to reproduce and, if
+possible, the chart file. Please do not attach personal data or confidential
+projects. Notes on translations, symbols and code are in
 [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
-## Technik
+## How it works
 
-- Statische Web-App, keine Laufzeitabhängigkeiten
-- Vanilla JavaScript ES Modules, Canvas für den Editor, SVG für den Export
-- Service Worker und Web-App-Manifest für Offline-Betrieb
-- IndexedDB und localStorage für lokale Daten
-- Tests mit `node:test`; Browserprüfung mit Playwright
-- JSON-Schema unter `schema/strickschrift.schema.json`
+- Static web app, no runtime dependencies
+- Vanilla JavaScript ES modules, Canvas for editing, SVG for export
+- Service worker and web app manifest for offline use
+- IndexedDB and localStorage for local data
+- Tests with `node:test`; browser checks with Playwright
+- JSON Schema at `schema/strickschrift.schema.json`
 
-## Dokumentation
+## Documentation
 
-- [Ausführliche Projektseite](https://stecker1312.github.io/stitchwright/about.html)
-- [Symbolsprache Klar](docs/symbols.md)
-- [Chart-Format](docs/format.md)
-- [Entscheidungen (ADRs)](docs/adr/)
-- [Arbeitsabläufe (SOPs)](docs/sop/)
+- [Project page](https://stecker1312.github.io/stitchwright/about.html)
+- [The Klar symbol set](docs/symbols.md)
+- [Chart format](docs/format.md)
+- [Decisions (ADRs)](docs/adr/)
+- [Workflows (SOPs)](docs/sop/)
 - [Status](STATUS.md)
-- [Arbeitsjournal](docs/JOURNAL.md)
+- [Work journal](docs/JOURNAL.md)
 
-## Datenschutz
+## Privacy
 
-Stitchwright sendet keine Daten. Es gibt keine Analyse, keine Werbung, keine
-externen Schriften oder Ressourcen. Alles bleibt auf dem Gerät oder in Dateien,
-die du selbst speicherst.
+Stitchwright sends no data. There is no analytics, no advertising and no
+external fonts or resources. Everything stays on your device or in files you
+save yourself.
 
-## Transparenz
+## Transparency
 
-Der Code wurde von einem KI-Agenten (DeepSeek V4.1 Flash) im Auftrag von
-Daniel geschrieben und von ihm fachlich geprüft. Die Entscheidungen und
-Grenzen stehen in den ADRs. Fehler sind möglich; Issues und Korrekturen sind
-willkommen.
+The code was written by an AI agent (DeepSeek V4.1 Flash) on behalf of Daniel
+and reviewed by him. The decisions and limits are in the ADRs. Mistakes are
+possible; issues and corrections are welcome.
 
-## Lizenz
+## Licence
 
-GPL-3.0. Siehe [`LICENSE`](LICENSE).
+GPL-3.0. See [`LICENSE`](LICENSE).

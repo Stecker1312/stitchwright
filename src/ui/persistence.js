@@ -13,7 +13,7 @@ const SETTINGS_KEY = "stitchwright.settings.v1";
 const CUSTOM_GROUPS_KEY = "stitchwright.customGroups.v1";
 
 const DEFAULT_SETTINGS = {
-  language: "de",
+  language: "en",
   theme: "system",
   units: "metric",
   autosave: true,

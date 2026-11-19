@@ -99,7 +99,7 @@ function groupEditor(group, chart, { t, lang, onUpdateGroup, onRemoveGroup }) {
   return wrapper;
 }
 
-export function renderInspector({ container, store, t, lang = "de", onUpdateGroup, onRemoveGroup, onFillSelection, onClearSelection }) {
+export function renderInspector({ container, store, t, lang = "en", onUpdateGroup, onRemoveGroup, onFillSelection, onClearSelection }) {
   container.replaceChildren();
   const chart = store.chart;
 
@@ -155,7 +155,7 @@ export function renderInspector({ container, store, t, lang = "de", onUpdateGrou
   container.append(empty);
 }
 
-export function renderLegend({ container, chart, t, lang = "de" }) {
+export function renderLegend({ container, chart, t, lang = "en" }) {
   container.replaceChildren();
   const entries = legendEntries(chart, lang);
   if (!entries.length) {

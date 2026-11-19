@@ -210,7 +210,7 @@ export class CanvasView {
   }
 
   startGesture(type, cell) {
-    this.store.begin(type === "paint" ? "Zeichnen" : "Radieren");
+    this.store.begin(type === "paint" ? "Draw" : "Erase");
     this.gesture = { type, last: { ...cell }, placed: false };
   }
 
@@ -379,7 +379,7 @@ export class CanvasView {
 
   toggleMarkerAt(col) {
     if (col < 1 || col >= this.store.chart.width) return;
-    this.store.edit("Maschenmarker", (chart) => {
+    this.store.edit("Stitch markers", (chart) => {
       toggleMarker(chart, col);
     });
   }
@@ -387,11 +387,11 @@ export class CanvasView {
   /** Paint or erase at the keyboard cursor. */
   paintCursor() {
     if (this.store.tool === "eraser") {
-      this.store.begin("Radieren");
+      this.store.begin("Erase");
       this.eraseAt(this.store.cursor.row, this.store.cursor.col);
       this.store.commit();
     } else {
-      this.store.begin("Zeichnen");
+      this.store.begin("Draw");
       this.paintAt(this.store.cursor.row, this.store.cursor.col);
       this.store.commit();
     }

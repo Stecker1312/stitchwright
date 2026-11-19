@@ -3,7 +3,7 @@
   "version": "0.2.0-alpha.1",
   "private": true,
   "type": "module",
-  "description": "Freier, lokaler Strickschrift-Editor für Menschen und Agenten",
+  "description": "A free, local knitting chart editor for people and agents",
   "license": "GPL-3.0",
   "engines": {
     "node": ">=20"

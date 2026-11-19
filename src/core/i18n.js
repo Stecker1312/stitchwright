@@ -11,11 +11,17 @@
  */
 
 export const LANGUAGE_META = {
-  de: { label: "Deutsch", status: "reviewed" },
-  en: { label: "English", status: "reviewed" }
+  en: { label: "English", status: "reviewed" },
+  de: { label: "Deutsch", status: "reviewed" }
 };
 
-export const DEFAULT_LANGUAGE = "de";
+/**
+ * English is the language the app presents itself in. German is a full
+ * translation and can be chosen in the settings. The internal code stays
+ * "en"; pages and documents use the British variant "en-GB".
+ */
+export const DEFAULT_LANGUAGE = "en";
+export const HTML_LANGUAGE = { en: "en-GB", de: "de" };
 export const FALLBACK_LANGUAGE = "en";
 
 const cache = new Map();
@@ -93,7 +99,7 @@ export function createI18n({ lang = DEFAULT_LANGUAGE, messages = null, fallbackL
     }
     currentLang = nextLang;
     if (typeof document !== "undefined") {
-      document.documentElement.lang = nextLang;
+      document.documentElement.lang = HTML_LANGUAGE[nextLang] || nextLang;
       apply(document);
     }
     listeners.forEach((listener) => listener(nextLang));

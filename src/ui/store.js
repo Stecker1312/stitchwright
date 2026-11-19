@@ -126,7 +126,7 @@ export class Store {
     return true;
   }
 
-  replace(chart, { history = false, label = "Chart ersetzen" } = {}) {
+  replace(chart, { history = false, label = "Replace chart" } = {}) {
     if (history) {
       this.pushUndo({ label, before: cloneChart(this.chart) });
       this.redoStack = [];

@@ -111,7 +111,7 @@ function text(value, x, y, { size = 12, weight = 400, anchor = "start", fill = "
  * @param {number} [options.cellPx] internal drawing unit; physical size comes from cellMm
  */
 export function renderSvg(chart, {
-  lang = "de",
+  lang = "en",
   unit = "metric",
   includeLegend = true,
   cellPx = CELL

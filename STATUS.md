@@ -1,6 +1,6 @@
 # Status
 
-- Stand: 2026-11-18
+- Stand: 2026-11-19
 - Version: **0.2.0-alpha.1**
 - Phase: Öffentliche Vorabversion (Alpha)
 - Sichtbarkeit: öffentlich, GitHub Pages:
@@ -20,6 +20,8 @@
   spätere optionale Module oder ausdrücklich ausgeschlossen
 - Agenten schreiben den Code; Daniel prüft fachlich. Transparenz im README.
 - Veröffentlichung als frühe Alpha; kein Support-Versprechen.
+- Englisch (britisch, einfach) ist Standard- und Präsentationssprache;
+  Deutsch bleibt vollständig wählbar (D010).
 
 ## Erledigt
 
@@ -45,8 +47,10 @@
 - Horizontale und vertikale Scrollbalken für die Zeichenfläche; sichtbare
   Scrollbalken in Panels, Dialogen, Tabellen und der oberen Bedienleiste
 - Deutsch/Englisch, hell/dunkel/System/hoher Kontrast, metrisch/imperial
+- Englisch (britisch) als Standardsprache in Oberfläche, Startseite,
+  Validierungsmeldungen, CLI, Manifest und README; Beispiel-Charts englisch
 - PWA mit Service Worker, offline getestet
-- 64 Node-Tests grün; Browserprüfung mit Chromium/Playwright
+- 66 Node-Tests grün; Browserprüfung mit Chromium/Playwright
 - Beispiel-Charts unter `samples/`, Projektseite `about.html`
 
 ## In Arbeit / offen
@@ -61,14 +65,15 @@
 
 ## Nächster Schritt
 
-1. Öffentliche Alpha beobachten und Issues triagieren.
-2. Fehler beheben, Tests erweitern.
-3. Übersetzungen und Symbol-Packs als Beiträge ermöglichen.
-4. Keine Cloud-Funktion ohne neue ADR.
+1. Englische Projektseite `about.html` mit Daniels Text umsetzen.
+2. Öffentliche Alpha beobachten und Issues triagieren.
+3. Fehler beheben, Tests erweitern.
+4. Übersetzungen und Symbol-Packs als Beiträge ermöglichen.
+5. Keine Cloud-Funktion ohne neue ADR.
 
 ## Tests
 
-`npm test`: 64 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
+`npm test`: 66 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
 Einheiten, Viewport, CLI, Performance).
 `npm run check`: Syntax- und JSON-Prüfung plus Tests grün.
 Browser: Zeichnen, Farben, Zöpfe, Rückreihen, Undo, Export, Scrollbalken,
