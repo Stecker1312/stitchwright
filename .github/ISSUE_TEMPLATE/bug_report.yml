@@ -1,24 +1,24 @@
-name: Fehler melden
-description: Etwas funktioniert nicht wie erwartet.
+name: Bug report
+description: Something does not work as expected.
 title: "[Bug] "
 labels: ["bug"]
 body:
   - type: markdown
     attributes:
       value: |
-        Danke für den Bericht. Bitte keine persönlichen Daten oder vertraulichen
-        Projekte anhängen. Wenn möglich, die Chart-Datei als JSON beilegen.
+        Thank you for the report. Please do not attach personal data or
+        confidential projects. If possible, include the chart file as JSON.
   - type: input
     id: browser
     attributes:
-      label: Browser und Betriebssystem
-      placeholder: "z. B. Firefox 140 auf Linux, Chrome auf Android"
+      label: Browser and operating system
+      placeholder: "e.g. Firefox 140 on Linux, Chrome on Android"
     validations:
       required: true
   - type: textarea
     id: steps
     attributes:
-      label: Schritte zum Nachstellen
+      label: Steps to reproduce
       placeholder: |
         1. …
         2. …
@@ -28,19 +28,19 @@ body:
   - type: textarea
     id: expected
     attributes:
-      label: Erwartetes Verhalten
+      label: Expected behaviour
     validations:
       required: true
   - type: textarea
     id: actual
     attributes:
-      label: Tatsächliches Verhalten
+      label: Actual behaviour
     validations:
       required: true
   - type: textarea
     id: chart
     attributes:
-      label: Chart-Datei oder Screenshot (optional)
-      description: Bitte keine persönlichen Daten oder vertraulichen Inhalte.
+      label: Chart file or screenshot (optional)
+      description: Please do not include personal data or confidential content.
     validations:
       required: false
