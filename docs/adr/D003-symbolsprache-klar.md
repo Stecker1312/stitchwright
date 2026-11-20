@@ -1,5 +1,9 @@
 # D003 – Symbolsprache „Klar“
 
+> **Nachtrag 2026-11-20:** Die visuelle Ausführung wurde auf die konstruktive
+> Studie C umgestellt; die Entscheidung steht in D011. Packname, IDs und
+> Dateiformat bleiben unverändert.
+
 - Datum: 2026-11-18
 - Status: Gültig
 - Betrifft: Stitchwright

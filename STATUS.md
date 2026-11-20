@@ -1,7 +1,7 @@
 # Status
 
 - Stand: 2026-11-20
-- Version: **0.4.0-alpha.1**
+- Version: **0.5.0-alpha.1**
 - Phase: Öffentliche Vorabversion (Alpha)
 - Sichtbarkeit: öffentlich, GitHub Pages:
   <https://stecker1312.github.io/stitchwright/>
@@ -52,13 +52,16 @@
 - PWA mit Service Worker, offline getestet
 - 108 Node-Tests grün; Browserprüfung mit Chromium/Playwright
 - Englische Projektseite `about.html` mit Browser-first-Schnellstart, Preisvergleich, Clear-Symbolpack und Planned-Liste
-- Englischer Screenshot, Version 0.4.0-alpha.1
+- Englischer Screenshot, Version 0.5.0-alpha.1
 - Audit-Pakete A, B und C umgesetzt: Dokument-/Speichersicherheit, valide
   UI-Kommandos, Rohvalidierung, sichere Symbol-Lookups und CLI-Vertrag;
   zentrale Teile von D, E und F folgen mit den verbleibenden P2-Punkten
 - Einsteiger-How-to auf Englisch und Deutsch (`how-to.html`,
   `how-to.de.html`), verlinkt in App-Hilfe, README und Projektseite
-- Beispiel-Charts unter `samples/`
+- Symbolstudie C (konstruktiv) als Standard umgesetzt: bestehende IDs bleiben,
+  Perle/Wende/Abketten/Anschlagen im gleichen Stil ergänzt, zusätzlich
+  `ptbl`, `slipw`, `p2tog` und `ssp` (D011)
+- Beispiel-Charts unter `samples/`, Screenshot und Symbol-Doku auf C umgestellt
 
 ## In Arbeit / offen
 

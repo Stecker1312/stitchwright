@@ -81,12 +81,11 @@ function arrow(x1, y1, x2, y2, width = STROKE) {
 }
 
 /**
- * A cable is two bundles of parallel strands crossing each other.
+ * A cable is an open crossing of two bands.
  *
- * The number of strands per bundle is the number of stitches per side. The
- * bundle in front is drawn twice: first a background-coloured "halo", then
- * the black strands. That is what makes the strand behind look interrupted,
- * just like a real cable crossing.
+ * The front band is drawn twice: first a paper-coloured halo, then the black
+ * band. That makes the band behind look interrupted at the crossing. The
+ * number of stitches per side lives in the legend, not in extra lines.
  */
 export function cableGlyph({ left, right, direction = "front" }) {
   if (!Number.isInteger(left) || !Number.isInteger(right) || left < 1 || right < 1) {
@@ -97,44 +96,19 @@ export function cableGlyph({ left, right, direction = "front" }) {
   }
 
   const span = left + right;
-  const maxStrands = Math.max(left, right);
-  // Keep the whole bundle inside the row even for 12/12 cables.
-  const gap = maxStrands > 1 ? Math.min(0.12, 0.4 / (maxStrands - 1)) : 0;
-  const strandWidth = Math.max(0.018, Math.min(0.055, gap * 0.6));
-  const haloWidth = Math.max(0.025, Math.min(0.085, gap * 1.4));
-
-  function bundle(count, fromX, toX, fromY, toY) {
-    const strands = [];
-    for (let i = 0; i < count; i += 1) {
-      // Centre the bundle vertically and spread the strands evenly. The start
-      // and end heights are swapped between the two bundles, so the strands
-      // actually cross instead of running parallel.
-      const offset = (i - (count - 1) / 2) * gap;
-      const y1 = fromY + offset;
-      const y2 = toY + offset;
-      const c1x = fromX + (toX - fromX) * 0.34;
-      const c2x = fromX + (toX - fromX) * 0.66;
-      const c1y = y1 + (y2 - y1) * 0.34;
-      const c2y = y1 + (y2 - y1) * 0.66;
-      const d = `M${fromX} ${y1} C${c1x} ${c1y} ${c2x} ${c2y} ${toX} ${y2}`;
-      strands.push(path(d, { width: strandWidth }));
-    }
-    return strands;
-  }
-
-  const leftBundle = bundle(left, 0.12, span - 0.12, 0.78, 0.22);
-  const rightBundle = bundle(right, span - 0.12, 0.12, 0.78, 0.22);
-  const front = direction === "front" ? rightBundle : leftBundle;
-  const back = direction === "front" ? leftBundle : rightBundle;
-
-  const primitives = [...back];
-  // Halo first, then the front strands. The renderer resolves `halo` to the
-  // cell background colour, so the crossing stays readable on coloured cells.
-  for (const strand of front) {
-    primitives.push({ ...strand, width: strand.width + haloWidth, halo: true });
-  }
-  primitives.push(...front);
-  return primitives;
+  const x1 = 0.18;
+  const x2 = span - 0.18;
+  const falling = path(`M${x1} 0.2 L${x2} 0.8`, { width: 0.065 });
+  const rising = path(`M${x1} 0.8 L${x2} 0.2`, { width: 0.065 });
+  // The front strand is drawn last with a paper-coloured halo. The back
+  // strand stays continuous on both sides of the crossing.
+  const front = direction === "front" ? falling : rising;
+  const back = direction === "front" ? rising : falling;
+  return [
+    back,
+    { ...front, width: 0.32, halo: true },
+    front
+  ];
 }
 
 /** A labelled rectangle for techniques that have no dedicated glyph. */
@@ -371,6 +345,124 @@ const DEFINITIONS = Object.assign(Object.create(null), {
     legend: { de: "eigene Gruppe", en: "custom group" },
     render: customGlyph
   }
+});
+
+/**
+ * Constructive default glyphs (study C, 2026-11-20).
+ *
+ * Thin converging lines, open crossings and no decorative fills except the
+ * purl dot, the bobble and the "no stitch" paper. The old Clear glyphs stay in
+ * the history, but these overrides are the standard the app draws.
+ */
+const C_GLYPHS = {
+  p: [circle(0.5, 0.5, 0.075, { fill: true })],
+  yo: [circle(0.5, 0.5, 0.215, { width: 0.055 })],
+  k2tog: [path("M.22 .79 L.72 .23 M.72 .79 V.23", { width: 0.052 })],
+  ssk: [path("M.78 .79 L.28 .23 M.28 .79 V.23", { width: 0.052 })],
+  cdd: [path("M.2 .79 L.5 .23 L.8 .79 M.5 .23 V.79", { width: 0.052 })],
+  m1l: [path("M.68 .8 L.48 .47 V.21 M.48 .47 L.22 .21 M.48 .47 V.8", { width: 0.052 })],
+  m1r: [path("M.32 .8 L.52 .47 V.21 M.52 .47 L.78 .21 M.52 .47 V.8", { width: 0.052 })],
+  kfb: [path("M.5 .8 V.48 M.23 .21 V.32 L.5 .48 L.77 .32 V.21", { width: 0.052 })],
+  tbl: [path("M.28 .21 L.72 .79 M.72 .21 L.28 .79", { width: 0.052 })],
+  ptbl: [
+    path("M.28 .21 L.72 .79 M.72 .21 L.28 .79", { width: 0.052 }),
+    circle(0.79, 0.76, 0.058, { fill: true })
+  ],
+  slip: [path("M.33 .23 V.7 H.67 V.23", { width: 0.052 })],
+  slipw: [
+    path("M.33 .23 V.7 H.67 V.23", { width: 0.052 }),
+    line(0.22, 0.81, 0.78, 0.81, { width: 0.055 })
+  ],
+  p2tog: [
+    path("M.22 .79 L.72 .23 M.72 .79 V.23", { width: 0.052 }),
+    circle(0.23, 0.31, 0.058, { fill: true })
+  ],
+  ssp: [
+    path("M.78 .79 L.28 .23 M.28 .79 V.23", { width: 0.052 }),
+    circle(0.77, 0.31, 0.058, { fill: true })
+  ],
+  k3tog: [path("M.2 .79 L.77 .21 M.49 .79 L.77 .21 M.77 .79 V.21", { width: 0.052 })],
+  sk2p: [path("M.8 .79 L.23 .21 M.51 .79 L.23 .21 M.23 .79 V.21", { width: 0.052 })],
+  bobble: [{
+    type: "path",
+    d: "M.5 .2 L.8 .5 L.5 .8 L.2 .5 Z",
+    fill: true,
+    stroke: false,
+    width: 0.055
+  }],
+  bead: [
+    path("M.5 .2 L.8 .5 L.5 .8 L.2 .5 Z", { width: 0.052 }),
+    circle(0.5, 0.5, 0.05, { fill: true })
+  ],
+  nostitch: [{
+    type: "rect",
+    x: 0,
+    y: 0,
+    w: 1,
+    h: 1,
+    rx: 0,
+    fill: "#d9ddda",
+    stroke: false,
+    width: 0
+  }],
+  shortrow: [path("M.28 .8 V.32 Q.5 .1 .72 .32 V.62", { width: 0.052 })],
+  bindoff: [line(0.2, 0.3, 0.8, 0.3, { width: 0.12 })],
+  caston: [line(0.2, 0.7, 0.8, 0.7, { width: 0.12 })]
+};
+
+for (const [id, glyph] of Object.entries(C_GLYPHS)) {
+  if (DEFINITIONS[id]) DEFINITIONS[id].glyph = glyph;
+}
+
+Object.assign(DEFINITIONS, {
+  ptbl: {
+    id: "ptbl",
+    category: "basic",
+    span: 1,
+    name: { de: "links verschränkt", en: "purl twisted" },
+    description: { de: "Linke Masche verschränkt abstricken.", en: "Purl through the back loop." },
+    legend: { de: "li verschränkt", en: "purl twisted" },
+    glyph: C_GLYPHS.ptbl
+  },
+  slipw: {
+    id: "slipw",
+    category: "basic",
+    span: 1,
+    name: { de: "abheben, Faden vorne", en: "slip, yarn in front" },
+    description: { de: "Masche abheben, den Faden vor die Arbeit legen.", en: "Slip a stitch with the yarn in front." },
+    legend: { de: "abheben, Faden vorne", en: "slip, yarn in front" },
+    glyph: C_GLYPHS.slipw
+  },
+  p2tog: {
+    id: "p2tog",
+    category: "decrease",
+    span: 2,
+    name: { de: "p2tog", en: "purl two together" },
+    description: { de: "Zwei Maschen links zusammenstricken.", en: "Purl two stitches together." },
+    legend: { de: "links zusammen", en: "purl decrease" },
+    glyph: C_GLYPHS.p2tog
+  },
+  ssp: {
+    id: "ssp",
+    category: "decrease",
+    span: 2,
+    name: { de: "ssp", en: "slip, slip, purl" },
+    description: { de: "Zwei Maschen links geneigt zusammenstricken.", en: "Slip two stitches and purl them together." },
+    legend: { de: "links geneigt", en: "left-leaning purl decrease" },
+    glyph: C_GLYPHS.ssp
+  }
+});
+
+Object.assign(DEFINITIONS.tbl, {
+  name: { de: "rechts verschränkt", en: "twisted knit" },
+  legend: { de: "re verschränkt", en: "twisted knit" }
+});
+Object.assign(DEFINITIONS.slip, {
+  name: { de: "abheben, Faden hinten", en: "slip, yarn in back" },
+  legend: { de: "abheben, Faden hinten", en: "slip, yarn in back" }
+});
+Object.assign(DEFINITIONS.bobble, {
+  name: { de: "Noppe", en: "bobble" }
 });
 
 /** Public, read-only view of the pack. */

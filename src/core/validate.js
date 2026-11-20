@@ -309,15 +309,16 @@ export function validateChart(chart, { strict = false, raw = false } = {}) {
   } else if (!options || typeof options !== "object" || Array.isArray(options)) {
     error("E_OPTIONS", "options", "options must be an object");
   } else {
-    if (options.rowsMode !== "all" && options.rowsMode !== "rs") {
+    const given = (key) => !raw || Object.hasOwn(options, key);
+    if (given("rowsMode") && options.rowsMode !== "all" && options.rowsMode !== "rs") {
       error("E_ROWS_MODE", "options.rowsMode", "rowsMode must be all or rs");
     }
     for (const key of ["showRowNumbers", "showStitchNumbers", "showLegend"]) {
-      if (typeof options[key] !== "boolean") {
+      if (given(key) && typeof options[key] !== "boolean") {
         error("E_OPTION_BOOL", `options.${key}`, `${key} must be true or false`);
       }
     }
-    if (options.repeat !== null) {
+    if (given("repeat") && options.repeat !== null) {
       if (!options.repeat || typeof options.repeat !== "object" || Array.isArray(options.repeat)) {
         error("E_REPEAT", "options.repeat", "repeat must be null or an object");
       } else {
@@ -327,20 +328,20 @@ export function validateChart(chart, { strict = false, raw = false } = {}) {
         }
       }
     }
-    if (typeof options.cellMm !== "number" || !Number.isFinite(options.cellMm) || options.cellMm < 2 || options.cellMm > 20) {
+    if (given("cellMm") && (typeof options.cellMm !== "number" || !Number.isFinite(options.cellMm) || options.cellMm < 2 || options.cellMm > 20)) {
       error("E_CELL_MM", "options.cellMm", "cellMm must be between 2 and 20");
     }
-    if (!PAPERS.has(options.paper)) {
+    if (given("paper") && !PAPERS.has(options.paper)) {
       error("E_PAPER", "options.paper", "Unknown paper size");
     }
-    if (typeof options.subtitle !== "string") {
+    if (given("subtitle") && typeof options.subtitle !== "string") {
       error("E_SUBTITLE", "options.subtitle", "subtitle must be a string");
-    } else if (options.subtitle.length > 120) {
+    } else if (given("subtitle") && options.subtitle.length > 120) {
       error("E_SUBTITLE", "options.subtitle", "subtitle must be at most 120 characters");
     }
-    if (!Array.isArray(options.markers)) {
+    if (given("markers") && !Array.isArray(options.markers)) {
       error("E_MARKERS", "options.markers", "markers must be an array");
-    } else {
+    } else if (Array.isArray(options.markers)) {
       const seenMarkers = new Set();
       options.markers.forEach((marker, index) => {
         if (!isInteger(marker) || marker < 1 || (widthOk && marker >= width)) {

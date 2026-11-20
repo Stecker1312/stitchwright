@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.5.0-alpha.1 – 20 November 2026
+
+Fourth public alpha. The constructive symbol study C is now the standard.
+
+### New
+
+- The **Clear** pack uses thin converging lines, open cable crossings and no
+  arrowheads. The three anchors (empty knit, purl dot, yarn-over circle) stay.
+- Existing symbol IDs and chart files keep working; only the rendering changes.
+- New symbols: `ptbl` (twisted purl), `slipw` (slip with yarn in front),
+  `p2tog` and `ssp` (purl decreases).
+- Bead, short row, bind off and cast on are redrawn in the same constructive
+  style so no previous feature is lost.
+- Cables still support 1/1 to 4/4 and custom widths; the front band is
+  continuous and the back band breaks at the crossing.
+- The example chart, screenshot and symbol documentation use the new style.
+- 108 Node tests; browser check for the new palette and example chart.
+
 ## 0.4.0-alpha.1 – 20 November 2026
 
 Stabilisation release based on the 2026-11-19 code audit. Still an alpha.

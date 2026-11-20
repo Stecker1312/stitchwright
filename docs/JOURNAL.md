@@ -347,3 +347,27 @@ wollen, brauchten einen kurzen Einstieg.
 
 **Geprüft:** `npm run check` grün; Browser: Help-Link zeigt in beiden Sprachen
 auf die richtige Datei.
+
+## 2026-11-20 – Konstruktive Symbolstudie C als Standard
+
+**Beobachtet:** Daniel hat drei Symbolstudien prüfen lassen und C
+(Konstruktiv) als Standard gewählt. C deckt die meisten bisherigen Symbole ab,
+aber nicht Perle, Wende, Abketten und Anschlagen; außerdem bringt es
+Linksmaschen-Varianten und zwei Abhebevarianten mit.
+
+**Getan:**
+
+- C-Glyphen in `src/core/symbols.js` als Standard hinterlegt. IDs und
+  Dateiformat bleiben unverändert; alte Charts rendern mit den neuen Formen.
+- `tbl` ist jetzt das konstruktive X, dazu `ptbl` mit Purpunkt. `slip` und
+  `slipw` unterscheiden Faden hinten/vorne. `p2tog` und `ssp` ergänzen die
+  Linksabnahmen.
+- Perle, Wende, Abketten und Anschlagen im gleichen Stil neu gezeichnet.
+- Zöpfe sind zwei offene Kreuzungslinien mit durchgehendem Vorderband; der
+  Glyph bleibt parametrisch für 1/1 bis 4/4 und größere Gruppen.
+- Docs `symbols.md`, D003-Nachtrag, neue ADR D011, Screenshot und
+  `samples/klar-demo.svg` aktualisiert.
+- Version auf 0.5.0-alpha.1, 108 Tests grün, Browserprüfung des Beispiels.
+
+**Offen:** Fachliche Strick- und Druckabnahme der neuen Glyphen; keine
+Behauptung, dass die Studie ohne reale Strickprobe fertig ist.

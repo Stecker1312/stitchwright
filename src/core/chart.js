@@ -631,6 +631,8 @@ export function mirrorSymbol(id) {
   const pairs = {
     k2tog: "ssk",
     ssk: "k2tog",
+    p2tog: "ssp",
+    ssp: "p2tog",
     k3tog: "sk2p",
     sk2p: "k3tog",
     m1l: "m1r",
