@@ -48,6 +48,8 @@ const OPTIONAL = [
   "about.html",
   "about.css",
   "assets/screenshot-editor.png",
+  "how-to.html",
+  "how-to.de.html",
   "docs/how-to.md",
   "docs/how-to.de.md"
 ];

@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Eine Fünf-Minuten-Anleitung für das erste Strickchart in Stitchwright.">
+  <meta name="theme-color" content="#2563eb">
+  <title>So zeichnest du dein erstes Chart – Stitchwright</title>
+  <link rel="icon" href="favicon.ico" sizes="32x32">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="about.css">
+  <style>
+    .hero { grid-template-columns: minmax(0, 1fr); }
+    .hero .lead { max-width: 70ch; }
+    .howto-nav { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0 0; }
+    .howto-problem { margin: 0 0 18px; }
+    .howto-problem h3 { margin-bottom: 4px; }
+    .howto-problem p { margin-top: 0; }
+    .keys { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .keys th, .keys td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--border); }
+    .keys kbd { font: inherit; font-weight: 700; }
+    .back { margin-top: 28px; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./">
+      <img src="assets/icon.svg" alt="" width="28" height="28">
+      <span>Stitchwright</span>
+    </a>
+    <nav class="site-nav" aria-label="Seitennavigation">
+      <a href="./">Editor</a>
+      <a href="how-to.html" lang="en-GB">English</a>
+      <a href="about.html">Projektseite</a>
+      <a href="https://github.com/Stecker1312/stitchwright" rel="noopener">GitHub</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <span class="badge">Fünf-Minuten-Anleitung</span>
+        <h1>Zeichne dein erstes Chart</h1>
+        <p class="lead">
+          Stitchwright ist ein Chart-Editor, kein Anleitungsgenerator. Du
+          zeichnest das Bild, dem eine Strickerin folgt. Diese Anleitung dauert
+          etwa fünf Minuten.
+        </p>
+        <div class="howto-nav">
+          <a class="button primary" href="./">Editor öffnen</a>
+          <a class="button" href="how-to.html" lang="en-GB">In English</a>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>1. Editor öffnen</h2>
+      <p>
+        Öffne <a href="https://stecker1312.github.io/stitchwright/" rel="noopener">die Live-App</a>
+        in einem aktuellen Browser. Du kannst die App auch über das Browsermenü
+        installieren und nach dem ersten Laden offline benutzen.
+      </p>
+      <p>
+        Es gibt kein Konto und keine Cloud. Deine Charts bleiben im Browser
+        oder in Dateien, die du selbst speicherst.
+      </p>
+    </section>
+
+    <section>
+      <h2>2. Chart anlegen</h2>
+      <p>
+        Wähle <strong>Neu</strong>, gib einen Titel, Breite in Maschen und Höhe
+        in Reihen ein und klicke <strong>Chart anlegen</strong>.
+      </p>
+      <p>
+        Oder wähle <strong>Beispiel laden</strong>, um ein fertiges Chart mit
+        Zöpfen, Farben und Legende zu sehen.
+      </p>
+      <p>
+        Ein leeres Kästchen bedeutet <strong>re</strong>. Die Symbole tragen die
+        zusätzliche Information.
+      </p>
+    </section>
+
+    <section>
+      <h2>3. Zeichnen</h2>
+      <ol class="clean">
+        <li>Wähle ein Symbol unter <strong>Symbole</strong>.</li>
+        <li>Klicke oder ziehe auf dem Raster.</li>
+        <li>Mit dem <strong>Radierer</strong> entfernst du eine Masche, mit Rechtsklick und Stift geht das auch direkt.</li>
+        <li>Wähle unter <strong>Farben</strong> eine Farbe, wenn du eine Farbfläche möchtest. Farbe ist eine eigene Ebene; sie ersetzt kein Symbol.</li>
+        <li>Mit <strong>Rückgängig</strong> machst du einen Fehler rückgängig.</li>
+      </ol>
+      <p>Die Statusleiste zeigt Reihe und Masche unter dem Zeiger.</p>
+    </section>
+
+    <section>
+      <h2>4. Zöpfe und Mehrfachsymbole</h2>
+      <p>
+        Ein Zopf ist ein Symbol über mehrere Maschen, keine Sammlung einzelner
+        Kästchen.
+      </p>
+      <ol class="clean">
+        <li>Öffne den Bereich <strong>Zöpfe</strong>.</li>
+        <li>Wähle eine Vorgabe wie <strong>2/2 vorne</strong>.</li>
+        <li>Klicke ins Raster. Die ganze Gruppe wird auf einmal gesetzt.</li>
+        <li>Mit dem <strong>Auswahl</strong>-Werkzeug kannst du die Gruppe später ändern oder entfernen.</li>
+      </ol>
+      <p>Die Legende nennt die genaue Zopfrichtung.</p>
+    </section>
+
+    <section>
+      <h2>5. Reihen und Spalten</h2>
+      <ul class="clean">
+        <li><strong>+ Reihe</strong> und <strong>+ Spalte</strong> schaffen Platz.</li>
+        <li>Zum Löschen zuerst die Reihen- oder Spaltennummer anklicken, dann den Papierkorb und bestätigen.</li>
+        <li><strong>Nur Hinreihen</strong> blendet gerade Reihen aus und nummeriert 1, 3, 5 … Die versteckten Reihen bleiben gespeichert.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>6. Rapport und Legende</h2>
+      <ul class="clean">
+        <li>Setze <strong>Von Masche</strong> und <strong>Bis Masche</strong>, um einen Rapport zu markieren.</li>
+        <li>Die Legende wird automatisch aus Symbolen, Gruppen und Farben erzeugt.</li>
+        <li>Du kannst die Legende am Bildschirm ausblenden und für den Export einblenden.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>7. Speichern und sichern</h2>
+      <ul class="clean">
+        <li><strong>Speichern</strong> legt das Chart in diesem Browser ab.</li>
+        <li><strong>Exportieren → JSON</strong> schreibt eine echte Datei. Das ist deine Sicherung und der beste Weg, ein Chart auf ein anderes Gerät zu bringen.</li>
+        <li><strong>Öffnen</strong> lädt ein lokales Chart oder eine JSON-Datei.</li>
+      </ul>
+      <div class="alpha-note" role="note">
+        <div>
+          <strong>Das ist eine frühe Alpha.</strong>
+          <p>Sichere wichtige Charts zusätzlich als JSON-Datei. Das Dateiformat kann sich noch ändern.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>8. Exportieren und drucken</h2>
+      <p>Wähle <strong>Exportieren</strong>:</p>
+      <ul class="clean">
+        <li><strong>SVG</strong> für scharfen Druck und große Charts.</li>
+        <li><strong>PNG</strong> zum schnellen Teilen.</li>
+        <li><strong>JSON</strong> als bearbeitbare Quelle.</li>
+      </ul>
+      <p>
+        <strong>Drucken</strong> benutzt das SVG und die Papiergröße aus den
+        Chart-Einstellungen. Der Browser öffnet daraus den Druck- oder
+        PDF-Dialog.
+      </p>
+    </section>
+
+    <section>
+      <h2>9. Bewegen und zoomen</h2>
+      <ul class="clean">
+        <li><strong>+ / −</strong> zoomt hinein und heraus.</li>
+        <li><strong>Einpassen</strong> zeigt das ganze Chart.</li>
+        <li>Mit dem <strong>Hand</strong>-Werkzeug verschiebst du die Ansicht. Das Mausrad scrollt, Strg + Mausrad zoomt.</li>
+        <li>Auf Touch zeichnet ein Finger; zwei Finger zoomen und verschieben.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>10. Häufige Probleme</h2>
+      <div class="howto-problem">
+        <h3>Ich sehe die gerade gesetzte Masche nicht.</h3>
+        <p>Prüfe Zoom und ausgewähltes Symbol. Leere Kästchen bedeuten re; eine leere Zelle mit Farbe ist also eine rechte Masche mit Farbe.</p>
+      </div>
+      <div class="howto-problem">
+        <h3>Das Chart sieht leer aus.</h3>
+        <p>Wähle zuerst ein Symbol oder lade das Beispiel. Eine Farbe allein zeichnet kein Symbol.</p>
+      </div>
+      <div class="howto-problem">
+        <h3>Reihen fehlen.</h3>
+        <p>Schalte <strong>Nur Hinreihen</strong> aus, um alle Reihen zu sehen.</p>
+      </div>
+      <div class="howto-problem">
+        <h3>Es fragt nach ungespeicherten Änderungen.</h3>
+        <p>Wähle <strong>Speichern und weiter</strong>, <strong>Verwerfen</strong> oder <strong>Abbrechen</strong>. Beim Abbrechen geht nichts verloren.</p>
+      </div>
+      <div class="howto-problem">
+        <h3>Die Datei lässt sich nicht öffnen.</h3>
+        <p>Es muss Stitchwright-JSON sein. Ändere die Datei nicht von Hand, wenn du das Format nicht kennst. Siehe <a href="https://github.com/Stecker1312/stitchwright/blob/main/docs/format.md">Chart-Format</a>.</p>
+      </div>
+      <div class="howto-problem">
+        <h3>Ich habe einen Fehler gefunden.</h3>
+        <p>
+          Öffne ein Issue im
+          <a href="https://github.com/Stecker1312/stitchwright/issues" rel="noopener">Repository</a>.
+          Nenne Browser, Betriebssystem, Schritte zum Nachstellen und wenn
+          möglich die Chart-JSON. Bitte keine persönlichen Daten oder
+          vertraulichen Projekte anhängen.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>11. Tastatur</h2>
+      <table class="keys">
+        <thead><tr><th>Taste</th><th>Aktion</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>V</kbd></td><td>Auswählen</td></tr>
+          <tr><td><kbd>P</kbd></td><td>Zeichnen</td></tr>
+          <tr><td><kbd>E</kbd></td><td>Radieren</td></tr>
+          <tr><td><kbd>H</kbd></td><td>Verschieben</td></tr>
+          <tr><td>Pfeiltasten</td><td>Cursor auf der Zeichenfläche bewegen</td></tr>
+          <tr><td><kbd>Leertaste</kbd> / <kbd>Enter</kbd></td><td>Am Cursor zeichnen</td></tr>
+          <tr><td><kbd>Entf</kbd></td><td>Am Cursor radieren</td></tr>
+          <tr><td><kbd>Strg/Cmd + Z</kbd></td><td>Rückgängig</td></tr>
+          <tr><td><kbd>Strg/Cmd + Shift + Z</kbd></td><td>Wiederholen</td></tr>
+          <tr><td><kbd>Strg/Cmd + S</kbd></td><td>Speichern</td></tr>
+          <tr><td><kbd>Strg/Cmd + O</kbd></td><td>Öffnen</td></tr>
+          <tr><td><kbd>Strg/Cmd + N</kbd></td><td>Neu</td></tr>
+          <tr><td><kbd>Strg/Cmd + E</kbd></td><td>Exportieren</td></tr>
+          <tr><td><kbd>+</kbd> / <kbd>-</kbd></td><td>Zoom</td></tr>
+          <tr><td><kbd>0</kbd></td><td>Einpassen</td></tr>
+          <tr><td><kbd>?</kbd></td><td>Hilfe</td></tr>
+        </tbody>
+      </table>
+      <p>
+        Tastatur-Zeichenbefehle funktionieren nur, wenn die Zeichenfläche den
+        Fokus hat. Klicke einmal auf die Fläche oder wähle ein Symbol; der Fokus
+        wandert automatisch dorthin.
+      </p>
+    </section>
+
+    <section>
+      <h2>12. Weitere Hilfe</h2>
+      <ul class="clean">
+        <li>In der App: <strong>Hilfe</strong>.</li>
+        <li><a href="https://github.com/Stecker1312/stitchwright/blob/main/docs/format.md">Chart-Format</a></li>
+        <li><a href="https://github.com/Stecker1312/stitchwright/blob/main/docs/symbols.md">Symbolsprache</a></li>
+        <li><a href="https://github.com/Stecker1312/stitchwright/blob/main/CONTRIBUTING.md">Mitmachen</a></li>
+        <li><a href="https://github.com/Stecker1312/stitchwright/issues" rel="noopener">Issues</a></li>
+      </ul>
+      <p class="back"><a href="./">Zurück zum Editor</a></p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>Stitchwright 0.4.0-alpha.1 · GPL-3.0</span>
+      <span><a href="./">Editor</a> · <a href="about.html">Projektseite</a> · <a href="https://github.com/Stecker1312/stitchwright" rel="noopener">Quellcode</a></span>
+    </div>
+  </footer>
+</body>
+</html>

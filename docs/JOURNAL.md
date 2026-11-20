@@ -338,7 +338,7 @@ wollen, brauchten einen kurzen Einstieg.
 
 **Getan:**
 
-- `docs/how-to.md` und `docs/how-to.de.md`: fünfminütige Anleitung von
+- `how-to.html` und `how-to.de.html`: fünfminütige Anleitung von
   „Editor öffnen“ über Zeichnen, Zöpfe, Reihen, Speichern, Export und
   Tastatur bis zu häufigen Problemen.
 - App-Hilfe, README und Projektseite verlinken die Anleitung; die App wählt

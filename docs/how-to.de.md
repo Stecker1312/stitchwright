@@ -1,5 +1,7 @@
 # So zeichnest du dein erstes Chart
 
+Formatierte Seite: [how-to.de.html](../how-to.de.html).
+
 Stitchwright ist ein Chart-Editor, kein Anleitungsgenerator. Du zeichnest das
 Bild, dem eine Strickerin folgt. Diese Anleitung dauert etwa fünf Minuten.
 

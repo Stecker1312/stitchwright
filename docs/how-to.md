@@ -1,5 +1,7 @@
 # How to draw your first chart
 
+Formatted page: [how-to.html](../how-to.html).
+
 Stitchwright is a chart editor, not an instruction generator. You draw the
 picture that a knitter follows. This guide takes about five minutes.
 

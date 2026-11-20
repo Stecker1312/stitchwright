@@ -11,7 +11,7 @@ the browser, works offline and sends nothing anywhere.
 >
 > **Project page:** <https://stecker1312.github.io/stitchwright/about.html>
 >
-> **New here?** Read the [five-minute how-to](docs/how-to.md).
+> **New here?** Read the [five-minute how-to](how-to.html).
 
 ## What is Stitchwright?
 
@@ -117,7 +117,7 @@ projects. Notes on translations, symbols and code are in
 ## Documentation
 
 - [Project page](https://stecker1312.github.io/stitchwright/about.html)
-- [How to draw your first chart](docs/how-to.md)
+- [How to draw your first chart](how-to.html)
 - [The Clear symbol set](docs/symbols.md)
 - [Chart format](docs/format.md)
 - [Decisions (ADRs)](docs/adr/)

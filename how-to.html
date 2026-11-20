@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A five-minute guide to drawing your first knitting chart in Stitchwright.">
+  <meta name="theme-color" content="#2563eb">
+  <title>How to draw your first chart – Stitchwright</title>
+  <link rel="icon" href="favicon.ico" sizes="32x32">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="about.css">
+  <style>
+    .hero { grid-template-columns: minmax(0, 1fr); }
+    .hero .lead { max-width: 70ch; }
+    .howto-nav { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0 0; }
+    .howto-problem { margin: 0 0 18px; }
+    .howto-problem h3 { margin-bottom: 4px; }
+    .howto-problem p { margin-top: 0; }
+    .keys { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .keys th, .keys td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--border); }
+    .keys kbd { font: inherit; font-weight: 700; }
+    .back { margin-top: 28px; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./">
+      <img src="assets/icon.svg" alt="" width="28" height="28">
+      <span>Stitchwright</span>
+    </a>
+    <nav class="site-nav" aria-label="Site navigation">
+      <a href="./">Editor</a>
+      <a href="how-to.de.html" lang="de">Deutsch</a>
+      <a href="about.html">Project page</a>
+      <a href="https://github.com/Stecker1312/stitchwright" rel="noopener">GitHub</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <span class="badge">Five-minute guide</span>
+        <h1>Draw your first chart</h1>
+        <p class="lead">
+          Stitchwright is a chart editor, not an instruction generator. You draw
+          the picture that a knitter follows. This guide takes about five
+          minutes.
+        </p>
+        <div class="howto-nav">
+          <a class="button primary" href="./">Open the editor</a>
+          <a class="button" href="how-to.de.html" lang="de">Auf Deutsch</a>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>1. Open the editor</h2>
+      <p>
+        Open <a href="https://stecker1312.github.io/stitchwright/" rel="noopener">the live app</a>
+        in a current browser. You can also install it from your browser's menu
+        and use it offline after the first load.
+      </p>
+      <p>
+        There is no account and no cloud. Your charts stay in the browser or in
+        files you save yourself.
+      </p>
+    </section>
+
+    <section>
+      <h2>2. Start a chart</h2>
+      <p>
+        Choose <strong>New</strong>, enter a title, width in stitches and height
+        in rows, then <strong>Create chart</strong>.
+      </p>
+      <p>
+        Or choose <strong>Load example</strong> to see a finished chart with
+        cables, colours and a legend.
+      </p>
+      <p>
+        An empty cell means <strong>knit</strong>. The symbols are the extra
+        information.
+      </p>
+    </section>
+
+    <section>
+      <h2>3. Draw</h2>
+      <ol class="clean">
+        <li>Pick a symbol under <strong>Symbols</strong>.</li>
+        <li>Click or drag on the grid.</li>
+        <li>Use the <strong>Eraser</strong> to remove a stitch, or right-click with the pencil.</li>
+        <li>Pick a colour under <strong>Colours</strong> if you want a colour fill. Colour is a separate layer; it does not replace the symbol.</li>
+        <li>Use <strong>Undo</strong> if something goes wrong.</li>
+      </ol>
+      <p>The status bar shows the row and stitch under the pointer.</p>
+    </section>
+
+    <section>
+      <h2>4. Cables and multi-stitch symbols</h2>
+      <p>
+        Cables are one symbol across several stitches, not several separate
+        cells.
+      </p>
+      <ol class="clean">
+        <li>Open the <strong>Cables</strong> section.</li>
+        <li>Choose a preset such as <strong>2/2 front</strong>.</li>
+        <li>Click the grid. The whole group is placed at once.</li>
+        <li>Choose the group with the <strong>Select</strong> tool if you want to change or remove it.</li>
+      </ol>
+      <p>The legend gives the exact cable direction.</p>
+    </section>
+
+    <section>
+      <h2>5. Rows and columns</h2>
+      <ul class="clean">
+        <li><strong>+ Row</strong> and <strong>+ Column</strong> add space.</li>
+        <li>To delete a row or column, click its number first, then the trash button and confirm.</li>
+        <li><strong>Right-side rows only</strong> hides even rows and numbers 1, 3, 5 … The hidden rows are still stored.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>6. Repeat and legend</h2>
+      <ul class="clean">
+        <li>Set <strong>From stitch</strong> and <strong>To stitch</strong> to mark a repeat.</li>
+        <li>The legend is built automatically from the symbols, groups and colours you use.</li>
+        <li>You can switch the legend off for the screen and on for export.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>7. Save and back up</h2>
+      <ul class="clean">
+        <li><strong>Save</strong> stores the chart in this browser.</li>
+        <li><strong>Export → JSON</strong> writes a real file. This is your backup and the best way to move a chart to another device.</li>
+        <li><strong>Open</strong> loads a local chart or a JSON file.</li>
+      </ul>
+      <div class="alpha-note" role="note">
+        <div>
+          <strong>This is an early alpha.</strong>
+          <p>Keep an extra JSON copy of charts you care about. The file format may still change.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>8. Export and print</h2>
+      <p>Choose <strong>Export</strong>:</p>
+      <ul class="clean">
+        <li><strong>SVG</strong> for sharp printing and large charts.</li>
+        <li><strong>PNG</strong> for quick sharing.</li>
+        <li><strong>JSON</strong> as the editable source.</li>
+      </ul>
+      <p>
+        <strong>Print</strong> uses the SVG and the paper size from the chart
+        settings. The browser turns it into a print or PDF dialogue.
+      </p>
+    </section>
+
+    <section>
+      <h2>9. Move around</h2>
+      <ul class="clean">
+        <li><strong>+ / −</strong> zooms in and out.</li>
+        <li><strong>Fit</strong> shows the whole chart.</li>
+        <li>The <strong>hand</strong> tool pans. The mouse wheel scrolls; Ctrl + wheel zooms.</li>
+        <li>On touch, one finger draws and two fingers zoom and pan.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>10. Common problems</h2>
+      <div class="howto-problem">
+        <h3>I cannot see the stitch I just placed.</h3>
+        <p>Check the zoom level and the selected symbol. Empty cells are knit, so an empty cell with a colour is still a knit stitch with a colour.</p>
+      </div>
+      <div class="howto-problem">
+        <h3>The chart looks empty.</h3>
+        <p>Pick a symbol first, or use <strong>Load example</strong>. A colour alone does not draw a symbol.</p>
+      </div>
+      <div class="howto-problem">
+        <h3>Rows are missing.</h3>
+        <p>Turn off <strong>Right-side rows only</strong> to show every row.</p>
+      </div>
+      <div class="howto-problem">
+        <h3>It asks about unsaved changes.</h3>
+        <p>Choose <strong>Save and continue</strong>, <strong>Discard</strong> or <strong>Cancel</strong>. Nothing is lost when you cancel.</p>
+      </div>
+      <div class="howto-problem">
+        <h3>The file will not open.</h3>
+        <p>It must be Stitchwright JSON. Do not edit the file by hand unless you know the format. See the <a href="https://github.com/Stecker1312/stitchwright/blob/main/docs/format.md">chart format</a>.</p>
+      </div>
+      <div class="howto-problem">
+        <h3>I found a bug.</h3>
+        <p>
+          Open an issue in the
+          <a href="https://github.com/Stecker1312/stitchwright/issues" rel="noopener">repository</a>.
+          Include your browser, operating system, steps to reproduce and, if
+          possible, the chart JSON. Do not attach personal data or confidential
+          projects.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>11. Keyboard</h2>
+      <table class="keys">
+        <thead><tr><th>Key</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>V</kbd></td><td>Select</td></tr>
+          <tr><td><kbd>P</kbd></td><td>Pencil</td></tr>
+          <tr><td><kbd>E</kbd></td><td>Eraser</td></tr>
+          <tr><td><kbd>H</kbd></td><td>Pan</td></tr>
+          <tr><td>Arrow keys</td><td>Move the cursor on the canvas</td></tr>
+          <tr><td><kbd>Space</kbd> / <kbd>Enter</kbd></td><td>Paint at the cursor</td></tr>
+          <tr><td><kbd>Delete</kbd></td><td>Erase at the cursor</td></tr>
+          <tr><td><kbd>Ctrl/Cmd + Z</kbd></td><td>Undo</td></tr>
+          <tr><td><kbd>Ctrl/Cmd + Shift + Z</kbd></td><td>Redo</td></tr>
+          <tr><td><kbd>Ctrl/Cmd + S</kbd></td><td>Save</td></tr>
+          <tr><td><kbd>Ctrl/Cmd + O</kbd></td><td>Open</td></tr>
+          <tr><td><kbd>Ctrl/Cmd + N</kbd></td><td>New</td></tr>
+          <tr><td><kbd>Ctrl/Cmd + E</kbd></td><td>Export</td></tr>
+          <tr><td><kbd>+</kbd> / <kbd>-</kbd></td><td>Zoom</td></tr>
+          <tr><td><kbd>0</kbd></td><td>Fit</td></tr>
+          <tr><td><kbd>?</kbd></td><td>Help</td></tr>
+        </tbody>
+      </table>
+      <p>
+        Keyboard drawing commands only work when the chart canvas has focus.
+        Click the canvas once or choose a symbol; the focus moves there
+        automatically.
+      </p>
+    </section>
+
+    <section>
+      <h2>12. More help</h2>
+      <ul class="clean">
+        <li>In the app: <strong>Help</strong>.</li>
+        <li><a href="https://github.com/Stecker1312/stitchwright/blob/main/docs/format.md">Chart format</a></li>
+        <li><a href="https://github.com/Stecker1312/stitchwright/blob/main/docs/symbols.md">Symbol set</a></li>
+        <li><a href="https://github.com/Stecker1312/stitchwright/blob/main/CONTRIBUTING.md">Contributing</a></li>
+        <li><a href="https://github.com/Stecker1312/stitchwright/issues" rel="noopener">Issues</a></li>
+      </ul>
+      <p class="back"><a href="./">Back to the editor</a></p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>Stitchwright 0.4.0-alpha.1 · GPL-3.0</span>
+      <span><a href="./">Editor</a> · <a href="about.html">Project page</a> · <a href="https://github.com/Stecker1312/stitchwright" rel="noopener">Source code</a></span>
+    </div>
+  </footer>
+</body>
+</html>
