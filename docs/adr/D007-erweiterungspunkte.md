@@ -17,8 +17,10 @@ Schnittstellen an:
 
 - **Dokumentmodell** (`src/core/chart.js`) ist die einzige Quelle für ein
   Chart. Jedes Modul liest und schreibt dieses Modell.
-- **Symbol-Packs** sind Daten, kein Code. Neue Symbole brauchen keine
-  Änderung am Editor.
+- **Symbol-Packs** sind Daten, kein Code. Die erste Version hat eine fest
+  eingebaute Registry mit Renderfunktionen und UI-Sonderfällen. Eine externe
+  Pack-Schnittstelle mit Pack-ID im Dokument ist ein möglicher nächster
+  Schritt, braucht aber eine eigene ADR.
 - **Renderer** sind getrennt: Canvas für die Ansicht, SVG für Export und CLI.
 - **Locale-Dateien** sind Daten.
 - **Persistenz** ist eine Schicht; ein späterer Sync müsste sie ersetzen,

@@ -318,6 +318,7 @@
   "error.file.schema": "Datei entspricht nicht dem Stitchwright-Format.",
   "error.save": "Speichern fehlgeschlagen.",
   "error.storage": "Lokaler Speicher ist nicht verfügbar. Charts überleben einen Reload möglicherweise nicht.",
+  "error.language": "Diese Sprache konnte nicht geladen werden.",
   "error.otherTab": "Dieses Chart wurde in einem anderen Tab gespeichert. Vor weiteren Änderungen neu laden.",
   "error.export": "Export fehlgeschlagen.",
   "error.clipboard": "Zwischenablage ist nicht verfügbar.",

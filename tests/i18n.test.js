@@ -6,6 +6,14 @@ import { createI18n, DEFAULT_LANGUAGE, HTML_LANGUAGE } from "../src/core/i18n.js
 
 const de = JSON.parse(fs.readFileSync(new URL("../src/locales/de.json", import.meta.url)));
 const en = JSON.parse(fs.readFileSync(new URL("../src/locales/en.json", import.meta.url)));
+const languages = JSON.parse(fs.readFileSync(new URL("../src/locales/languages.json", import.meta.url)));
+
+test("language registry describes the maintained locales", () => {
+  assert.equal(languages.en.label, "English");
+  assert.equal(languages.de.label, "Deutsch");
+  assert.equal(languages.en.status, "reviewed");
+  assert.equal(languages.de.status, "reviewed");
+});
 
 test("English is the default presentation language", () => {
   assert.equal(DEFAULT_LANGUAGE, "en");

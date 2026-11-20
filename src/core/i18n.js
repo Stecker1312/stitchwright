@@ -5,9 +5,10 @@
  * translate and easy to test for parity. There is no build step and no
  * runtime dependency.
  *
- * The app always loads the active locale and English. Missing keys fall back
- * to English, then to the key itself, so a partial translation never breaks
- * the UI.
+ * `languages.json` is the registry. Adding a language means adding one entry
+ * and one locale file; no application code has to change. Missing keys fall
+ * back to English, then to the key itself, so a partial translation never
+ * breaks the UI.
  */
 
 export const LANGUAGE_META = {
@@ -31,6 +32,11 @@ export function localeUrl(lang) {
   return new URL(`../locales/${lang}.json`, import.meta.url);
 }
 
+/** URL of the language registry. */
+function registryUrl() {
+  return new URL("../locales/languages.json", import.meta.url);
+}
+
 /** Load one locale. Browser-only; tests pass data directly. */
 export async function loadLocale(lang) {
   if (cache.has(lang)) return cache.get(lang);
@@ -39,6 +45,29 @@ export async function loadLocale(lang) {
   const data = await response.json();
   cache.set(lang, data);
   return data;
+}
+
+/**
+ * Load the language registry and merge it into LANGUAGE_META. A missing or
+ * broken registry leaves the built-in English/German metadata in place.
+ */
+export async function loadLanguageRegistry() {
+  if (typeof fetch !== "function") return LANGUAGE_META;
+  try {
+    const response = await fetch(registryUrl(), { cache: "no-cache" });
+    if (!response.ok) return LANGUAGE_META;
+    const data = await response.json();
+    for (const [code, meta] of Object.entries(data)) {
+      if (!meta || typeof meta.label !== "string") continue;
+      LANGUAGE_META[code] = {
+        label: meta.label,
+        status: typeof meta.status === "string" ? meta.status : "machine"
+      };
+    }
+  } catch {
+    // Offline or first load before the registry is cached: keep working.
+  }
+  return LANGUAGE_META;
 }
 
 function interpolate(text, vars) {
@@ -89,6 +118,8 @@ export function createI18n({ lang = DEFAULT_LANGUAGE, messages = null, fallbackL
   async function setLanguage(nextLang) {
     if (nextLang === currentLang) return;
     if (messages) {
+      if (!messages[nextLang]) messages[nextLang] = await loadLocale(nextLang);
+      if (!messages[fallbackLang]) messages[fallbackLang] = await loadLocale(fallbackLang);
       current = messages[nextLang] || {};
       fallback = messages[fallbackLang] || {};
     } else {
@@ -125,14 +156,18 @@ export function createI18n({ lang = DEFAULT_LANGUAGE, messages = null, fallbackL
   };
 }
 
-/** Load the active locale and the two curated locales, then return a translator. */
+/** Load every language in the registry, then return a translator. */
 export async function createBrowserI18n(lang = DEFAULT_LANGUAGE) {
-  const [de, en] = await Promise.all([
-    loadLocale("de"),
-    loadLocale(FALLBACK_LANGUAGE)
-  ]);
-  return createI18n({
-    lang,
-    messages: { de, en, [lang]: lang === "de" ? de : en }
-  });
+  const registry = await loadLanguageRegistry();
+  const codes = new Set([...Object.keys(registry), FALLBACK_LANGUAGE, "de", lang]);
+  const messages = {};
+  await Promise.all([...codes].map(async (code) => {
+    try {
+      messages[code] = await loadLocale(code);
+    } catch {
+      // A missing translation is a data problem, not a startup failure.
+    }
+  }));
+  const initial = messages[lang] ? lang : (messages[DEFAULT_LANGUAGE] ? DEFAULT_LANGUAGE : lang);
+  return createI18n({ lang: initial, messages });
 }

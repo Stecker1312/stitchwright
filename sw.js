@@ -40,7 +40,8 @@ const REQUIRED = [
   "src/ui/persistence.js",
   "src/ui/store.js",
   "src/locales/de.json",
-  "src/locales/en.json"
+  "src/locales/en.json",
+  "src/locales/languages.json"
 ];
 
 const OPTIONAL = [

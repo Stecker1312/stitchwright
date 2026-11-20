@@ -10,7 +10,7 @@
  */
 
 import { getCell, getColor, groupSpan, visibleRows } from "./chart.js";
-import { backgroundFor, contrastColor, withAlpha } from "./color.js";
+import { backgroundFor, contrastColor, groupBackground, groupContrast, withAlpha } from "./color.js";
 import { glyphFor } from "./symbols.js";
 import { cellRect, visibleColumns } from "./viewport.js";
 
@@ -275,8 +275,8 @@ export function drawChart(ctx, chart, view, {
         const span = groupSpan(chart, group);
         if (group.col + span - 1 < start + 1 || group.col > end + 1) continue;
         const x = view.offsetX + (group.col - 1) * scale;
-        const background = backgroundFor(chart, group.row, group.col);
-        const color = contrastColor(background);
+        const background = groupBackground(chart, group);
+        const color = groupContrast(chart, group);
         ctx.save();
         ctx.beginPath();
         ctx.rect(x, y, span * scale, scale);

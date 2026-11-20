@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.0-alpha.1 – 19 November 2026
+## 0.4.0-alpha.1 – 20 November 2026
 
 Stabilisation release based on the 2026-11-19 code audit. Still an alpha.
 
@@ -55,7 +55,7 @@ Stabilisation release based on the 2026-11-19 code audit. Still an alpha.
 - An empty chart now exports a knit explanation in the legend.
 - The chart content licence is empty by default; the GPL-3.0 app licence is
   shown separately.
-- 99 Node tests; browser checks for keyboard, right-side mode, unsaved
+- 108 Node tests; browser checks for keyboard, right-side mode, unsaved
   switches, mobile drawers and offline reload.
 
 ## 0.3.0-alpha.1 – 19 November 2026

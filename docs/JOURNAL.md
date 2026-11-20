@@ -295,7 +295,7 @@ P2-Sicherheits-, Export- und Interaktionsfehler mit Regressionen absichern.
   Speicherfehler und warnt bei parallelen Tabs. Öffnen bietet Wiederherstellung.
 - CLI: explizite Flag-Schemata, JSON-Fehlervertrag, eindeutige IDs, Validierung
   vor dem Schreiben, `legend` prüft das Chart.
-- 99 Node-Tests, neue Audit-Regressionen und CI-Workflow; Browserprüfungen für
+- 108 Node-Tests, neue Audit-Regressionen und CI-Workflow; Browserprüfungen für
   Tastatur, offene Änderungen, RS-Auswahl, mobile Drawer und Offline-Reload.
 - Version auf 0.4.0-alpha.1 angehoben; lokale Änderungen noch nicht veröffentlicht.
 
@@ -303,3 +303,29 @@ P2-Sicherheits-, Export- und Interaktionsfehler mit Regressionen absichern.
 Performance-Messung, dynamische Sprachregistry, Mehrfarben-Halos bei Zöpfen,
 echte Touch-/Druck-/Strickabnahme. Keine Behauptung einer vollständigen
 Audit-Abnahme.
+
+## 2026-11-20 – P2-Rest: Koordination, Registry, Kontrast und Abnahme
+
+**Getan:**
+
+- Save-Koordination in `src/ui/save-coordinator.js` ausgelagert und mit
+  Node-Tests für Save/Edit-Race, Dokumentwechsel und queued Saves abgedeckt.
+- Sprachregistry `src/locales/languages.json`; neue Sprachen brauchen nur
+  Registry-Eintrag und Locale-Datei. Die App lädt alle registrierten Sprachen,
+  fällt bei fehlenden Dateien auf Englisch zurück und meldet Ladefehler.
+- Mehrfarbige Gruppen bekommen einen neutralen Halo und die Farbe mit dem
+  besten Worst-Case-Kontrast; `SW-21` ist damit auch für Zöpfe über Farbwechsel
+  abgedeckt.
+- Persistenz speichert die vorherige vollständige Chartversion nur bei
+  inhaltlicher Änderung; Öffnen bietet eine Wiederherstellung. Parallele Tabs
+  melden sich über BroadcastChannel. Speicherfehler bleiben sichtbar.
+- Performance-Snapshot `docs/audits/2026-11-20-performance.md` und
+  `2026-11-20-benchmark.mjs`: 40×24, 200×200 und 1000×1000 gemessen.
+  History-Budget 32 MiB, 3 Snapshots bei 1000×1000; sechs Edits ca. 300 ms.
+- Golden-Sample-Test lädt und rendert alle `samples/*.json`.
+  Browserabnahme als `docs/sop/SOP-006-browser-abnahme.md` beschrieben.
+- Version 0.4.0-alpha.1, 108 Tests grün, CI-Workflow vorhanden.
+
+**Offen:** App-Shell weiter entflechten, echte Browser-Matrix mit 50 lokalen
+Charts, Patch-History nur bei Bedarf, Touch-/Druck-/Strickabnahme. Keine
+vollständige Audit-Abnahme behaupten.

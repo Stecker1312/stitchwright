@@ -16,11 +16,14 @@ import {
   pasteFragment,
   resizeChart,
   setCell,
-  setColor
+  setColor,
+  columnToStitch,
+  stitchToColumn
 } from "../src/core/chart.js";
 import { hasErrors, validateChart } from "../src/core/validate.js";
-import { contrastColor, backgroundFor } from "../src/core/color.js";
+import { contrastColor, backgroundFor, groupBackground, groupContrast } from "../src/core/color.js";
 import { legendEntries } from "../src/core/legend.js";
+import { cableGlyph } from "../src/core/symbols.js";
 import { renderSvg } from "../src/core/render-svg.js";
 import { Store } from "../src/ui/store.js";
 import { CanvasView } from "../src/ui/canvas-view.js";
@@ -196,6 +199,15 @@ test("SW-11: asymmetric cables swap left and right on mirror", () => {
   assert.equal(chart.groups[0].direction, "front");
 });
 
+test("SW-34: picture columns and knitter stitch numbers round-trip", () => {
+  const chart = createChart({ width: 10, height: 4 });
+  assert.equal(columnToStitch(chart, 1), 10);
+  assert.equal(columnToStitch(chart, 10), 1);
+  for (let col = 1; col <= 10; col += 1) {
+    assert.equal(stitchToColumn(chart, columnToStitch(chart, col)), col);
+  }
+});
+
 test("SW-12: hidden wrong-side groups produce a warning", () => {
   const chart = createChart({ width: 8, height: 4 });
   chart.options.rowsMode = "rs";
@@ -282,6 +294,15 @@ test("SW-21: contrast chooses the readable colour", () => {
   assert.equal(contrastColor(backgroundFor(chart, 1, 1)), "#111111");
 });
 
+test("SW-21: multi-colour groups use a neutral halo and worst-case contrast", () => {
+  const chart = createChart({ width: 4, height: 2 });
+  setColor(chart, 1, 1, "B");
+  setColor(chart, 1, 2, "A");
+  const group = addGroup(chart, { row: 1, col: 1, symbol: "custom", span: 2, label: "X" });
+  assert.equal(groupBackground(chart, group), "#ffffff");
+  assert.equal(groupContrast(chart, group), "#111111");
+});
+
 test("SW-22: a plain knit chart gets a legend explanation", () => {
   const entries = legendEntries(createChart({ width: 4, height: 4 }));
   assert.equal(entries.length, 1);
@@ -328,6 +349,19 @@ test("SW-30: model edits update meta.modified", () => {
   const before = chart.meta.modified;
   setCell(chart, 1, 1, "p");
   assert.notEqual(chart.meta.modified, before);
+});
+
+test("SW-37: even 12/12 cable glyphs stay inside the row", () => {
+  const glyph = cableGlyph({ left: 12, right: 12, direction: "front" });
+  const paths = glyph.filter((primitive) => primitive.type === "path");
+  assert.ok(paths.length > 0);
+  for (const primitive of paths) {
+    const pairs = [...primitive.d.matchAll(/(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)/g)];
+    for (const [, x, y] of pairs) {
+      const ny = Number(y);
+      assert.ok(ny >= -0.02 && ny <= 1.02, `y=${ny} in ${primitive.d}`);
+    }
+  }
 });
 
 test("SW-33: failed paint leaves cell, colour and group unchanged", () => {

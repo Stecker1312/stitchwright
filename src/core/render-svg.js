@@ -7,7 +7,7 @@
  */
 
 import { getCell, getColor, groupSpan, visibleRows } from "./chart.js";
-import { backgroundFor, contrastColor } from "./color.js";
+import { backgroundFor, contrastColor, groupBackground, groupContrast } from "./color.js";
 import { legendEntries } from "./legend.js";
 import { glyphFor } from "./symbols.js";
 import { formatLength } from "./units.js";
@@ -290,8 +290,8 @@ export function renderSvg(chart, {
     const span = groupSpan(chart, group);
     const x = chartX + (group.col - 1) * cellPx;
     const y = chartY + (rowCount - 1 - visibleIndex) * cellPx;
-    const background = backgroundFor(chart, group.row, group.col);
-    const color = contrastColor(background);
+    const background = groupBackground(chart, group);
+    const color = groupContrast(chart, group);
     const glyph = glyphFor(group.symbol, group);
     const clipId = `group-clip-${index}`;
     parts.push(`<clipPath id="${clipId}"><rect x="${x}" y="${y}" width="${span * cellPx}" height="${cellPx}"/></clipPath>`);

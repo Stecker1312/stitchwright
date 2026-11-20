@@ -7,6 +7,8 @@
  * user adds later.
  */
 
+import { symbolSpan } from "./symbols.js";
+
 /** Parse #rrggbb into {r,g,b} or return null. */
 export function parseHex(hex) {
   const match = /^#([0-9a-f]{6})$/i.exec(hex || "");
@@ -49,6 +51,42 @@ export function colorHex(chart, colorId) {
 export function backgroundFor(chart, row, col) {
   if (chart.rows?.[row - 1]?.[col - 1] === "nostitch") return "#e6e6e6";
   return colorHex(chart, chart.colors?.[row - 1]?.[col - 1] ?? null);
+}
+
+/** Background colours under a multi-stitch group. */
+export function groupBackgrounds(chart, group) {
+  let span = 1;
+  try {
+    span = symbolSpan(group.symbol, group);
+  } catch {
+    span = Math.max(1, Number(group.span) || 1);
+  }
+  const colors = new Set();
+  for (let offset = 0; offset < span; offset += 1) {
+    const col = group.col + offset;
+    const color = chart.colors?.[group.row - 1]?.[col - 1] ?? null;
+    colors.add(colorHex(chart, color));
+  }
+  return [...colors];
+}
+
+/** A halo colour that works for a mixed-colour group. */
+export function groupBackground(chart, group) {
+  const colors = groupBackgrounds(chart, group);
+  return colors.length === 1 ? colors[0] : "#ffffff";
+}
+
+/** Black or white with the best worst-case contrast across the group. */
+export function groupContrast(chart, group) {
+  const backgrounds = groupBackgrounds(chart, group);
+  if (!backgrounds.length) return "#111111";
+  const ratio = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+  const score = (foreground) => Math.min(...backgrounds.map((background) => (
+    ratio(luminance(foreground), luminance(background))
+  )));
+  const dark = score("#111111");
+  const light = score("#ffffff");
+  return dark >= light ? "#111111" : "#ffffff";
 }
 
 /** Add an alpha channel to a #rrggbb colour. */

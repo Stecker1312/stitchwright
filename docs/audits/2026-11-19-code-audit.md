@@ -1,5 +1,10 @@
 # Stitchwright – Code-Audit und Arbeitsgrundlage für Agenten
 
+> **Status 2026-11-20:** Die P1-Befunde sind behoben und durch
+> Regressionstests abgedeckt; zentrale P2-Punkte ebenfalls. Dieser Bericht
+> bleibt der historische Ausgangsbefund. Aktueller Stand und Restpunkte:
+> `STATUS.md` und `docs/JOURNAL.md`.
+
 ## 0. Metadaten und Verwendung
 
 | Feld | Wert |

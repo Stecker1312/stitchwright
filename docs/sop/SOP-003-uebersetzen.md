@@ -11,16 +11,19 @@ Schlüssel fallen auf Englisch zurück.
 ## Neue Sprache
 
 1. `src/locales/en.json` nach `src/locales/<code>.json` kopieren.
-2. `_meta` anpassen:
+2. In `src/locales/languages.json` einen Eintrag mit `label` und `status`
+   ergänzen. Die App liest die Registry beim Start; Codeänderungen sind nicht
+   nötig.
+3. `_meta` in der neuen Datei anpassen:
    ```json
    { "_meta": { "language": "fr", "status": "machine", "reviewers": [] } }
    ```
-3. Alle Werte übersetzen. Schlüssel nicht ändern.
-4. Fachbegriffe mit dem Glossar unten abstimmen.
-5. `npm test` ausführen; der i18n-Test prüft fehlende und überzählige
+4. Alle Werte übersetzen. Schlüssel nicht ändern.
+5. Fachbegriffe mit dem Glossar unten abstimmen.
+6. `npm test` ausführen; der i18n-Test prüft fehlende und überzählige
    Schlüssel.
-6. In der App Sprache wählen und alle Panels durchklicken.
-7. Status erst auf `reviewed` setzen, wenn ein Muttersprachler die
+7. In der App Sprache wählen und alle Panels durchklicken.
+8. Status erst auf `reviewed` setzen, wenn ein Muttersprachler die
    Strickbegriffe geprüft hat.
 
 ## Glossar (Mindestumfang)

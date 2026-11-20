@@ -318,6 +318,7 @@
   "error.file.schema": "The file does not match the Stitchwright format.",
   "error.save": "Saving failed.",
   "error.storage": "Local storage is unavailable. Charts may not survive a reload.",
+  "error.language": "This language could not be loaded.",
   "error.otherTab": "This chart was saved in another tab. Reload before making more changes.",
   "error.export": "Export failed.",
   "error.clipboard": "Clipboard is not available.",

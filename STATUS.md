@@ -1,6 +1,6 @@
 # Status
 
-- Stand: 2026-11-19
+- Stand: 2026-11-20
 - Version: **0.4.0-alpha.1**
 - Phase: Öffentliche Vorabversion (Alpha)
 - Sichtbarkeit: öffentlich, GitHub Pages:
@@ -50,7 +50,7 @@
 - Englisch (britisch) als Standardsprache in Oberfläche, Startseite,
   Validierungsmeldungen, CLI, Manifest und README; Beispiel-Charts englisch
 - PWA mit Service Worker, offline getestet
-- 99 Node-Tests grün; Browserprüfung mit Chromium/Playwright
+- 108 Node-Tests grün; Browserprüfung mit Chromium/Playwright
 - Englische Projektseite `about.html` mit Browser-first-Schnellstart, Preisvergleich, Clear-Symbolpack und Planned-Liste
 - Englischer Screenshot, Version 0.4.0-alpha.1
 - Audit-Pakete A, B und C umgesetzt: Dokument-/Speichersicherheit, valide
@@ -61,11 +61,13 @@
 ## In Arbeit / offen
 
 - Umfassender [Code-Audit vom 2026-11-19](docs/audits/2026-11-19-code-audit.md):
-  38 priorisierte Befunde. Die P1-Pfade (Dokument-, Speicher-, Import-,
-  UI-Kommando- und Exportintegrität) sind behoben und durch Regressionstests
-  abgedeckt. Offen bleiben vor allem P2-Themen: App-Shell-Refactor,
-  vollständige Performance-Messung, mehrsprachige Registry, echte Touch-,
-  Druck- und Strickabnahme. Die Featureliste ist keine Zuverlässigkeitsabnahme.
+  38 priorisierte Befunde. Alle P1-Pfade, die zentralen P2-Themen
+  (Save-Koordination, Sprachregistry, Mehrfarben-Kontrast, Persistenzzustände,
+  Browser-SOP, Golden-Sample-Tests) und die Performance-Messung sind
+  abgedeckt. Offen bleiben der weitere App-Shell-Zuschnitt, eine echte
+  Browser-Matrix mit vielen gespeicherten Charts, Patch-History bei Bedarf
+  sowie Touch-, Druck- und Strickabnahme. Die Featureliste ist keine
+  Zuverlässigkeitsabnahme.
 - Stabilität und Fehler aus der ersten öffentlichen Alpha
 - Touch/Stift auf echten Geräten prüfen
 - Eigene Symbol-Packs und Symbol-Editor
@@ -76,15 +78,15 @@
 
 ## Nächster Schritt
 
-1. Audit-Restpunkte D/E/F abschließen: App-Shell entflechten, Performance
-   end-to-end messen, i18n-Registry und Export-/Druckabnahme vervollständigen.
+1. Audit-Rest abschließen: App-Shell weiter entflechten, echte Browser-Matrix
+   mit vielen gespeicherten Charts, Patch-History nur bei nachgewiesenem Bedarf.
 2. Touch/Stift, Druck und eine reale Strickabnahme auf echten Geräten prüfen.
 3. Übersetzungen und Symbol-Packs als Beiträge ermöglichen.
 4. Keine Cloud-Funktion ohne neue ADR.
 
 ## Tests
 
-`npm test`: 99 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
+`npm test`: 108 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
 Einheiten, Viewport, CLI, Performance).
 `npm run check`: Syntax- und JSON-Prüfung plus Tests grün.
 Browser: Zeichnen, Farben, Zöpfe, Rückreihen, Undo, Export, Scrollbalken,

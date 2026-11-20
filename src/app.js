@@ -9,7 +9,6 @@
 
 import {
   addGroup,
-  cloneChart,
   columnToStitch,
   copySelection,
   createChart,
@@ -45,6 +44,7 @@ import { CanvasView } from "./ui/canvas-view.js";
 import { renderInspector, renderLegend } from "./ui/inspector.js";
 import { renderPalette } from "./ui/palette.js";
 import * as storage from "./ui/persistence.js";
+import { SaveCoordinator } from "./ui/save-coordinator.js";
 import { Store } from "./ui/store.js";
 import { createDemoChart } from "./demo.js";
 import { APP_VERSION } from "./version.js";
@@ -77,10 +77,7 @@ let i18n = null;
 let store = null;
 let canvasView = null;
 let clipboard = null;
-let autosaveTimer = null;
-let autosaveTargetId = null;
-let saveInFlight = null;
-let saveAgain = false;
+let saveCoordinator = null;
 let documentSwitchInProgress = false;
 let storageIssue = null;
 let tabChannel = null;
@@ -112,6 +109,23 @@ async function init() {
   const chart = await loadInitialChart();
   store = new Store(chart, { settings });
   if (!chart.id) chart.id = storage.makeChartId(chart.title || "chart");
+  saveCoordinator = new SaveCoordinator({
+    getStore: () => store,
+    saveChart: storage.saveChart,
+    isAutosaveEnabled: () => Boolean(settings.autosave),
+    onSaved: ({ documentId, silent }) => {
+      writeLocal("stitchwright.lastChart", documentId);
+      tabChannel?.postMessage({ type: "saved", id: documentId, tabId: TAB_ID });
+      if (!silent) showToast(i18n.t("message.savedLocal"));
+    },
+    onError: (error, silent) => {
+      console.warn(error);
+      if (!silent) showToast(i18n.t("error.save"), "error");
+    },
+    onQueued: () => {
+      saveCoordinator.schedule();
+    }
+  });
   customGroups = mergeCustomGroups(customGroups, customGroupsFromChart(chart));
   storage.saveCustomGroups(customGroups);
   canvasView = new CanvasView({
@@ -1391,10 +1405,9 @@ async function switchDocument(chart, { save = false, fit = true } = {}) {
   if (documentSwitchInProgress) return false;
   documentSwitchInProgress = true;
   try {
-    clearTimeout(autosaveTimer);
-    autosaveTargetId = null;
+    saveCoordinator?.cancel();
     if (store.pending) store.commit();
-    if (saveInFlight) await saveInFlight;
+    await saveCoordinator?.wait();
     if (!(await ensureSavedBeforeSwitch())) return false;
     activateChart(chart, { save, fit });
     return true;
@@ -1404,8 +1417,7 @@ async function switchDocument(chart, { save = false, fit = true } = {}) {
 }
 
 function activateChart(chart, { save = false, fit = true } = {}) {
-  clearTimeout(autosaveTimer);
-  autosaveTargetId = null;
+  saveCoordinator?.cancel();
   emptyHintDismissed = true;
   writeLocal("stitchwright.emptyHintDismissed", "1");
   customGroups = mergeCustomGroups(customGroups, customGroupsFromChart(chart));
@@ -1557,47 +1569,12 @@ function setupDropZone() {
 }
 
 async function saveLocal(silent = false) {
-  if (!store) return false;
-  if (saveInFlight) {
-    saveAgain = true;
-    return saveInFlight;
-  }
-  const documentId = store.chart.id;
-  const revision = store.revision;
-  const snapshot = cloneChart(store.chart);
-  saveInFlight = (async () => {
-    try {
-      await storage.saveChart(snapshot);
-      writeLocal("stitchwright.lastChart", documentId);
-      tabChannel?.postMessage({ type: "saved", id: documentId, tabId: TAB_ID, revision });
-      const current = store.markSaved(revision, documentId);
-      if (current && !silent) showToast(i18n.t("message.savedLocal"));
-      if (!current && store.chart.id === documentId && store.dirty) {
-        scheduleAutosave();
-      }
-      return current;
-    } catch (error) {
-      console.warn(error);
-      if (!silent) showToast(i18n.t("error.save"), "error");
-      return false;
-    } finally {
-      saveInFlight = null;
-      if (saveAgain) {
-        saveAgain = false;
-        queueMicrotask(() => saveLocal(true));
-      }
-    }
-  })();
-  return saveInFlight;
+  if (!saveCoordinator) return false;
+  return saveCoordinator.save({ silent });
 }
 
 function scheduleAutosave() {
-  if (!settings.autosave || !store) return;
-  clearTimeout(autosaveTimer);
-  autosaveTargetId = store.chart.id;
-  autosaveTimer = setTimeout(() => {
-    if (store && store.chart.id === autosaveTargetId) saveLocal(true);
-  }, 700);
+  saveCoordinator?.schedule();
 }
 
 async function exportChart(mode) {
@@ -1803,9 +1780,19 @@ function populateLanguages() {
 
 async function changeLanguage(lang) {
   if (!LANGUAGE_META[lang]) return;
+  const previous = settings.language;
   settings.language = lang;
   storage.saveSettings(settings);
-  await i18n.setLanguage(lang);
+  try {
+    await i18n.setLanguage(lang);
+  } catch (error) {
+    console.warn(error);
+    settings.language = previous;
+    storage.saveSettings(settings);
+    showToast(i18n.t("error.language"), "error");
+    populateLanguages();
+    return;
+  }
   i18n.apply(document);
   populateLanguages();
   renderAll();
