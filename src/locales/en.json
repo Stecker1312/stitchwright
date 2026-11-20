@@ -295,6 +295,7 @@
   "shortcut.mirrorV": "Mirror vertically",
 
   "help.intro": "Stitchwright is an editor for knitting charts. You draw stitches, colours and multi-stitch symbols; the app stores everything as open JSON and exports SVG or PNG.",
+  "help.howto": "Read the step-by-step guide",
   "help.mouse": "Mouse: click and drag to paint, right-click to erase, wheel to scroll, Ctrl + wheel to zoom. Pan with the hand tool or the middle mouse button.",
   "help.selection": "Selection: choose the select tool, drag a rectangle, copy it, click the target cell, paste.",
   "help.markers": "Markers: choose the marker tool and click a stitch; the line is a chart guide, not a knitting instruction.",

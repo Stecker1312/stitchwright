@@ -56,6 +56,8 @@
 - Audit-Pakete A, B und C umgesetzt: Dokument-/Speichersicherheit, valide
   UI-Kommandos, Rohvalidierung, sichere Symbol-Lookups und CLI-Vertrag;
   zentrale Teile von D, E und F folgen mit den verbleibenden P2-Punkten
+- Einsteiger-How-to auf Englisch und Deutsch (`docs/how-to.md`,
+  `docs/how-to.de.md`), verlinkt in App-Hilfe, README und Projektseite
 - Beispiel-Charts unter `samples/`
 
 ## In Arbeit / offen

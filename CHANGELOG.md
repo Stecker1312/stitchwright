@@ -49,6 +49,8 @@ Stabilisation release based on the 2026-11-19 code audit. Still an alpha.
 - The development server rejects malformed URLs and dotfiles, and checks real
   paths.
 - Regression tests and a CI workflow cover the repaired paths.
+- A beginner how-to is available in English and German and is linked from the
+  app's Help dialog, README and project page.
 
 ### Changed
 

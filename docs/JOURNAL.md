@@ -329,3 +329,21 @@ Audit-Abnahme.
 **Offen:** App-Shell weiter entflechten, echte Browser-Matrix mit 50 lokalen
 Charts, Patch-History nur bei Bedarf, Touch-/Druck-/Strickabnahme. Keine
 vollständige Audit-Abnahme behaupten.
+
+## 2026-11-20 – Einsteiger-How-to
+
+**Beobachtet:** Die App ist bewusst einfach, aber die Dokumentation begann mit
+Format, Symbolen und Entwicklerabläufen. Menschen, die nur ein Chart zeichnen
+wollen, brauchten einen kurzen Einstieg.
+
+**Getan:**
+
+- `docs/how-to.md` und `docs/how-to.de.md`: fünfminütige Anleitung von
+  „Editor öffnen“ über Zeichnen, Zöpfe, Reihen, Speichern, Export und
+  Tastatur bis zu häufigen Problemen.
+- App-Hilfe, README und Projektseite verlinken die Anleitung; die App wählt
+  automatisch die englische oder deutsche Fassung.
+- Service Worker speichert beide How-to-Dateien als optionale Offline-Hilfe.
+
+**Geprüft:** `npm run check` grün; Browser: Help-Link zeigt in beiden Sprachen
+auf die richtige Datei.

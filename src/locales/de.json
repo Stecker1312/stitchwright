@@ -295,6 +295,7 @@
   "shortcut.mirrorV": "Vertikal spiegeln",
 
   "help.intro": "Stitchwright ist ein Editor für Strickdiagramme. Du zeichnest Maschen, Farben und Mehrfachsymbole; die App speichert alles als offenes JSON und exportiert SVG oder PNG.",
+  "help.howto": "Schritt-für-Schritt-Anleitung lesen",
   "help.mouse": "Maus: klicken und ziehen zum Malen, rechte Maustaste zum Radieren, Mausrad zum Scrollen, Strg + Mausrad zum Zoomen. Verschieben mit dem Hand-Werkzeug oder der mittleren Maustaste.",
   "help.selection": "Bereich: Auswahlwerkzeug wählen, mit der Maus aufziehen, kopieren, Zielzelle anklicken, einfügen.",
   "help.markers": "Marker: Werkzeug „Marker“ wählen und eine Masche anklicken; die Linie ist nur eine Zeichenhilfe, keine Strickanweisung.",

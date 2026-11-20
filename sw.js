@@ -47,7 +47,9 @@ const REQUIRED = [
 const OPTIONAL = [
   "about.html",
   "about.css",
-  "assets/screenshot-editor.png"
+  "assets/screenshot-editor.png",
+  "docs/how-to.md",
+  "docs/how-to.de.md"
 ];
 
 function isOurs(key) {

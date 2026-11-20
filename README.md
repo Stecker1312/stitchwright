@@ -10,6 +10,8 @@ the browser, works offline and sends nothing anywhere.
 > **Live demo:** <https://stecker1312.github.io/stitchwright/>
 >
 > **Project page:** <https://stecker1312.github.io/stitchwright/about.html>
+>
+> **New here?** Read the [five-minute how-to](docs/how-to.md).
 
 ## What is Stitchwright?
 
@@ -115,6 +117,7 @@ projects. Notes on translations, symbols and code are in
 ## Documentation
 
 - [Project page](https://stecker1312.github.io/stitchwright/about.html)
+- [How to draw your first chart](docs/how-to.md)
 - [The Clear symbol set](docs/symbols.md)
 - [Chart format](docs/format.md)
 - [Decisions (ADRs)](docs/adr/)

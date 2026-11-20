@@ -1277,6 +1277,8 @@ function openSettingsDialog() {
 }
 
 function openHelpDialog() {
+  const howto = $("help-howto");
+  if (howto) howto.href = i18n.language === "de" ? "docs/how-to.de.md" : "docs/how-to.md";
   renderShortcuts();
   openDialog("dialog-help");
 }
