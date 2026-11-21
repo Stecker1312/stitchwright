@@ -31,7 +31,9 @@ An empty cell means **knit**. The symbols are the extra information.
 3. Use the **Eraser** to remove a stitch, or right-click with the pencil.
 4. Pick a colour under **Colours** if you want a colour fill. Colour is a
    separate layer; it does not replace the symbol.
-5. Use **Undo** if something goes wrong.
+5. To repeat an area: choose **Select**, drag a rectangle, press Ctrl+C, click
+   the target cell and press Ctrl+V. Colours and groups come along.
+6. Use **Undo** if something goes wrong.
 
 The status bar shows the row and stitch under the pointer.
 
@@ -53,6 +55,8 @@ The legend gives the exact cable direction.
 - **+ Row** and **+ Column** add space.
 - To delete a row or column, click its number first, then the trash button and
   confirm.
+- Drag across several row or column numbers, or Shift-click, to select a range;
+  the trash button deletes the whole range.
 - **Right-side rows only** hides even rows and numbers 1, 3, 5 … The hidden
   rows are still stored.
 
@@ -62,6 +66,8 @@ The legend gives the exact cable direction.
 - The legend is built automatically from the symbols, groups and colours you
   use.
 - You can switch the legend off for the screen and on for export.
+- Optional **Stitch counts** put a small number at the first stitch of each run
+  of equal stitches.
 
 ## 7. Save and back up
 

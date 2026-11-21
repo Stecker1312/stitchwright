@@ -145,3 +145,25 @@ export function headerAt(chart, view, x, y) {
 
   return null;
 }
+
+/**
+ * Resolve a row or column for a header drag. Unlike headerAt, this clamps to
+ * the chart edges and ignores the other axis, so dragging beyond the margin
+ * still extends the selection instead of stopping.
+ */
+export function headerIndexAt(chart, view, kind, x, y) {
+  const rows = visibleRows(chart);
+  if (kind === "row") {
+    const chartH = rows.length * view.scale;
+    if (!rows.length || chartH <= 0) return null;
+    const fromTop = Math.floor((y - view.offsetY) / view.scale);
+    const visibleIndex = Math.max(0, Math.min(rows.length - 1, fromTop));
+    return rows[rows.length - 1 - visibleIndex];
+  }
+  if (kind === "column") {
+    if (chart.width < 1 || view.scale <= 0) return null;
+    const col = Math.floor((x - view.offsetX) / view.scale) + 1;
+    return Math.max(1, Math.min(chart.width, col));
+  }
+  return null;
+}

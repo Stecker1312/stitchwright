@@ -197,6 +197,9 @@
         "showStitchNumbers": {
           "type": "boolean"
         },
+        "showStitchCounts": {
+          "type": "boolean"
+        },
         "showLegend": {
           "type": "boolean"
         },

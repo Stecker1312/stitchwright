@@ -24,6 +24,7 @@ import {
   cellRect,
   fitView,
   headerAt,
+  headerIndexAt,
   panBy,
   zoomAt
 } from "../core/viewport.js";
@@ -193,8 +194,13 @@ export class CanvasView {
 
     const header = headerAt(this.store.chart, this.store.view, point.x, point.y);
     if (header) {
+      const previous = this.store.headerSelection;
+      const anchor = event.shiftKey && previous?.kind === header.kind
+        ? previous.from
+        : header.index;
+      this.store.setHeaderSelection({ kind: header.kind, from: anchor, to: header.index });
+      this.gesture = { type: "header", kind: header.kind, anchor };
       this.canvas.style.cursor = "pointer";
-      this.store.setHeaderSelection(header);
       return;
     }
 
@@ -219,12 +225,10 @@ export class CanvasView {
     }
 
     if (this.store.tool === "select") {
-      const group = groupAt(this.store.chart, cell.row, cell.col);
-      if (group) {
-        this.store.selectGroup(group.id);
-        return;
-      }
-      this.gesture = { type: "select", anchor: cell };
+      // Start with a rectangle. A click without dragging still selects the
+      // group under the pointer on release, so a rectangle can begin on a
+      // cable or another multi-cell symbol.
+      this.gesture = { type: "select", anchor: cell, moved: false };
       this.store.setSelection({ row1: cell.row, col1: cell.col, row2: cell.row, col2: cell.col });
       return;
     }
@@ -278,6 +282,18 @@ export class CanvasView {
       return;
     }
 
+    if (this.gesture?.type === "header") {
+      const index = headerIndexAt(this.store.chart, this.store.view, this.gesture.kind, point.x, point.y);
+      if (index !== null) {
+        this.store.setHeaderSelection({
+          kind: this.gesture.kind,
+          from: this.gesture.anchor,
+          to: index
+        });
+      }
+      return;
+    }
+
     const header = headerAt(this.store.chart, this.store.view, point.x, point.y);
     if (!this.gesture) {
       this.canvas.style.cursor = header ? "pointer" : "";
@@ -304,6 +320,9 @@ export class CanvasView {
       return;
     }
     if (this.gesture?.type === "select") {
+      if (cell.row !== this.gesture.anchor.row || cell.col !== this.gesture.anchor.col) {
+        this.gesture.moved = true;
+      }
       this.store.setSelection({
         row1: this.gesture.anchor.row,
         col1: this.gesture.anchor.col,
@@ -326,8 +345,12 @@ export class CanvasView {
     if (this.gesture?.type === "paint" || this.gesture?.type === "erase") {
       this.commitGesture();
     } else if (this.gesture?.type === "select") {
+      if (!this.gesture.moved) {
+        const group = groupAt(this.store.chart, this.gesture.anchor.row, this.gesture.anchor.col);
+        if (group) this.store.selectGroup(group.id);
+      }
       this.gesture = null;
-    } else if (this.gesture?.type === "pan") {
+    } else if (this.gesture?.type === "header" || this.gesture?.type === "pan") {
       this.gesture = null;
     }
   }

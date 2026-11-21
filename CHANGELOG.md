@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased
+
+### New
+
+- Drag or Shift-click row and column numbers to select a range. The trash
+  button deletes the whole range.
+- Start a rectangle on any cell, including a cable. A click still selects the
+  group; a drag selects the area. Ctrl+C / Ctrl+V copy and paste the rectangle,
+  including colours and groups.
+- Optional stitch counts: a small number marks the first stitch of each run of
+  equal stitches. Off by default; available in the chart panel and in SVG and
+  print.
+- The turn, bind off and cast on glyphs are hidden from the palette. Old charts
+  still load, render and export them.
+
+### Checks
+
+- 130 Node tests green.
+- Browser check: row drag and Shift-click, range delete, rectangle selection
+  starting on a group, Ctrl+C / Ctrl+V, stitch counts and SVG output.
+
 ## 0.5.1-alpha.1 – 21 November 2026
 
 ### Added

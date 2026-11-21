@@ -253,8 +253,27 @@ export class Store {
     this.emit("selection");
   }
 
+  /**
+   * Select one header or a contiguous range. The range is stored normalized
+   * (`from <= to`). Legacy single-index callers still work.
+   */
   setHeaderSelection(headerSelection) {
-    this.headerSelection = headerSelection;
+    if (!headerSelection) {
+      if (!this.headerSelection) return;
+      this.headerSelection = null;
+      this.emit("header");
+      return;
+    }
+    const kind = headerSelection.kind === "row" ? "row" : "column";
+    const limit = kind === "row" ? this.chart.height : this.chart.width;
+    const rawFrom = Number(headerSelection.from ?? headerSelection.index);
+    const rawTo = Number(headerSelection.to ?? headerSelection.index);
+    if (!Number.isInteger(rawFrom) || !Number.isInteger(rawTo)) return;
+    const from = Math.min(limit, Math.max(1, Math.min(rawFrom, rawTo)));
+    const to = Math.min(limit, Math.max(1, Math.max(rawFrom, rawTo)));
+    const previous = this.headerSelection;
+    if (previous?.kind === kind && previous.from === from && previous.to === to) return;
+    this.headerSelection = { kind, from, to };
     this.selection = null;
     this.selectedGroupId = null;
     this.emit("header");

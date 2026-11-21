@@ -45,6 +45,15 @@
 - Eigene Zöpfe bleiben in einer lokalen Bibliothek („Eigene Zöpfe“) und sind
   nach einem Werkzeugwechsel mit einem Klick wieder verfügbar; der Dialog
   startet mit dem zuletzt verwendeten Zopf
+- Reihen- und Spaltenbereiche lassen sich über die Nummern ziehen oder per
+  Shift-Klick markieren und gemeinsam löschen
+- Rechteckauswahl funktioniert auch, wenn sie auf einer Gruppe beginnt; ein
+  Klick auf die Gruppe wählt weiterhin die Gruppe. Kopieren/Einfügen per
+  Ctrl+C/Ctrl+V nimmt Farben und Gruppen mit
+- Optionale Maschenzahlen markieren den Anfang jeder Folge gleicher Maschen;
+  im Panel schaltbar, im SVG-Export und Druck enthalten
+- Wende, Abketten und Anschlagen sind aus der Palette ausgeblendet; alte
+  Charts mit diesen IDs laden und rendern weiterhin
 - Zopfrichtung: „vorne“ = zuerst gestrickter (rechter) Strang oben,
   „hinten“ = linker Strang oben
 - Horizontale und vertikale Scrollbalken für die Zeichenfläche; sichtbare
@@ -53,7 +62,7 @@
 - Englisch (britisch) als Standardsprache in Oberfläche, Startseite,
   Validierungsmeldungen, CLI, Manifest und README; Beispiel-Charts englisch
 - PWA mit Service Worker, offline getestet
-- 114 Node-Tests grün; Browserprüfung mit Chromium/Playwright
+- 130 Node-Tests grün; Browserprüfung mit Chromium/Playwright
 - Englische Projektseite `about.html` mit Browser-first-Schnellstart, Preisvergleich, Clear-Symbolpack und Planned-Liste
 - Englischer Screenshot, Version 0.5.1-alpha.1
 - Audit-Pakete A, B und C umgesetzt: Dokument-/Speichersicherheit, valide
@@ -81,6 +90,10 @@
 - Eigene Symbol-Packs und Symbol-Editor
 - Eigene Bibliothekseinträge lassen sich noch nicht löschen; die Zopf-Liste ist
   auf 24 Einträge begrenzt, die Gruppenliste wächst unbegrenzt
+- Bereichsauswahl, Maschenzahlen und Kopieren/Einfügen auf echten Touch-Geräten
+  prüfen
+- Die Arbeitsstandsänderungen sind lokal und noch nicht als 0.6.0-alpha.1
+  veröffentlicht
 - Weitere Sprachen: Infrastruktur steht, Übersetzungen folgen
 - Import/Export mit weiteren offenen Formaten
 - Screenshots, Contribution-Hinweise und Issue-Vorlagen sind vorhanden
@@ -96,7 +109,7 @@
 
 ## Tests
 
-`npm test`: 114 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
+`npm test`: 130 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
 Einheiten, Viewport, CLI, Performance).
 `npm run check`: Syntax- und JSON-Prüfung plus Tests grün.
 Browser: Zeichnen, Farben, Zöpfe, Rückreihen, Undo, Export, Scrollbalken,

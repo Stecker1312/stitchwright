@@ -49,6 +49,14 @@ test("legend can be disabled", () => {
   assert.doesNotMatch(svg, /Legend/);
 });
 
+test("stitch counts are optional and render as small numbers", () => {
+  const chart = sample();
+  chart.options.showStitchCounts = true;
+  assert.match(renderSvg(chart), /font-size="6\.24"/);
+  chart.options.showStitchCounts = false;
+  assert.doesNotMatch(renderSvg(chart), /font-size="6\.24"/);
+});
+
 test("SVG follows the language option", () => {
   const svg = renderSvg(sample(), { lang: "de" });
   assert.match(svg, /Legende/);

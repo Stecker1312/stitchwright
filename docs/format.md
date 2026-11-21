@@ -57,6 +57,7 @@ unknown fields.
     "rowsMode": "all",
     "showRowNumbers": true,
     "showStitchNumbers": true,
+    "showStitchCounts": false,
     "showLegend": true,
     "repeat": null,
     "markers": [],
@@ -161,6 +162,7 @@ A group is a symbol that takes several stitches in one row.
 | `rowsMode` | `"all"` or `"rs"` | all rows or right-side rows only (1, 3, 5 …) |
 | `showRowNumbers` | boolean | row numbers at the edge |
 | `showStitchNumbers` | boolean | stitch numbers at the bottom |
+| `showStitchCounts` | boolean | small run-length numbers inside the first cell of a run |
 | `showLegend` | boolean | legend in the export |
 | `repeat` | `null` or `{start,end}` | repeat, 1-based, inclusive |
 | `markers` | array of numbers | stitch markers after stitch N, a drawing guide only |

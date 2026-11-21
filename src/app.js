@@ -316,6 +316,7 @@ function renderSettings() {
   $("opt-row-numbers").checked = Boolean(chart.options.showRowNumbers);
   $("opt-stitch-numbers").checked = Boolean(chart.options.showStitchNumbers);
   $("opt-legend").checked = Boolean(chart.options.showLegend);
+  $("opt-stitch-counts").checked = Boolean(chart.options.showStitchCounts);
   const markerCount = Array.isArray(chart.options.markers) ? chart.options.markers.length : 0;
   $("marker-count").textContent = markerCount
     ? i18n.t("chart.markerCount", { count: markerCount })
@@ -449,10 +450,26 @@ function updateZoomUI() {
 function updateStatus() {
   const chart = store.chart;
   if (store.headerSelection) {
-    const { kind, index } = store.headerSelection;
-    const value = kind === "row" ? index : columnToStitch(chart, index);
-    const label = kind === "row" ? i18n.t("chart.rowLabel") : i18n.t("chart.columnLabel");
-    $("status-cursor").textContent = `${label} ${value} · ${i18n.t("status.selected")}`;
+    const { kind, from, to } = store.headerSelection;
+    if (from === to) {
+      const value = kind === "row" ? from : columnToStitch(chart, from);
+      const label = kind === "row" ? i18n.t("chart.rowLabel") : i18n.t("chart.columnLabel");
+      $("status-cursor").textContent = `${label} ${value} · ${i18n.t("status.selected")}`;
+    } else if (kind === "row") {
+      $("status-cursor").textContent = `${i18n.t("chart.rowRange", { from, to })} · ${i18n.t("status.selected")}`;
+    } else {
+      const a = columnToStitch(chart, from);
+      const b = columnToStitch(chart, to);
+      $("status-cursor").textContent = `${i18n.t("chart.columnRange", {
+        from: Math.min(a, b),
+        to: Math.max(a, b)
+      })} · ${i18n.t("status.selected")}`;
+    }
+  } else if (store.selection && selectionBounds()) {
+    const bounds = selectionBounds();
+    const width = bounds.right - bounds.left + 1;
+    const height = bounds.bottom - bounds.top + 1;
+    $("status-cursor").textContent = `${i18n.t("status.selection", { width, height })} · ${i18n.t("status.selectionHint")}`;
   } else {
     const cell = store.hover || store.cursor;
     if (cell) {
@@ -491,12 +508,25 @@ function updateAdders() {
     button.setAttribute("aria-label", i18n.t("chart.selectHeaderHint"));
     return;
   }
-  const name = selection.kind === "row" ? i18n.t("chart.rowLabel") : i18n.t("chart.columnLabel");
-  const value = selection.kind === "row" ? selection.index : columnToStitch(store.chart, selection.index);
+  const { kind, from, to } = selection;
+  if (from === to) {
+    const name = kind === "row" ? i18n.t("chart.rowLabel") : i18n.t("chart.columnLabel");
+    const value = kind === "row" ? from : columnToStitch(store.chart, from);
+    label.textContent = `${name} ${value}`;
+  } else if (kind === "row") {
+    label.textContent = i18n.t("chart.rowRange", { from, to });
+  } else {
+    const a = columnToStitch(store.chart, from);
+    const b = columnToStitch(store.chart, to);
+    label.textContent = i18n.t("chart.columnRange", {
+      from: Math.min(a, b),
+      to: Math.max(a, b)
+    });
+  }
   label.hidden = false;
-  label.textContent = `${name} ${value}`;
-  const atMinimum = selection.kind === "row" ? store.chart.height <= 1 : store.chart.width <= 1;
-  button.disabled = atMinimum;
+  const selectedCount = to - from + 1;
+  const total = kind === "row" ? store.chart.height : store.chart.width;
+  button.disabled = selectedCount >= total;
   button.title = i18n.t("chart.deleteHeader");
   button.setAttribute("aria-label", i18n.t("chart.deleteHeader"));
 }
@@ -832,7 +862,8 @@ function setupChartSettings() {
   for (const [id, key] of [
     ["opt-row-numbers", "showRowNumbers"],
     ["opt-stitch-numbers", "showStitchNumbers"],
-    ["opt-legend", "showLegend"]
+    ["opt-legend", "showLegend"],
+    ["opt-stitch-counts", "showStitchCounts"]
   ]) {
     $(id).addEventListener("change", (event) => {
       store.edit("Display", (chart) => { chart.options[key] = event.target.checked; });
@@ -1011,15 +1042,37 @@ function clearAllMarkers() {
 async function deleteSelectedHeader() {
   const selection = store.headerSelection;
   if (!selection) return;
-  const isRow = selection.kind === "row";
-  const message = isRow
-    ? i18n.t("chart.deleteRowConfirm", { row: selection.index })
-    : i18n.t("chart.deleteColumnConfirm", { column: columnToStitch(store.chart, selection.index) });
+  const { kind, from, to } = selection;
+  const isRow = kind === "row";
+  const count = to - from + 1;
+  const total = isRow ? store.chart.height : store.chart.width;
+  if (count >= total) {
+    showToast(i18n.t(isRow ? "chart.keepOneRow" : "chart.keepOneColumn"), "error");
+    return;
+  }
+  let message;
+  if (from === to) {
+    message = isRow
+      ? i18n.t("chart.deleteRowConfirm", { row: from })
+      : i18n.t("chart.deleteColumnConfirm", { column: columnToStitch(store.chart, from) });
+  } else if (isRow) {
+    message = i18n.t("chart.deleteRowsConfirm", { from, to });
+  } else {
+    const a = columnToStitch(store.chart, from);
+    const b = columnToStitch(store.chart, to);
+    message = i18n.t("chart.deleteColumnsConfirm", {
+      from: Math.min(a, b),
+      to: Math.max(a, b)
+    });
+  }
   if (!(await confirmDialog(message))) return;
   try {
-    store.edit(isRow ? "Delete row" : "Delete column", (chart) => {
-      if (isRow) deleteRow(chart, selection.index);
-      else deleteColumn(chart, selection.index);
+    store.edit(isRow ? "Delete rows" : "Delete columns", (chart) => {
+      // Delete from the high index down so the remaining indices stay valid.
+      for (let index = to; index >= from; index -= 1) {
+        if (isRow) deleteRow(chart, index);
+        else deleteColumn(chart, index);
+      }
     });
     store.setHeaderSelection(null);
     ensureCursorVisible();

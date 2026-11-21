@@ -28,13 +28,17 @@ command-line tool.
 
 - Grids of any size, including large patterns
 - The constructive **Clear** symbol set: knit, purl, yarn over, decreases,
-  increases, cables, bobbles, short rows and colour fills
+  increases, cables, bobbles and colour fills
 - Multi-stitch symbols as one group: a six-stitch cable is one symbol, not six
   boxes
 - Your own cables and labelled groups stay in a local library, so they can be
   placed again with one click; groups can carry their own legend note
 - Stitch markers as a drawing guide: one at a time or every N stitches
-- Select, copy and paste areas, including colours and groups
+- Drag a rectangle with the Select tool, then copy and paste it with
+  Ctrl+C / Ctrl+V; colours and groups come along
+- Drag or Shift-click row and column numbers to select a range and delete it
+- Optional stitch counts: a small number marks the first stitch of each run of
+  equal stitches
 - Right-side and wrong-side rows, or right-side rows only numbered 1, 3, 5 …
 - Mark a repeat and build the legend automatically
 - Colour for each stitch, including Fair Isle and intarsia
@@ -65,7 +69,7 @@ Then open <http://localhost:8080>. If you do not want to run a local server,
 use the live demo.
 
 ```bash
-npm test      # 114 Node tests
+npm test      # 130 Node tests
 npm run check # tests and syntax checks
 ```
 

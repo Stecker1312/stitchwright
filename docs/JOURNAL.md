@@ -414,3 +414,34 @@ Zopf-Fix dort erwartet. Die Live-Fassung war noch 0.5.0-alpha.1.
 
 **Hinweis:** Die lokale Zopf-Bibliothek ist browsergebunden. Nach dem Update
 muss Daniel den 3/2-Zopf in Brave einmal neu anlegen; danach bleibt er.
+
+## 2026-11-21 – Bereiche auswählen, kopieren und Maschen zählen
+
+**Beobachtet:** Daniel wollte mehrere Reihen/Spalten über die Nummern
+markieren und löschen, Rechtecke per Maus aufziehen und mit Ctrl+C/Ctrl+V
+vervielfältigen. Außerdem fehlten ihm kleine Zahlen für Folgen gleicher
+Maschen; Wende, Abketten und Anschlagen hält er als Chartzeichen nicht für
+sinnvoll.
+
+**Getan:**
+
+- `headerSelection` ist jetzt ein normalisierter Bereich `{kind, from, to}`.
+  Ziehen über die Nummern und Shift-Klick erweitern ihn; der Papierkorb löscht
+  den ganzen Bereich von oben nach unten. Status, Inspector und Bestätigung
+  zeigen den Bereich.
+- Die Rechteckauswahl startet auch auf einer Gruppe. Ein Klick ohne Ziehen
+  wählt weiterhin die Gruppe; Ziehen erzeugt das Rechteck. Ctrl+C/Ctrl+V und
+  die Kopieren/Einfügen-Buttons arbeiten mit Farben und Gruppen.
+- `stitchCountRuns` in `src/core/run-lengths.js` zählt Folgen gleicher Maschen
+  und Farbe in Strickrichtung (rechts nach links). Die Zahl steht in der ersten
+  Masche der Folge; Gruppen brechen die Folge, `nostitch` und leere Reihen
+  werden nicht beschriftet.
+- Chart-Option `showStitchCounts` (Standard aus) mit Checkbox im Panel,
+  Canvas- und SVG-Ausgabe; Schema und Format-Dokumentation aktualisiert.
+- Wende, Abketten und Anschlagen sind mit `hidden: true` aus der Palette
+  genommen; IDs und Rendering bleiben für alte Charts erhalten.
+- 130 Node-Tests grün. Browser: Zeilen-Ziehen, Shift-Klick, Bereich löschen,
+  Rechteck auf einer Gruppe, Ctrl+C/V, Maschenzahlen und SVG-Ausgabe geprüft.
+
+**Offen:** Touch-Abnahme; Zopf-Symbolstudie für asymmetrische Breiten liegt
+weiterhin bei Daniel; die Änderungen sind noch nicht veröffentlicht.

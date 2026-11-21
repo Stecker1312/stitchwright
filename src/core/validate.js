@@ -313,7 +313,7 @@ export function validateChart(chart, { strict = false, raw = false } = {}) {
     if (given("rowsMode") && options.rowsMode !== "all" && options.rowsMode !== "rs") {
       error("E_ROWS_MODE", "options.rowsMode", "rowsMode must be all or rs");
     }
-    for (const key of ["showRowNumbers", "showStitchNumbers", "showLegend"]) {
+    for (const key of ["showRowNumbers", "showStitchNumbers", "showStitchCounts", "showLegend"]) {
       if (given(key) && typeof options[key] !== "boolean") {
         error("E_OPTION_BOOL", `options.${key}`, `${key} must be true or false`);
       }

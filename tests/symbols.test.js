@@ -57,6 +57,14 @@ test("cable front keeps the falling line continuous", () => {
   assert.match(back[1].d, /^M0\.18 0\.8/);
 });
 
+test("edge-only utility glyphs are hidden from the palette", () => {
+  for (const id of ["shortrow", "bindoff", "caston"]) {
+    assert.equal(SYMBOLS[id].hidden, true, `${id} is hidden`);
+    assert.ok(glyphFor(id).length > 0, `${id} still renders for old charts`);
+  }
+  assert.notEqual(SYMBOLS.nostitch.hidden, true);
+});
+
 test("cable presets are valid", () => {
   for (const preset of CABLE_PRESETS) {
     assert.ok(preset.left >= 1);

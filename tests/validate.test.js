@@ -68,6 +68,15 @@ test("repeat range and cell size are checked", () => {
   assert.equal(diagnostics.some((item) => item.code === "E_CELL_MM"), true);
 });
 
+test("display options must be booleans", () => {
+  const chart = createChart({ width: 10, height: 8 });
+  chart.options.showStitchCounts = "yes";
+  const diagnostics = validateChart(chart);
+  assert.equal(diagnostics.some((item) => (
+    item.code === "E_OPTION_BOOL" && item.path === "options.showStitchCounts"
+  )), true);
+});
+
 test("hidden wrong-side patterning produces a warning", () => {
   const chart = createChart({ width: 10, height: 8 });
   chart.options.rowsMode = "rs";

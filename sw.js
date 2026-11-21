@@ -30,6 +30,7 @@ const REQUIRED = [
   "src/core/legend.js",
   "src/core/render-canvas.js",
   "src/core/render-svg.js",
+  "src/core/run-lengths.js",
   "src/core/symbols.js",
   "src/core/units.js",
   "src/core/validate.js",

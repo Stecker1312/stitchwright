@@ -76,6 +76,7 @@ export function renderPalette({ symbolsEl, colorsEl, store, t, lang = "en", cust
     const knitQuery = !query || "k knit re leer empty".includes(query);
     const items = Object.values(SYMBOLS).filter((symbol) => (
       symbol.category === category.id
+      && !symbol.hidden
       && symbol.id !== "cable"
       && symbol.id !== "custom"
     ));

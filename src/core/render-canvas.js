@@ -11,6 +11,7 @@
 
 import { getCell, getColor, groupSpan, visibleRows } from "./chart.js";
 import { backgroundFor, contrastColor, groupBackground, groupContrast, withAlpha } from "./color.js";
+import { stitchCountRuns } from "./run-lengths.js";
 import { glyphFor } from "./symbols.js";
 import { cellRect, visibleColumns } from "./viewport.js";
 
@@ -295,6 +296,27 @@ export function drawChart(ctx, chart, view, {
     }
   }
 
+  // Optional run-length labels. Keep them readable: below 12 px per cell the
+  // small number would only add noise, so it follows the detail zoom level.
+  if (chart.options?.showStitchCounts && showDetail && scale >= 12) {
+    const rowsInView = rows.slice(
+      Math.max(0, firstVisibleRow),
+      Math.min(rowCount, lastVisibleRow + 1)
+    );
+    for (const label of stitchCountRuns(chart, { rows: rowsInView })) {
+      const visibleIndex = rows.indexOf(label.row);
+      if (visibleIndex === -1 || label.col < start + 1 || label.col > end + 1) continue;
+      const x = view.offsetX + (label.col - 1) * scale;
+      const y = view.offsetY + (rowCount - 1 - visibleIndex) * scale;
+      const color = contrastColor(backgroundFor(chart, label.row, label.col));
+      ctx.fillStyle = color;
+      ctx.font = `600 ${Math.max(5, scale * 0.26)}px system-ui, sans-serif`;
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
+      ctx.fillText(String(label.count), x + scale * 0.08, y + scale * 0.06);
+    }
+  }
+
   // Repeat guide lines.
   const repeat = chart.options?.repeat;
   if (repeat) {
@@ -332,17 +354,26 @@ export function drawChart(ctx, chart, view, {
     ctx.fillStyle = withAlpha(theme.accent, 0.16);
     ctx.strokeStyle = theme.accent;
     ctx.lineWidth = 2;
-    if (headerSelection.kind === "row") {
-      const visibleIndex = rows.indexOf(headerSelection.index);
-      if (visibleIndex !== -1) {
-        const y = view.offsetY + (rowCount - 1 - visibleIndex) * scale;
-        ctx.fillRect(view.offsetX, y, chartW, scale);
-        ctx.strokeRect(view.offsetX + 1, y + 1, chartW - 2, scale - 2);
+    const { kind, from, to } = headerSelection;
+    if (kind === "row") {
+      const selected = [];
+      for (let row = from; row <= to; row += 1) {
+        const visibleIndex = rows.indexOf(row);
+        if (visibleIndex !== -1) selected.push(visibleIndex);
       }
-    } else if (headerSelection.kind === "column") {
-      const x = view.offsetX + (headerSelection.index - 1) * scale;
-      ctx.fillRect(x, view.offsetY, scale, chartH);
-      ctx.strokeRect(x + 1, view.offsetY + 1, scale - 2, chartH - 2);
+      if (selected.length) {
+        const first = Math.min(...selected);
+        const last = Math.max(...selected);
+        const y = view.offsetY + (rowCount - 1 - last) * scale;
+        const height = (last - first + 1) * scale;
+        ctx.fillRect(view.offsetX, y, chartW, height);
+        ctx.strokeRect(view.offsetX + 1, y + 1, chartW - 2, height - 2);
+      }
+    } else if (kind === "column") {
+      const x = view.offsetX + (from - 1) * scale;
+      const width = (to - from + 1) * scale;
+      ctx.fillRect(x, view.offsetY, width, chartH);
+      ctx.strokeRect(x + 1, view.offsetY + 1, width - 2, chartH - 2);
     }
   }
 

@@ -33,7 +33,9 @@ Information.
    geht das auch direkt.
 4. Wähle unter **Farben** eine Farbe, wenn du eine Farbfläche möchtest. Farbe
    ist eine eigene Ebene; sie ersetzt kein Symbol.
-5. Mit **Rückgängig** machst du einen Fehler rückgängig.
+5. Um einen Bereich zu vervielfältigen: **Auswahl** wählen, Rechteck ziehen,
+   Strg+C, Zielzelle anklicken, Strg+V. Farben und Gruppen kommen mit.
+6. Mit **Rückgängig** machst du einen Fehler rückgängig.
 
 Die Statusleiste zeigt Reihe und Masche unter dem Zeiger.
 
@@ -57,6 +59,8 @@ Die Legende nennt die genaue Zopfrichtung.
 - **+ Reihe** und **+ Spalte** schaffen Platz.
 - Zum Löschen zuerst die Reihen- oder Spaltennummer anklicken, dann den
   Papierkorb und bestätigen.
+- Über mehrere Reihen- oder Spaltennummern ziehen oder mit Shift klicken
+  markiert einen Bereich; der Papierkorb löscht ihn.
 - **Nur Hinreihen** blendet gerade Reihen aus und nummeriert 1, 3, 5 … Die
   versteckten Reihen bleiben gespeichert.
 
@@ -65,6 +69,8 @@ Die Legende nennt die genaue Zopfrichtung.
 - Setze **Von Masche** und **Bis Masche**, um einen Rapport zu markieren.
 - Die Legende wird automatisch aus Symbolen, Gruppen und Farben erzeugt.
 - Du kannst die Legende am Bildschirm ausblenden und für den Export einblenden.
+- Die optionalen **Maschenzahlen** setzen eine kleine Zahl an den Anfang jeder
+  Folge gleicher Maschen.
 
 ## 7. Speichern und sichern
 

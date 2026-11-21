@@ -6,7 +6,7 @@
  * text is written with textContent, never injected as HTML.
  */
 
-import { groupSpan } from "../core/chart.js";
+import { columnToStitch, groupSpan } from "../core/chart.js";
 import { legendEntries } from "../core/legend.js";
 import { getSymbol, glyphFor, symbolName } from "../core/symbols.js";
 import { glyphToSvg } from "../core/render-svg.js";
@@ -106,10 +106,21 @@ export function renderInspector({ container, store, t, lang = "en", onUpdateGrou
   if (store.headerSelection) {
     const card = el("div", "inspector-card");
     card.append(el("h3", null, t("status.selected")));
-    const label = store.headerSelection.kind === "row"
-      ? t("chart.rowLabel")
-      : t("chart.columnLabel");
-    card.append(el("p", null, `${label} ${store.headerSelection.index}`));
+    const { kind, from, to } = store.headerSelection;
+    if (from === to) {
+      const label = kind === "row" ? t("chart.rowLabel") : t("chart.columnLabel");
+      const value = kind === "row" ? from : columnToStitch(chart, from);
+      card.append(el("p", null, `${label} ${value}`));
+    } else if (kind === "row") {
+      card.append(el("p", null, t("chart.rowRange", { from, to })));
+    } else {
+      const a = columnToStitch(chart, from);
+      const b = columnToStitch(chart, to);
+      card.append(el("p", null, t("chart.columnRange", {
+        from: Math.min(a, b),
+        to: Math.max(a, b)
+      })));
+    }
     card.append(el("p", "hint", t("chart.deleteHeader")));
     container.append(card);
     return;

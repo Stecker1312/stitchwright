@@ -240,6 +240,7 @@ const DEFINITIONS = Object.assign(Object.create(null), {
   },
   shortrow: {
     id: "shortrow",
+    hidden: true,
     category: "utility",
     span: 1,
     name: { de: "Wende", en: "short row turn" },
@@ -252,6 +253,7 @@ const DEFINITIONS = Object.assign(Object.create(null), {
   },
   bindoff: {
     id: "bindoff",
+    hidden: true,
     category: "utility",
     span: 1,
     name: { de: "abketten", en: "bind off" },
@@ -261,6 +263,7 @@ const DEFINITIONS = Object.assign(Object.create(null), {
   },
   caston: {
     id: "caston",
+    hidden: true,
     category: "utility",
     span: 1,
     name: { de: "anschlagen", en: "cast on" },

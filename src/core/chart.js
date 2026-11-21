@@ -33,6 +33,7 @@ export const DEFAULT_OPTIONS = {
   rowsMode: "all",
   showRowNumbers: true,
   showStitchNumbers: true,
+  showStitchCounts: false,
   showLegend: true,
   repeat: null,
   cellMm: 6,

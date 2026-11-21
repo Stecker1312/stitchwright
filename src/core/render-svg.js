@@ -9,6 +9,7 @@
 import { getCell, getColor, groupSpan, visibleRows } from "./chart.js";
 import { backgroundFor, contrastColor, groupBackground, groupContrast } from "./color.js";
 import { legendEntries } from "./legend.js";
+import { stitchCountRuns } from "./run-lengths.js";
 import { glyphFor } from "./symbols.js";
 import { formatLength } from "./units.js";
 
@@ -297,6 +298,23 @@ export function renderSvg(chart, {
     parts.push(`<clipPath id="${clipId}"><rect x="${x}" y="${y}" width="${span * cellPx}" height="${cellPx}"/></clipPath>`);
     parts.push(`<g clip-path="url(#${clipId})"><g transform="translate(${x} ${y}) scale(${cellPx})" color="${color}">${glyphMarkup(glyph, { color, background })}</g></g>`);
   });
+
+  // Optional run-length labels. They sit in the first cell of a run, next to
+  // the symbol, and are never drawn on a group.
+  if (chart.options?.showStitchCounts) {
+    for (const label of stitchCountRuns(chart, { rows })) {
+      const visibleIndex = rows.indexOf(label.row);
+      if (visibleIndex === -1) continue;
+      const x = chartX + (label.col - 1) * cellPx;
+      const y = chartY + (rowCount - 1 - visibleIndex) * cellPx;
+      const color = contrastColor(backgroundFor(chart, label.row, label.col));
+      parts.push(text(String(label.count), x + cellPx * 0.08, y + cellPx * 0.3, {
+        size: cellPx * 0.26,
+        weight: 600,
+        fill: color
+      }));
+    }
+  }
 
   // Row numbers. On long charts, print every few rows to avoid a wall of text.
   if (chart.options?.showRowNumbers !== false) {
