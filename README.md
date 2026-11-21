@@ -31,8 +31,8 @@ command-line tool.
   increases, cables, bobbles, short rows and colour fills
 - Multi-stitch symbols as one group: a six-stitch cable is one symbol, not six
   boxes
-- Your own labelled groups stay in a local library and can carry their own
-  legend note
+- Your own cables and labelled groups stay in a local library, so they can be
+  placed again with one click; groups can carry their own legend note
 - Stitch markers as a drawing guide: one at a time or every N stitches
 - Select, copy and paste areas, including colours and groups
 - Right-side and wrong-side rows, or right-side rows only numbered 1, 3, 5 …
@@ -65,7 +65,7 @@ Then open <http://localhost:8080>. If you do not want to run a local server,
 use the live demo.
 
 ```bash
-npm test      # 108 Node tests
+npm test      # 114 Node tests
 npm run check # tests and syntax checks
 ```
 

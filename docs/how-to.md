@@ -43,6 +43,8 @@ Cables are one symbol across several stitches, not several separate cells.
 2. Choose a preset such as **2/2 front**.
 3. Click the grid. The whole group is placed at once.
 4. Choose the group with the **Select** tool if you want to change or remove it.
+5. For other widths, choose **Custom cable**. The combination is kept under
+   **Custom cables**, so you enter it only once.
 
 The legend gives the exact cable direction.
 

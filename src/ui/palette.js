@@ -37,6 +37,15 @@ function isSelected(store, id, params = {}) {
 function symbolButton({ id, params = {}, span, label, description, store, t, onClick }) {
   const button = element("button", "palette-item");
   button.type = "button";
+  button.dataset.symbol = id;
+  if (id === "cable") {
+    button.dataset.left = String(params.left);
+    button.dataset.right = String(params.right);
+    button.dataset.direction = params.direction;
+  } else if (id === "custom") {
+    button.dataset.label = params.label;
+    button.dataset.span = String(params.span);
+  }
   button.setAttribute("aria-pressed", String(isSelected(store, id, params)));
   button.title = description || label;
   const preview = element("span", "palette-preview");
@@ -59,7 +68,7 @@ function symbolButton({ id, params = {}, span, label, description, store, t, onC
  * Render the palette. Returns nothing; call again after a language change or
  * a palette change.
  */
-export function renderPalette({ symbolsEl, colorsEl, store, t, lang = "en", customGroups = [], onCustomGroup, onCustomLabel, onSelectCustomGroup, onAddColor }) {
+export function renderPalette({ symbolsEl, colorsEl, store, t, lang = "en", customGroups = [], customCables = [], onNewCable, onNewGroup, onAddColor }) {
   const query = (symbolsEl.dataset.query || "").trim().toLowerCase();
   symbolsEl.replaceChildren();
 
@@ -142,8 +151,44 @@ export function renderPalette({ symbolsEl, colorsEl, store, t, lang = "en", cust
     const customCable = element("button", "palette-item palette-item-wide");
     customCable.type = "button";
     customCable.append(element("span", "palette-label", t("palette.customCable")));
-    customCable.addEventListener("click", () => onCustomGroup?.());
+    customCable.addEventListener("click", () => onNewCable?.());
     grid.append(customCable);
+    symbolsEl.append(grid);
+  }
+
+  // Saved custom cables. The presets cover the common widths; these are the
+  // combinations the person actually uses, kept outside the chart so they can
+  // be placed again with one click.
+  const customCableMatches = customCables.filter((cable) => {
+    if (!query) return true;
+    const direction = t(`inspector.group.direction.${cable.direction}`).toLowerCase();
+    const haystack = `${cable.left}/${cable.right} ${direction} eigene custom own zopf cable`;
+    return haystack.toLowerCase().includes(query);
+  });
+  if (customCableMatches.length) {
+    symbolsEl.append(element("h3", "palette-category", t("palette.customCables")));
+    const grid = element("div", "palette-grid");
+    for (const cable of customCableMatches) {
+      const direction = t(`inspector.group.direction.${cable.direction}`).toLowerCase();
+      grid.append(symbolButton({
+        id: "cable",
+        params: { left: cable.left, right: cable.right, direction: cable.direction },
+        span: cable.left + cable.right,
+        label: `${cable.left}/${cable.right} ${direction}`,
+        description: `${t("palette.customCable")} · ${cable.left}/${cable.right} ${direction}`,
+        store,
+        t,
+        onClick: () => {
+          store.setSymbol({
+            id: "cable",
+            left: cable.left,
+            right: cable.right,
+            direction: cable.direction
+          });
+          store.setTool("pencil");
+        }
+      }));
+    }
     symbolsEl.append(grid);
   }
 
@@ -178,7 +223,7 @@ export function renderPalette({ symbolsEl, colorsEl, store, t, lang = "en", cust
     const newGroup = element("button", "palette-item palette-item-wide");
     newGroup.type = "button";
     newGroup.append(element("span", "palette-label", t("palette.newCustomGroup")));
-    newGroup.addEventListener("click", () => onCustomLabel?.());
+    newGroup.addEventListener("click", () => onNewGroup?.());
     grid.append(newGroup);
     symbolsEl.append(grid);
   }

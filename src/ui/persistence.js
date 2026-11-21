@@ -12,6 +12,7 @@ const STORE = "charts";
 const SETTINGS_KEY = "stitchwright.settings.v1";
 const CUSTOM_GROUPS_KEY = "stitchwright.customGroups.v2";
 const LEGACY_CUSTOM_GROUPS_KEY = "stitchwright.customGroups.v1";
+const CUSTOM_CABLES_KEY = "stitchwright.customCables.v1";
 
 const DEFAULT_SETTINGS = {
   language: "en",
@@ -204,6 +205,26 @@ export function loadCustomGroups() {
 export function saveCustomGroups(groups) {
   const normalized = groups.map(normalizeCustomGroup).filter(Boolean);
   return writeLocal(CUSTOM_GROUPS_KEY, JSON.stringify({ version: 2, groups: normalized }));
+}
+
+/**
+ * Load the raw custom-cable list. Validation lives in custom-cables.js so the
+ * same rules apply when a chart is opened and when the library is read.
+ */
+export function loadCustomCables() {
+  try {
+    const raw = readLocal(CUSTOM_CABLES_KEY);
+    if (!raw) return [];
+    const data = JSON.parse(raw);
+    const cables = Array.isArray(data) ? data : data?.cables;
+    return Array.isArray(cables) ? cables : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveCustomCables(cables) {
+  return writeLocal(CUSTOM_CABLES_KEY, JSON.stringify({ version: 1, cables }));
 }
 
 /** A short, readable id for a new chart. */

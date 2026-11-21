@@ -42,6 +42,9 @@
 - Bereiche auswählen, kopieren und einfügen, inklusive Farben und Gruppen
 - Eigene beschriftete Gruppen bleiben in einer lokalen Bibliothek und
   erscheinen unter „Eigene“; optionaler Legendentext
+- Eigene Zöpfe bleiben in einer lokalen Bibliothek („Eigene Zöpfe“) und sind
+  nach einem Werkzeugwechsel mit einem Klick wieder verfügbar; der Dialog
+  startet mit dem zuletzt verwendeten Zopf
 - Zopfrichtung: „vorne“ = zuerst gestrickter (rechter) Strang oben,
   „hinten“ = linker Strang oben
 - Horizontale und vertikale Scrollbalken für die Zeichenfläche; sichtbare
@@ -50,7 +53,7 @@
 - Englisch (britisch) als Standardsprache in Oberfläche, Startseite,
   Validierungsmeldungen, CLI, Manifest und README; Beispiel-Charts englisch
 - PWA mit Service Worker, offline getestet
-- 108 Node-Tests grün; Browserprüfung mit Chromium/Playwright
+- 114 Node-Tests grün; Browserprüfung mit Chromium/Playwright
 - Englische Projektseite `about.html` mit Browser-first-Schnellstart, Preisvergleich, Clear-Symbolpack und Planned-Liste
 - Englischer Screenshot, Version 0.5.0-alpha.1
 - Audit-Pakete A, B und C umgesetzt: Dokument-/Speichersicherheit, valide
@@ -76,6 +79,8 @@
 - Stabilität und Fehler aus der ersten öffentlichen Alpha
 - Touch/Stift auf echten Geräten prüfen
 - Eigene Symbol-Packs und Symbol-Editor
+- Eigene Bibliothekseinträge lassen sich noch nicht löschen; die Zopf-Liste ist
+  auf 24 Einträge begrenzt, die Gruppenliste wächst unbegrenzt
 - Weitere Sprachen: Infrastruktur steht, Übersetzungen folgen
 - Import/Export mit weiteren offenen Formaten
 - Screenshots, Contribution-Hinweise und Issue-Vorlagen sind vorhanden
@@ -91,7 +96,7 @@
 
 ## Tests
 
-`npm test`: 108 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
+`npm test`: 114 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
 Einheiten, Viewport, CLI, Performance).
 `npm run check`: Syntax- und JSON-Prüfung plus Tests grün.
 Browser: Zeichnen, Farben, Zöpfe, Rückreihen, Undo, Export, Scrollbalken,

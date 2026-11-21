@@ -41,6 +41,10 @@ import { MM_PER_INCH } from "./core/units.js";
 import { groupLegend, isGroupSymbol, symbolName } from "./core/symbols.js";
 import { hasErrors, validateChart } from "./core/validate.js";
 import { CanvasView } from "./ui/canvas-view.js";
+import {
+  customCablesFromChart,
+  mergeCustomCables
+} from "./ui/custom-cables.js";
 import { renderInspector, renderLegend } from "./ui/inspector.js";
 import { renderPalette } from "./ui/palette.js";
 import * as storage from "./ui/persistence.js";
@@ -86,6 +90,8 @@ let confirmResolve = null;
 let unsavedResolve = null;
 let emptyHintDismissed = false;
 let customGroups = [];
+let customCables = [];
+let lastCableDraft = { left: 2, right: 2, direction: "front" };
 
 const scrollState = {
   x: { max: 0, track: 0, thumb: 0 },
@@ -105,6 +111,7 @@ async function init() {
   populateLanguages();
   emptyHintDismissed = readLocal("stitchwright.emptyHintDismissed") === "1";
   customGroups = storage.loadCustomGroups();
+  customCables = storage.loadCustomCables();
 
   const chart = await loadInitialChart();
   store = new Store(chart, { settings });
@@ -128,6 +135,8 @@ async function init() {
   });
   customGroups = mergeCustomGroups(customGroups, customGroupsFromChart(chart));
   storage.saveCustomGroups(customGroups);
+  customCables = mergeCustomCables(customCables, customCablesFromChart(chart));
+  storage.saveCustomCables(customCables);
   canvasView = new CanvasView({
     canvas: $("chart-canvas"),
     wrap: $("canvas-wrap"),
@@ -333,8 +342,9 @@ function renderPalettePanel() {
     t: i18n.t,
     lang: i18n.language,
     customGroups,
-    onCustomGroup: () => openCableDialog(),
-    onCustomLabel: () => openCustomGroupDialog(),
+    customCables,
+    onNewCable: () => openCableDialog(),
+    onNewGroup: () => openCustomGroupDialog(),
     onAddColor: () => openColorDialog()
   });
 }
@@ -371,6 +381,27 @@ function rememberCustomGroups(additions, { replace = false } = {}) {
   customGroups = next;
   storage.saveCustomGroups(customGroups);
   renderPalettePanel();
+}
+
+function rememberCustomCables(additions) {
+  const next = mergeCustomCables(customCables, additions);
+  if (JSON.stringify(next) === JSON.stringify(customCables)) return;
+  customCables = next;
+  storage.saveCustomCables(customCables);
+  renderPalettePanel();
+}
+
+/**
+ * Bring a freshly created palette entry into view. The palette is long, and a
+ * new entry at the bottom would otherwise look as if it had been lost.
+ */
+function revealPaletteEntry(symbol, params = {}) {
+  requestAnimationFrame(() => {
+    const entry = $$(`#palette button[data-symbol="${symbol}"]`).find((button) => (
+      Object.entries(params).every(([key, value]) => button.dataset[key] === String(value))
+    ));
+    entry?.scrollIntoView({ block: "nearest" });
+  });
 }
 
 function renderInspectorPanel() {
@@ -1302,9 +1333,12 @@ function openCustomGroupDialog() {
 }
 
 function openCableDialog() {
-  $("cable-left").value = "2";
-  $("cable-right").value = "2";
-  $("cable-direction").value = "front";
+  // Start from the cable that is active right now, or from the last one the
+  // person created. Re-entering the same numbers for every chart is noise.
+  const draft = store?.symbol?.id === "cable" ? store.symbol : lastCableDraft;
+  $("cable-left").value = String(draft.left || 2);
+  $("cable-right").value = String(draft.right || 2);
+  $("cable-direction").value = draft.direction === "back" ? "back" : "front";
   openDialog("dialog-cable");
 }
 
@@ -1327,6 +1361,7 @@ function addCustomGroup() {
   store.setSymbol({ id: "custom", span, label, legend });
   store.setTool("pencil");
   $("dialog-custom-group").close();
+  revealPaletteEntry("custom", { label, span });
   showToast(i18n.t("message.clickToPlace"));
 }
 
@@ -1338,9 +1373,12 @@ function addCustomCable() {
     showToast(i18n.t("error.fix"), "error");
     return;
   }
+  lastCableDraft = { left, right, direction };
+  rememberCustomCables([{ left, right, direction }]);
   store.setSymbol({ id: "cable", left, right, direction });
   store.setTool("pencil");
   $("dialog-cable").close();
+  revealPaletteEntry("cable", { left, right, direction });
   showToast(i18n.t("message.clickToPlace"));
 }
 
@@ -1424,6 +1462,8 @@ function activateChart(chart, { save = false, fit = true } = {}) {
   writeLocal("stitchwright.emptyHintDismissed", "1");
   customGroups = mergeCustomGroups(customGroups, customGroupsFromChart(chart));
   storage.saveCustomGroups(customGroups);
+  customCables = mergeCustomCables(customCables, customCablesFromChart(chart));
+  storage.saveCustomCables(customCables);
   store.replace(chart);
   if (fit) canvasView.fit();
   updateEmptyHint();

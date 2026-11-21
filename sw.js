@@ -35,6 +35,7 @@ const REQUIRED = [
   "src/core/validate.js",
   "src/core/viewport.js",
   "src/ui/canvas-view.js",
+  "src/ui/custom-cables.js",
   "src/ui/inspector.js",
   "src/ui/palette.js",
   "src/ui/persistence.js",

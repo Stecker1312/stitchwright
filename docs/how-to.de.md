@@ -47,6 +47,8 @@ Kästchen.
 3. Klicke ins Raster. Die ganze Gruppe wird auf einmal gesetzt.
 4. Mit dem **Auswahl**-Werkzeug kannst du die Gruppe später ändern oder
    entfernen.
+5. Für andere Breiten wähle **Eigener Zopf**. Die Kombination bleibt unter
+   **Eigene Zöpfe** gespeichert – du gibst sie nur einmal ein.
 
 Die Legende nennt die genaue Zopfrichtung.
 

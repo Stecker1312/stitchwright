@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Custom cables are kept in a local library under **Custom cables** / **Eigene
+  Zöpfe**. A width combination is entered once and can be placed again with one
+  click, including after a reload.
+- The cable dialog starts from the active or last used cable instead of always
+  resetting to 2/2.
+- A newly created palette entry is scrolled into view, so it does not disappear
+  at the bottom of the long symbol list.
+
 ## 0.5.0-alpha.1 – 20 November 2026
 
 Fourth public alpha. The constructive symbol study C is now the standard.

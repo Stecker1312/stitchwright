@@ -87,6 +87,9 @@ A cable is a group with `symbol: "cable"` and parameters:
 - `direction: "back"` means the first-knitted stitches lie behind, so the
   **other band is continuous** (C4B).
 - The span is `left + right`.
+- Combinations outside the presets are kept in the editor's **Custom cables**
+  library (German: **Eigene Zöpfe**) so they can be placed again with one
+  click. The chart file still carries the full parameters.
 - The glyph uses two crossing bands and a paper-coloured halo around the front
   band. It does not draw one line per stitch; the legend carries the exact
   counts.

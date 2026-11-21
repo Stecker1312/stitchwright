@@ -371,3 +371,27 @@ Linksmaschen-Varianten und zwei Abhebevarianten mit.
 
 **Offen:** Fachliche Strick- und Druckabnahme der neuen Glyphen; keine
 Behauptung, dass die Studie ohne reale Strickprobe fertig ist.
+
+## 2026-11-21 – Eigene Zöpfe bleiben erhalten
+
+**Beobachtet:** Daniel hat einen eigenen Zopf (3/2 hinten) angelegt. Nach dem
+Wechsel auf eine andere Gruppe war die Kombination weg und musste neu
+eingegeben werden. Eigene Gruppen liegen bereits in einer lokalen Bibliothek;
+Zöpfe hatten keine.
+
+**Getan:**
+
+- `src/ui/custom-cables.js`: reine Bibliothekslogik mit Validierung,
+  Deduplizierung, Preset-Filter und Obergrenze 24.
+- Persistenz in `localStorage` unter `stitchwright.customCables.v1`.
+- Die Palette zeigt eigene Zöpfe unter **Eigene Zöpfe** direkt unter den
+  Presets; ein Klick setzt die Kombination wieder als aktives Symbol.
+- Beim Öffnen eines Charts werden dessen eigene Zöpfe in die Bibliothek
+  übernommen.
+- Der Zopf-Dialog startet mit dem aktiven bzw. zuletzt angelegten Zopf statt
+  immer mit 2/2 vorne.
+- Neu angelegte Palette-Einträge werden sichtbar gescrollt.
+- Sechs neue Node-Tests; gesamt 114 grün. Browser: 3/2 hinten angelegt,
+  gewechselt, erneut ausgewählt, neu geladen und Dialogvorbelegung geprüft.
+
+**Offen:** Einträge lassen sich noch nicht aus der Bibliothek löschen.
