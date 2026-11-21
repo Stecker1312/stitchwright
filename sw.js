@@ -8,7 +8,7 @@
  */
 
 const CACHE_PREFIX = "stitchwright-";
-const CACHE = `${CACHE_PREFIX}v0.5.0`;
+const CACHE = `${CACHE_PREFIX}v0.5.1`;
 
 // A failed core asset means the app cannot start. Installation must fail and
 // leave the previous cache in place.

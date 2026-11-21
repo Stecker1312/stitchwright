@@ -32,7 +32,7 @@ Abnahme:
 1. Repository von privat auf öffentlich stellen.
 2. GitHub Pages auf den Branch `main`, Ordner `/` zeigen lassen.
 3. Prüfen: App lädt über HTTPS, Service Worker installiert, offline neu laden.
-4. Tag `v0.5.0-alpha.1` setzen und Release-Notes schreiben.
+4. Tag `v0.5.1-alpha.1` setzen und Release-Notes schreiben.
 5. In der Textilwerkstatt und im Projektindex verlinken.
 
 ## Nach der Veröffentlichung

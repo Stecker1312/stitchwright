@@ -395,3 +395,22 @@ Zöpfe hatten keine.
   gewechselt, erneut ausgewählt, neu geladen und Dialogvorbelegung geprüft.
 
 **Offen:** Einträge lassen sich noch nicht aus der Bibliothek löschen.
+
+## 2026-11-21 – 0.5.1-alpha.1 veröffentlicht
+
+**Anlass:** Daniel hat in Brave die GitHub-Pages-Fassung geöffnet und den
+Zopf-Fix dort erwartet. Die Live-Fassung war noch 0.5.0-alpha.1.
+
+**Getan:**
+
+- Version auf 0.5.1-alpha.1 und Datum 2026-11-21 gesetzt (`package.json`,
+  `src/version.js`, STATUS, README, Projektseite, How-tos).
+- Service-Worker-Cache auf `stitchwright-v0.5.1` angehoben; der alte Cache wird
+  beim Aktivieren gelöscht.
+- Changelog mit dem Zopf-Fix, den Prüfungen und 114 Tests ergänzt.
+- `npm run check` grün; Browserprüfung und Offline-Laden vor der
+  Veröffentlichung.
+- Commit, Tag `v0.5.1-alpha.1`, Push und GitHub Release.
+
+**Hinweis:** Die lokale Zopf-Bibliothek ist browsergebunden. Nach dem Update
+muss Daniel den 3/2-Zopf in Brave einmal neu anlegen; danach bleibt er.

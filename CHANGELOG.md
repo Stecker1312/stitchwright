@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.5.1-alpha.1 – 21 November 2026
 
 ### Added
 
@@ -11,6 +11,13 @@
   resetting to 2/2.
 - A newly created palette entry is scrolled into view, so it does not disappear
   at the bottom of the long symbol list.
+
+### Checks
+
+- 114 Node tests green.
+- Browser check: create 3/2 back, switch to another group, reuse the saved
+  cable, reload, dialog prefill.
+- Offline load with the new module in the service-worker cache.
 
 ## 0.5.0-alpha.1 – 20 November 2026
 

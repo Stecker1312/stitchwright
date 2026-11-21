@@ -42,7 +42,7 @@ hält Erweiterungspunkte offen, aber niemand baut sie ohne neue Entscheidung.
 5. `STATUS.md` und `docs/JOURNAL.md` am Ende der Sitzung aktualisieren.
 6. Kleine, nachvollziehbare Commits. Commit-Nachricht: was und warum.
 7. Nie `git push --force`. Veröffentlichung über SOP-004; der aktuelle Stand
-   ist eine öffentliche Alpha (0.5.0-alpha.1).
+   ist eine öffentliche Alpha (0.5.1-alpha.1).
 
 ## Befehle
 
