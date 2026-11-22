@@ -56,9 +56,10 @@ keeps the same three anchors and the same chart format.
 | `bindoff` | 1 | thick bar at the top | bind off | bind off |
 | `caston` | 1 | thick bar at the bottom | cast on | cast on |
 
-`shortrow`, `bindoff` and `caston` remain valid IDs for old charts, but they are
-hidden from the palette: a chart edge is not a reliable substitute for the
-written instruction. New charts use the grid and the legend instead.
+`shortrow` is the short-row turn and is available in the palette. `bindoff` and
+`caston` remain valid IDs for old charts, but they are hidden from the palette:
+a chart edge is not a reliable substitute for the written instruction. New
+charts use the grid and the legend instead.
 
 `null` means stocking stitch on the right side and is not drawn as a symbol.
 

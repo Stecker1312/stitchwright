@@ -82,8 +82,10 @@ test("cable front keeps the falling line continuous", () => {
   assert.match(back[1].d, /^M0\.18 0\.8/);
 });
 
-test("edge-only utility glyphs are hidden from the palette", () => {
-  for (const id of ["shortrow", "bindoff", "caston"]) {
+test("the turn is in the palette; edge-only glyphs stay hidden", () => {
+  assert.notEqual(SYMBOLS.shortrow.hidden, true);
+  assert.ok(glyphFor("shortrow").length > 0);
+  for (const id of ["bindoff", "caston"]) {
     assert.equal(SYMBOLS[id].hidden, true, `${id} is hidden`);
     assert.ok(glyphFor(id).length > 0, `${id} still renders for old charts`);
   }

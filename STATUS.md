@@ -1,7 +1,7 @@
 # Status
 
 - Stand: 2026-11-22
-- Version: **0.6.5-alpha.1**
+- Version: **0.6.6-alpha.1**
 - Phase: Öffentliche Vorabversion (Alpha)
 - Sichtbarkeit: öffentlich, GitHub Pages:
   <https://stecker1312.github.io/stitchwright/>
@@ -25,6 +25,7 @@
 
 ## Erledigt
 
+- 0.6.6-alpha.1 veröffentlicht (2026-11-22): Wende wieder in der Palette
 - 0.6.5-alpha.1 veröffentlicht (2026-11-22): Runden als Chart-Eigenschaft,
   CI-Check ohne Lockfile-Abhängigkeit
 - Projektordner, Git-Repository, GPL-3.0
@@ -63,8 +64,10 @@
   Ctrl+C/Ctrl+V nimmt Farben und Gruppen mit
 - Optionale Maschenzahlen markieren den Anfang jeder Folge gleicher Maschen;
   im Panel schaltbar, im SVG-Export und Druck enthalten
-- Wende, Abketten und Anschlagen sind aus der Palette ausgeblendet; alte
-  Charts mit diesen IDs laden und rendern weiterhin
+- Wende ist als Hilfszeichen wieder in der Palette: verkürzte Reihen an
+  Fersen, Halsausschnitten und formgestrickten Teilen lassen sich damit
+  markieren. Abketten und Anschlagen bleiben ausgeblendet; alte Charts mit
+  allen drei IDs laden und rendern weiterhin
 - Zopfrichtung: „vorne“ = zuerst gestrickter (rechter) Strang oben,
   „hinten“ = linker Strang oben
 - Horizontale und vertikale Scrollbalken für die Zeichenfläche; sichtbare

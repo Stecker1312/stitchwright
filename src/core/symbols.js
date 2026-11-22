@@ -262,7 +262,6 @@ const DEFINITIONS = Object.assign(Object.create(null), {
   },
   shortrow: {
     id: "shortrow",
-    hidden: true,
     category: "utility",
     span: 1,
     name: { de: "Wende", en: "short row turn" },

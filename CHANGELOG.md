@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.6.6-alpha.1 – 22 November 2026
+
+The short-row turn is back in the palette.
+
+### New
+
+- The **turn** symbol (`shortrow`) is available again under Utility. It marks
+  where the work is turned for a short row, for example at a sock heel, a
+  neckline or a shaped piece. The earlier decision to hide it is reversed
+  after finding a use for it in real charts.
+- Bind off and cast on stay hidden. Charts that already contain any of the
+  three IDs still load, render, export and print unchanged.
+
+### Checks
+
+- 165 Node tests green; `npm run check` green.
+- Browser check: turn visible under Utility, placed on the chart, shown in the
+  legend and included in the SVG export.
+
 ## 0.6.5-alpha.1 – 22 November 2026
 
 Charts can say they are worked in the round.

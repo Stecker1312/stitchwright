@@ -775,3 +775,27 @@ npm-Lockfile erwartete, die das Projekt bewusst nicht hat.
   0.6.5-alpha.1 und die Construction-Auswahl; Cache `stitchwright-v0.6.5`,
   keine Konsolenfehler. Offline-Neuladen aus dem Cache funktioniert.
 - Tag `v0.6.5-alpha.1` und GitHub Release.
+
+## 2026-11-22 – Wende wieder in der Palette
+
+**Beobachtet:** Daniel hat eine Anwendung für das Wendezeichen gefunden. Die
+Entscheidung aus der Sitzung zu Bereichen und Maschenzahlen, Wende, Abketten
+und Anschlagen aus der Palette zu nehmen, war für die Wende zu pauschal:
+Verkürzte Reihen an Fersen, Halsausschnitten und formgestrickten Teilen
+brauchen eine sichtbare Markierung im Chart.
+
+**Getan:**
+
+- `hidden: true` beim Symbol `shortrow` entfernt. Es steht wieder unter
+  **Hilfszeichen** in der Palette, mit Name „Wende“, Legendentext „wenden“ und
+  dem konstruktiven U-Turn aus Studie C.
+- Abketten und Anschlagen bleiben ausgeblendet; ihre IDs, Glyphen und das
+  Rendering für alte Charts sind unverändert.
+- Der Symboltest prüft jetzt ausdrücklich, dass die Wende sichtbar ist und
+  Abketten/Anschlagen verborgen bleiben.
+- `docs/symbols.md`, STATUS und Changelog beschreiben die Ausnahme.
+- Version auf 0.6.6-alpha.1 und Service-Worker-Cache auf
+  `stitchwright-v0.6.6` gesetzt; 165 Tests und `npm run check` grün.
+- Browser: Wende in der Palette, per Tastatur platziert, Status und Legende
+  zeigen „Wende/wenden“; danach rückgängig gemacht, das bestehende Chart
+  bleibt unverändert. SVG-Ausgabe enthält Glyph und Legendentext.
