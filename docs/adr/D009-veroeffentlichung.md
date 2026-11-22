@@ -17,7 +17,7 @@ Stand: Fehler und Änderungen am Dateiformat sind noch möglich.
   `https://stecker1312.github.io/stitchwright/`.
 - Die erste Version heißt `0.1.0-alpha.1` und wird als **frühe Vorabversion**
   gekennzeichnet – im README, auf der Projektseite, im Changelog und im
-  Release. Die aktuelle Alpha ist `0.6.4-alpha.1`.
+  Release. Die aktuelle Alpha ist `0.6.5-alpha.1`.
 - Die Lizenz bleibt GPL-3.0.
 - Es gibt kein Support-Versprechen und keine Produktionsgarantie.
 - Cloud, Konten, Kollaboration und Telemetrie bleiben ausgeschlossen.

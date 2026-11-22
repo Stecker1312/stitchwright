@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.6.5-alpha.1 – 22 November 2026
 
 Charts can say they are worked in the round.
 
@@ -16,8 +16,13 @@ Charts can say they are worked in the round.
 - The field is additive: older files stay flat, and older readers still show
   every row of a round chart.
 
+### Fixed
+
+- The GitHub Actions check no longer asks for an npm cache without a lockfile.
+
 ### Checks
 
+- 165 Node tests green; `npm run check` green.
 - Node tests cover default flat, round creation, normalization, validation,
   hidden-round prevention, SVG round numbers and the CLI flag.
 - Browser check: round chart in light and dark mode, round labels, hidden

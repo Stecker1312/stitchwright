@@ -399,7 +399,7 @@ test("SW-24: failed SW install does not activate or delete foreign caches", asyn
     },
     caches: {
       open: async () => ({ add: async () => { throw new Error("network down"); } }),
-      keys: async () => ["other-app-v1", "stitchwright-v0.2.0", "stitchwright-v0.3.1", "stitchwright-v0.4.0", "stitchwright-v0.5.0", "stitchwright-v0.5.1", "stitchwright-v0.6.0", "stitchwright-v0.6.1", "stitchwright-v0.6.2", "stitchwright-v0.6.3", "stitchwright-v0.6.4"],
+      keys: async () => ["other-app-v1", "stitchwright-v0.2.0", "stitchwright-v0.3.1", "stitchwright-v0.4.0", "stitchwright-v0.5.0", "stitchwright-v0.5.1", "stitchwright-v0.6.0", "stitchwright-v0.6.1", "stitchwright-v0.6.2", "stitchwright-v0.6.3", "stitchwright-v0.6.4", "stitchwright-v0.6.5"],
       delete: async (key) => { deleted.push(key); return true; }
     }
   });
@@ -409,6 +409,6 @@ test("SW-24: failed SW install does not activate or delete foreign caches", asyn
   assert.equal(skipped, false);
   handlers.activate({ waitUntil: (promise) => { operation = promise; } });
   await operation;
-  assert.deepEqual(deleted, ["stitchwright-v0.2.0", "stitchwright-v0.3.1", "stitchwright-v0.4.0", "stitchwright-v0.5.0", "stitchwright-v0.5.1", "stitchwright-v0.6.0", "stitchwright-v0.6.1", "stitchwright-v0.6.2", "stitchwright-v0.6.3"]);
+  assert.deepEqual(deleted, ["stitchwright-v0.2.0", "stitchwright-v0.3.1", "stitchwright-v0.4.0", "stitchwright-v0.5.0", "stitchwright-v0.5.1", "stitchwright-v0.6.0", "stitchwright-v0.6.1", "stitchwright-v0.6.2", "stitchwright-v0.6.3", "stitchwright-v0.6.4"]);
   assert.equal(claimed, true);
 });

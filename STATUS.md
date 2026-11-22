@@ -1,7 +1,7 @@
 # Status
 
 - Stand: 2026-11-22
-- Version: **0.6.4-alpha.1**
+- Version: **0.6.5-alpha.1**
 - Phase: Öffentliche Vorabversion (Alpha)
 - Sichtbarkeit: öffentlich, GitHub Pages:
   <https://stecker1312.github.io/stitchwright/>
@@ -73,7 +73,7 @@
 - PWA mit Service Worker, offline getestet
 - 165 Node-Tests grün; Browserprüfung mit Chromium/Playwright
 - Englische Projektseite `about.html` mit Browser-first-Schnellstart, Preisvergleich, Clear-Symbolpack und Planned-Liste
-- Englischer Screenshot, Version 0.6.4 (beidseitige Randnummern)
+- Englischer Screenshot, Version 0.6.5 (aktueller Editor)
 - Audit-Pakete A, B und C umgesetzt: Dokument-/Speichersicherheit, valide
   UI-Kommandos, Rohvalidierung, sichere Symbol-Lookups und CLI-Vertrag;
   zentrale Teile von D, E und F folgen mit den verbleibenden P2-Punkten
