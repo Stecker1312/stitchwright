@@ -25,6 +25,8 @@
 
 ## Erledigt
 
+- 0.6.5-alpha.1 veröffentlicht (2026-11-22): Runden als Chart-Eigenschaft,
+  CI-Check ohne Lockfile-Abhängigkeit
 - Projektordner, Git-Repository, GPL-3.0
 - Projektregeln, README, Status, Journal, Roadmap, Changelog
 - ADRs D001–D010, SOPs 001–005

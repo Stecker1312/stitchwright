@@ -753,3 +753,25 @@ nicht in der Datei gestanden und wäre beim Export oder Teilen verloren gegangen
   Tabelle und Status geprüft, auf flach zurückgeschaltet, Deutsch und Englisch,
   hell und dunkel; Autosave und Reload behalten `construction: "round"` und
   `rowsMode: "all"`. Keine Konsolenfehler.
+
+## 2026-11-22 – 0.6.5-alpha.1 veröffentlicht
+
+**Anlass:** Runden als Chart-Eigenschaft sollen öffentlich verfügbar sein.
+Außerdem war der GitHub-Actions-Check dauerhaft rot, weil der Workflow eine
+npm-Lockfile erwartete, die das Projekt bewusst nicht hat.
+
+**Getan:**
+
+- Version 0.6.5-alpha.1 in `package.json`, `src/version.js`, STATUS, README,
+  Projektseite, How-tos, AGENTS, D009 und SOP-004 gesetzt.
+- Service-Worker-Cache auf `stitchwright-v0.6.5`; der Regressionstest behält
+  v0.6.5 und löscht die Caches bis v0.6.4.
+- Changelog, Status, Screenshot und Projektseiten aktualisiert; 165 Tests und
+  `npm run check` grün.
+- Check-Workflow ohne `cache: npm`; das Projekt hat bewusst keine Lockfile.
+- Commit `9282eef`, Push auf `main`, Check-Run `45058402695` grün, Pages-Run
+  `45058402447` grün.
+- Live geprüft: <https://stecker1312.github.io/stitchwright/> zeigt Version
+  0.6.5-alpha.1 und die Construction-Auswahl; Cache `stitchwright-v0.6.5`,
+  keine Konsolenfehler. Offline-Neuladen aus dem Cache funktioniert.
+- Tag `v0.6.5-alpha.1` und GitHub Release.
