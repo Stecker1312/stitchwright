@@ -1,6 +1,6 @@
 # Chart format `strickschrift/1`
 
-Updated 19 November 2026. The format is open JSON. It is the source; SVG and
+Updated 22 November 2026. The format is open JSON. It is the source; SVG and
 PNG are exports. The JSON Schema for editors and agents is at
 [`schema/strickschrift.schema.json`](../schema/strickschrift.schema.json).
 
@@ -9,8 +9,8 @@ PNG are exports. The JSON Schema for editors and agents is at
 The file format has two layers:
 
 - **Raw**: the JSON that a person or agent writes. Only `schema`, `width`,
-  `height` and `rows` are required. `colors`, `groups`, `palette`, `options`
-  and `meta` are optional.
+  `height` and `rows` are required. `colors`, `groups`, `guides`, `palette`,
+  `options` and `meta` are optional.
 - **Canonical**: the in-memory chart after normalization. All matrices and
   option fields exist, IDs are checked and unknown top-level fields are
   preserved for later validation.
@@ -49,6 +49,7 @@ unknown fields.
     [null, null, null, null, null, null, null, null, null, null, null, null]
   ],
   "groups": [],
+  "guides": [],
   "palette": [
     { "id": "A", "name": "A", "hex": "#ffffff" },
     { "id": "B", "name": "B", "hex": "#1a1a1a" }
@@ -173,6 +174,38 @@ A group is a symbol that takes several stitches in one row.
 `markers` are drawing guides only: `[10, 20]` draws dashed lines after
 stitches 10 and 20. They are not knitted and do not appear in the legend.
 
+## Guide lines
+
+Guide lines are cosmetic reading aids between stitches. They are not knitted
+and do not appear in the legend. Each line has its own colour and row range,
+so a chart can use, for example, a dark centre line and a coloured section
+line.
+
+```json
+"guides": [
+  {
+    "id": "l1",
+    "color": "#1a1a1a",
+    "boundary": 12,
+    "fromRow": 1,
+    "toRow": 10
+  }
+]
+```
+
+- `boundary` counts picture columns from the left: `1` is between columns 1
+  and 2, `width - 1` is between the last two columns. Lines on the outer
+  border are not stored because the chart border already marks them.
+- `fromRow` and `toRow` are 1-based, inclusive and ordered from bottom to top.
+  A full-height line uses `1` and `height`.
+- `color` is an independent `#rrggbb` value. It is not a palette ID, so
+  changing or deleting a yarn colour never changes a guide line.
+- In the editor, click a stitch boundary for a full-height line or drag along
+  it for a shorter line. Clicking an existing line removes it.
+
+The field is optional and additive. Files without `guides` load unchanged;
+older readers ignore the field.
+
 ## Meta
 
 All fields are optional. `created` and `modified` are ISO 8601 strings.
@@ -194,6 +227,8 @@ The CLI and the app use the same rules:
 - Palette IDs are unique; hex values use the form `#rrggbb`.
 - `repeat.start <= repeat.end` and both are inside the grid.
 - `rowsMode` is `"all"` or `"rs"`.
+- Guide line ids are unique; `color` uses `#rrggbb`; `boundary` is between two
+  stitches and `fromRow <= toRow` stays inside the grid.
 
 Diagnostics have a code, a path and an English message. The CLI prints them as
 machine-readable JSON with `--json`.
@@ -203,8 +238,9 @@ machine-readable JSON with `--json`.
 `strickschrift/1` is the first version. A new version only appears when the
 meaning of existing fields changes. In that case the app provides a migration
 and the CLI prints a warning. Unknown fields are ignored so newer files do not
-become unreadable at once. The JSON Schema helps editors and agents; the
-validator in `src/core/validate.js` is authoritative.
+become unreadable at once. Optional additive fields such as `guides` keep the
+same version; older readers preserve or ignore them. The JSON Schema helps
+editors and agents; the validator in `src/core/validate.js` is authoritative.
 
 ## Performance
 

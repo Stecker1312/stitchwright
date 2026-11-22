@@ -8,6 +8,7 @@
 
 import { getCell, getColor, groupSpan, visibleRows } from "./chart.js";
 import { backgroundFor, contrastColor, groupBackground, groupContrast } from "./color.js";
+import { GUIDE_WIDTH_CELLS, guideLine } from "./guides.js";
 import { legendEntries } from "./legend.js";
 import { stitchCountRuns } from "./run-lengths.js";
 import { glyphFor } from "./symbols.js";
@@ -314,6 +315,18 @@ export function renderSvg(chart, {
         fill: color
       }));
     }
+  }
+
+  // Guide lines are annotations: draw them above the stitches so a cable
+  // stroke cannot hide them. They stay below the numbered margin.
+  const guideWidth = (GUIDE_WIDTH_CELLS * cellPx).toFixed(2);
+  for (const guide of chart.guides || []) {
+    const line = guideLine(guide, rows);
+    if (!line) continue;
+    const x = chartX + line.x * cellPx;
+    const y1 = chartY + line.y1 * cellPx;
+    const y2 = chartY + line.y2 * cellPx;
+    parts.push(`<line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" stroke="${escapeXml(guide.color)}" stroke-width="${guideWidth}" stroke-linecap="round"/>`);
   }
 
   // Row numbers. On long charts, print every few rows to avoid a wall of text.

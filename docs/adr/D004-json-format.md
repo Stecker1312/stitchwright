@@ -28,7 +28,10 @@ Das native Format ist versioniertes JSON mit der Endung
 
 Ein JSON-Schema liegt unter `schema/strickschrift.schema.json`. Die CLI
 validiert gegen dieselben Regeln wie die App. Änderungen am Format brauchen
-eine neue Schemaversion und eine Migration.
+eine neue Schemaversion und eine Migration. Additive, optionale Felder, die
+die Bedeutung bestehender Felder nicht verändern (zum Beispiel `guides`,
+D012), bleiben in derselben Schemaversion; nur breaking changes brauchen eine
+neue Version und Migration.
 
 ## Folgen
 

@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased
+
+### New
+
+- Coloured guide lines between stitches. Click a stitch boundary for a
+  full-height line, or drag along it to limit the line to chosen rows. Each
+  line keeps its own colour, can be removed with a click or right-click, and
+  is saved in the open JSON format. Guide lines are cosmetic reading aids:
+  they are not knitted and do not appear in the legend.
+- The guide-line tool has a colour picker, a line count and a clear button;
+  the chosen colour is remembered between sessions.
+- The canvas, SVG export, print, PNG export, validation and CLI all use the
+  same guide-line data. Row and column edits and mirroring keep lines aligned.
+
+### Checks
+
+- 148 Node tests green.
+- Browser check: full-height and partial lines in two colours, click and
+  right-click removal, clear, undo, autosave and reload, and the guide
+  controls in the tool panel.
+
 ## 0.6.1-alpha.1 – 22 November 2026
 
 Cable legend clarification.

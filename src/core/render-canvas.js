@@ -11,6 +11,7 @@
 
 import { getCell, getColor, groupSpan, visibleRows } from "./chart.js";
 import { backgroundFor, contrastColor, groupBackground, groupContrast, withAlpha } from "./color.js";
+import { GUIDE_WIDTH_CELLS, guideLine } from "./guides.js";
 import { stitchCountRuns } from "./run-lengths.js";
 import { glyphFor } from "./symbols.js";
 import { cellRect, visibleColumns } from "./viewport.js";
@@ -136,6 +137,38 @@ function rowY(chart, view, row, visible) {
   return view.offsetY + (visible.length - 1 - index) * view.scale;
 }
 
+/**
+ * Draw guide lines in cell coordinates. Normal guides are solid; the drag
+ * preview is dashed so a partial line clearly differs from a finished one.
+ */
+function drawGuideLines(ctx, chart, view, { previewGuide = null, rows = visibleRows(chart) } = {}) {
+  const guides = previewGuide ? [previewGuide] : (chart.guides || []);
+  if (!guides.length) return;
+  const lineWidth = Math.max(1.5, Math.min(6, view.scale * GUIDE_WIDTH_CELLS));
+  ctx.save();
+  ctx.lineCap = "round";
+  ctx.lineWidth = lineWidth;
+  if (previewGuide) {
+    ctx.globalAlpha = 0.8;
+    const gap = Math.max(2, view.scale * 0.16);
+    ctx.setLineDash([gap, gap * 0.8]);
+  }
+  for (const guide of guides) {
+    if (!guide) continue;
+    const line = guideLine(guide, rows);
+    if (!line) continue;
+    const x = view.offsetX + line.x * view.scale;
+    const y1 = view.offsetY + line.y1 * view.scale;
+    const y2 = view.offsetY + line.y2 * view.scale;
+    ctx.beginPath();
+    ctx.moveTo(x, y1);
+    ctx.lineTo(x, y2);
+    ctx.strokeStyle = guide.color;
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
 function drawSelection(ctx, chart, view, selection, theme, rows) {
   if (!selection) return;
   const top = Math.min(selection.row1, selection.row2);
@@ -169,6 +202,7 @@ export function drawChart(ctx, chart, view, {
   cursor = null,
   selectedGroupId = null,
   headerSelection = null,
+  guidePreview = null,
   showNumbers = true
 } = {}) {
   const scale = view.scale;
@@ -316,6 +350,13 @@ export function drawChart(ctx, chart, view, {
       ctx.fillText(String(label.count), x + scale * 0.08, y + scale * 0.06);
     }
   }
+
+  // Guide lines are annotations: they sit above stitches so a cable stroke
+  // cannot hide them, but below selections and other UI guides.
+  drawGuideLines(ctx, chart, view, { rows });
+
+  // While dragging, the unfinished guide is dashed and follows the pointer.
+  if (guidePreview) drawGuideLines(ctx, chart, view, { previewGuide: guidePreview, rows });
 
   // Repeat guide lines.
   const repeat = chart.options?.repeat;

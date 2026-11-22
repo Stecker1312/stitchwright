@@ -18,6 +18,18 @@ export const SCHEMA = "strickschrift/1";
 export const MIN_SIZE = 1;
 export const MAX_SIZE = 1000;
 
+/**
+ * Guide lines are cosmetic reading aids between stitches. They store their own
+ * colour so they stay independent of the yarn palette and the legend.
+ */
+export const DEFAULT_GUIDE_COLOR = "#1a1a1a";
+const GUIDE_COLOR = /^#[0-9a-f]{6}$/i;
+
+/** True when a value is a colour the guide renderer can draw. */
+export function isGuideColor(value) {
+  return typeof value === "string" && GUIDE_COLOR.test(value);
+}
+
 export const DEFAULT_PALETTE = [
   { id: "A", name: "A", hex: "#ffffff" },
   { id: "B", name: "B", hex: "#1a1a1a" },
@@ -73,6 +85,7 @@ export function createChart({ width = 24, height = 24, title = "" } = {}) {
     rows: emptyMatrix(width, height),
     colors: emptyMatrix(width, height),
     groups: [],
+    guides: [],
     palette: clone(DEFAULT_PALETTE),
     options: { ...DEFAULT_OPTIONS, markers: [] },
     meta: {
@@ -150,6 +163,11 @@ export function normalizeChart(raw) {
     throw new Error("groups must be an array of objects");
   }
 
+  const guides = raw.guides === undefined ? [] : raw.guides;
+  if (!Array.isArray(guides) || guides.some((guide) => !guide || typeof guide !== "object" || Array.isArray(guide))) {
+    throw new Error("guides must be an array of objects");
+  }
+
   const palette = raw.palette === undefined ? clone(DEFAULT_PALETTE) : raw.palette;
   if (!Array.isArray(palette) || palette.some((entry) => !entry || typeof entry !== "object" || Array.isArray(entry))) {
     throw new Error("palette must be an array of objects");
@@ -186,6 +204,7 @@ export function normalizeChart(raw) {
     rows: _rows,
     colors: _colors,
     groups: _groups,
+    guides: _guides,
     palette: _palette,
     options: _options,
     meta: _meta,
@@ -202,6 +221,7 @@ export function normalizeChart(raw) {
     rows,
     colors,
     groups: groups.map((group) => ({ ...group })),
+    guides: guides.map((guide) => ({ ...guide })),
     palette: palette.map((entry) => ({ ...entry })),
     options,
     meta
@@ -227,6 +247,14 @@ export function nextGroupId(chart) {
   const used = new Set(chart.groups.map((group) => group.id));
   while (used.has(`g${index}`)) index += 1;
   return `g${index}`;
+}
+
+/** A fresh id for a new guide line. */
+export function nextGuideId(chart) {
+  let index = 1;
+  const used = new Set((chart.guides || []).map((guide) => guide.id));
+  while (used.has(`l${index}`)) index += 1;
+  return `l${index}`;
 }
 
 /** Read a cell. Row and column are 1-based. */
@@ -316,6 +344,65 @@ export function setMarkerEvery(chart, every) {
 export function clearMarkers(chart) {
   chart.options.markers = [];
   touchChartMeta(chart);
+}
+
+/**
+ * Add a cosmetic guide line on a stitch boundary. `boundary` is the number of
+ * picture columns to the left of the line (1 … width-1), so boundary 3 sits
+ * between picture columns 3 and 4. Rows are inclusive and 1-based.
+ */
+export function addGuide(chart, input) {
+  const boundary = Number(input.boundary);
+  const fromRow = Number(input.fromRow);
+  const toRow = Number(input.toRow);
+  if (!Number.isInteger(boundary) || boundary < 1 || boundary >= chart.width) {
+    throw new Error("Guide line boundary must be between two stitches inside the chart");
+  }
+  if (!Number.isInteger(fromRow) || !Number.isInteger(toRow)
+    || fromRow < 1 || toRow > chart.height || fromRow > toRow) {
+    throw new Error("Guide line rows must be inside the chart");
+  }
+  const color = input.color === undefined || input.color === null
+    ? DEFAULT_GUIDE_COLOR
+    : String(input.color).toLowerCase();
+  if (!isGuideColor(color)) {
+    throw new Error(`Unknown guide line colour: ${String(input.color)}`);
+  }
+  const id = input.id === undefined || input.id === null ? nextGuideId(chart) : String(input.id);
+  if (!id) throw new Error("Guide line id must not be empty");
+  if ((chart.guides || []).some((guide) => guide.id === id)) {
+    throw new Error(`Duplicate guide line id: ${id}`);
+  }
+  const guide = { id, color, boundary, fromRow, toRow };
+  if (!Array.isArray(chart.guides)) chart.guides = [];
+  chart.guides.push(guide);
+  chart.guides.sort((a, b) => (a.boundary - b.boundary) || (a.fromRow - b.fromRow) || (a.toRow - b.toRow));
+  touchChartMeta(chart);
+  return guide;
+}
+
+/** Remove one guide line by id. Returns true when something was removed. */
+export function removeGuide(chart, id) {
+  const index = (chart.guides || []).findIndex((guide) => guide.id === id);
+  if (index === -1) return false;
+  chart.guides.splice(index, 1);
+  touchChartMeta(chart);
+  return true;
+}
+
+/** Remove all guide lines. Returns true when the chart changed. */
+export function clearGuides(chart) {
+  if (!Array.isArray(chart.guides) || chart.guides.length === 0) return false;
+  chart.guides = [];
+  touchChartMeta(chart);
+  return true;
+}
+
+/** Guide lines on one boundary that overlap a row range. */
+export function guidesOverlapping(chart, boundary, fromRow, toRow) {
+  return (chart.guides || []).filter((guide) => (
+    guide.boundary === boundary && guide.fromRow <= toRow && guide.toRow >= fromRow
+  ));
 }
 
 /** Find the group that covers a cell, if any. */
@@ -524,6 +611,11 @@ export function resizeChart(chart, width, height) {
   chart.rows = nextRows;
   chart.colors = nextColors;
   chart.groups = keptGroups;
+  // Guide lines are cosmetic: a line outside the new grid is dropped, a line
+  // that reaches past the new top is shortened instead.
+  chart.guides = (chart.guides || [])
+    .filter((guide) => guide.boundary >= 1 && guide.boundary < width && guide.fromRow <= height)
+    .map((guide) => (guide.toRow > height ? { ...guide, toRow: height } : guide));
   chart.options.markers = (chart.options.markers || []).filter((marker) => marker < width);
   clampRepeat(chart);
   touchChartMeta(chart);
@@ -540,6 +632,14 @@ export function insertRow(chart, row, side = "above") {
   chart.height += 1;
   for (const group of chart.groups) {
     if (group.row > index) group.row += 1;
+  }
+  for (const guide of chart.guides || []) {
+    if (index < guide.fromRow) {
+      guide.fromRow += 1;
+      guide.toRow += 1;
+    } else if (index < guide.toRow) {
+      guide.toRow += 1;
+    }
   }
   touchChartMeta(chart);
   return index + 1;
@@ -561,6 +661,17 @@ export function deleteRow(chart, row) {
     if (group.row > row) group.row -= 1;
     return true;
   });
+  chart.guides = (chart.guides || []).filter((guide) => {
+    if (row < guide.fromRow) {
+      guide.fromRow -= 1;
+      guide.toRow -= 1;
+      return true;
+    }
+    if (row > guide.toRow) return true;
+    if (guide.fromRow === guide.toRow) return false;
+    guide.toRow -= 1;
+    return true;
+  });
   touchChartMeta(chart);
   return removed;
 }
@@ -573,6 +684,10 @@ export function insertColumn(chart, col, side = "left") {
   for (const row of chart.rows) row.splice(index, 0, null);
   for (const row of chart.colors) row.splice(index, 0, null);
   chart.width += 1;
+  for (const guide of chart.guides || []) {
+    if (guide.boundary > index) guide.boundary += 1;
+  }
+  chart.guides = (chart.guides || []).filter((guide) => guide.boundary >= 1 && guide.boundary < chart.width);
   chart.options.markers = (chart.options.markers || [])
     .map((marker) => (marker >= index ? marker + 1 : marker))
     .filter((marker) => marker < chart.width);
@@ -602,6 +717,10 @@ export function deleteColumn(chart, col) {
   for (const row of chart.rows) row.splice(index, 1);
   for (const row of chart.colors) row.splice(index, 1);
   chart.width -= 1;
+  for (const guide of chart.guides || []) {
+    if (guide.boundary > index) guide.boundary -= 1;
+  }
+  chart.guides = (chart.guides || []).filter((guide) => guide.boundary >= 1 && guide.boundary < chart.width);
   chart.options.markers = (chart.options.markers || [])
     .map((marker) => {
       if (marker <= index) return marker;
@@ -663,6 +782,9 @@ export function mirrorHorizontal(chart) {
   chart.options.markers = (chart.options.markers || [])
     .map((marker) => chart.width - marker)
     .sort((a, b) => a - b);
+  chart.guides = (chart.guides || [])
+    .map((guide) => ({ ...guide, boundary: chart.width - guide.boundary }))
+    .filter((guide) => guide.boundary >= 1 && guide.boundary < chart.width);
   const repeat = chart.options.repeat;
   if (repeat) {
     chart.options.repeat = {
@@ -679,6 +801,11 @@ export function mirrorVertical(chart) {
   chart.rows = chart.rows.slice().reverse();
   chart.colors = chart.colors.slice().reverse();
   chart.groups = chart.groups.map((group) => ({ ...group, row: chart.height - group.row + 1 }));
+  chart.guides = (chart.guides || []).map((guide) => ({
+    ...guide,
+    fromRow: chart.height - guide.toRow + 1,
+    toRow: chart.height - guide.fromRow + 1
+  }));
   touchChartMeta(chart);
 }
 

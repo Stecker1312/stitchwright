@@ -26,6 +26,7 @@ const REQUIRED = [
   "src/version.js",
   "src/core/chart.js",
   "src/core/color.js",
+  "src/core/guides.js",
   "src/core/i18n.js",
   "src/core/legend.js",
   "src/core/render-canvas.js",

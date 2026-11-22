@@ -34,6 +34,9 @@ command-line tool.
 - Your own cables and labelled groups stay in a local library, so they can be
   placed again with one click; groups can carry their own legend note
 - Stitch markers as a drawing guide: one at a time or every N stitches
+- Coloured guide lines between stitches: click a boundary for a full-height
+  line or drag for a shorter one; cosmetic reading aids, not part of the
+  knitting key
 - Drag a rectangle with the Select tool, then copy and paste it with
   Ctrl+C / Ctrl+V; colours and groups come along
 - Drag or Shift-click row and column numbers to select a range and delete it
@@ -69,7 +72,7 @@ Then open <http://localhost:8080>. If you do not want to run a local server,
 use the live demo.
 
 ```bash
-npm test      # 130 Node tests
+npm test      # 148 Node tests
 npm run check # tests and syntax checks
 ```
 

@@ -19,7 +19,8 @@ const DEFAULT_SETTINGS = {
   theme: "system",
   units: "metric",
   autosave: true,
-  density: "comfortable"
+  density: "comfortable",
+  guideColor: "#1a1a1a"
 };
 
 let dbPromise = null;

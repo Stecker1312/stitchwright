@@ -156,6 +156,45 @@
         "additionalProperties": true
       }
     },
+    "guides": {
+      "type": "array",
+      "maxItems": 10000,
+      "description": "Cosmetic guide lines between stitches. Not knitted and not in the legend.",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "color",
+          "boundary",
+          "fromRow",
+          "toRow"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "color": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "boundary": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Number of picture columns left of the line; 1 … width-1."
+          },
+          "fromRow": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "toRow": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
     "palette": {
       "type": "array",
       "maxItems": 256,

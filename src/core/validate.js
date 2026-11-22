@@ -10,15 +10,16 @@
  */
 
 import { hasSymbol, isGroupSymbol, symbolSpan } from "./symbols.js";
-import { MAX_SIZE, MIN_SIZE, SCHEMA } from "./chart.js";
+import { isGuideColor, MAX_SIZE, MIN_SIZE, SCHEMA } from "./chart.js";
 
 const HEX = /^#[0-9a-f]{6}$/i;
 const PAPERS = new Set(["A4", "A3", "Letter", "auto"]);
 const KNOWN_TOP_LEVEL = new Set([
   "schema", "id", "title", "width", "height", "rows", "colors", "groups",
-  "palette", "options", "meta"
+  "guides", "palette", "options", "meta"
 ]);
 const MAX_GROUPS = 10000;
+const MAX_GUIDES = 10000;
 const MAX_PALETTE = 256;
 const MAX_DIAGNOSTICS = 500;
 
@@ -298,6 +299,47 @@ export function validateChart(chart, { strict = false, raw = false } = {}) {
         if (Array.isArray(chart.rows?.[group.row - 1]) && chart.rows[group.row - 1][col - 1] !== null) {
           error("E_GROUP_CELL", path, `Cell ${group.row}:${col} under the group is not empty`);
         }
+      }
+    });
+  }
+
+  // Guide lines. They are cosmetic, but their coordinates still need to be
+  // valid so every renderer can draw them without guessing.
+  const guides = chart.guides;
+  if (guides === undefined && raw) {
+    // Normalization fills an empty list.
+  } else if (!Array.isArray(guides)) {
+    error("E_GUIDES", "guides", "guides must be an array");
+  } else if (guides.length > MAX_GUIDES) {
+    error("E_GUIDES_LENGTH", "guides", `guides has more than ${MAX_GUIDES} entries`);
+  } else {
+    const guideIds = new Set();
+    guides.forEach((guide, index) => {
+      const path = `guides[${index}]`;
+      if (!guide || typeof guide !== "object" || Array.isArray(guide)) {
+        error("E_GUIDE", path, "Guide line must be an object");
+        return;
+      }
+      if (typeof guide.id !== "string" || !guide.id) {
+        error("E_GUIDE_ID", `${path}.id`, "Guide line id is missing");
+      } else if (guideIds.has(guide.id)) {
+        error("E_GUIDE_DUPLICATE", `${path}.id`, `Duplicate guide line id: ${guide.id}`);
+      } else {
+        guideIds.add(guide.id);
+      }
+      if (!isGuideColor(guide.color)) {
+        error("E_GUIDE_COLOR", `${path}.color`, "Guide line colour must use the form #rrggbb");
+      }
+      if (!isInteger(guide.boundary) || guide.boundary < 1 || (widthOk && guide.boundary >= width)) {
+        error("E_GUIDE_BOUNDARY", `${path}.boundary`, "Guide line must sit between two stitches inside the chart");
+      }
+      if (!isInteger(guide.fromRow) || guide.fromRow < 1 || (heightOk && guide.fromRow > height)) {
+        error("E_GUIDE_ROW", `${path}.fromRow`, "Guide line start row is outside the chart");
+      }
+      if (!isInteger(guide.toRow) || guide.toRow < 1 || (heightOk && guide.toRow > height)) {
+        error("E_GUIDE_ROW", `${path}.toRow`, "Guide line end row is outside the chart");
+      } else if (isInteger(guide.fromRow) && guide.toRow < guide.fromRow) {
+        error("E_GUIDE_RANGE", `${path}.toRow`, "Guide line end row must not be below its start row");
       }
     });
   }

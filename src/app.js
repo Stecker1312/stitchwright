@@ -9,6 +9,7 @@
 
 import {
   addGroup,
+  clearGuides,
   columnToStitch,
   copySelection,
   createChart,
@@ -439,6 +440,18 @@ function updateToolUI() {
     button.setAttribute("aria-pressed", String(active));
   });
   $("chart-canvas").dataset.tool = store.tool;
+  const guideOptions = $("guide-tool-options");
+  const guideTool = store.tool === "guide";
+  guideOptions.hidden = !guideTool;
+  if (guideTool) {
+    const colorInput = $("guide-color");
+    if (document.activeElement !== colorInput) colorInput.value = store.guideColor;
+    const count = (store.chart.guides || []).length;
+    $("guide-count").textContent = count
+      ? `${i18n.t("tool.guide.count", { count })} · `
+      : "";
+    $("btn-guide-clear").disabled = count === 0;
+  }
 }
 
 function updateZoomUI() {
@@ -778,6 +791,18 @@ function setupTools() {
       store.setTool(button.dataset.tool);
       $("chart-canvas").focus();
     });
+  });
+  $("guide-color").addEventListener("input", (event) => {
+    store.setGuideColor(event.target.value);
+    settings.guideColor = store.guideColor;
+    storage.saveSettings(settings);
+  });
+  $("btn-guide-clear").addEventListener("click", () => {
+    if (!(store.chart.guides || []).length) return;
+    store.edit("Clear guide lines", (chart) => {
+      clearGuides(chart);
+    });
+    $("chart-canvas").focus();
   });
   $("symbol-search").addEventListener("input", () => renderPalettePanel());
   $("palette").addEventListener("click", (event) => {
@@ -1273,9 +1298,11 @@ function setupDialogs() {
       theme: "system",
       units: "metric",
       autosave: true,
-      density: "comfortable"
+      density: "comfortable",
+      guideColor: "#1a1a1a"
     };
     storage.saveSettings(settings);
+    store.setGuideColor(settings.guideColor);
     await i18n.setLanguage(settings.language);
     applyTheme(settings.theme, { persist: false });
     populateLanguages();
@@ -1992,6 +2019,7 @@ function setupKeyboard() {
         deleteSelectedHeader();
         return;
       }
+      if (store.tool === "guide") return;
       store.begin("Erase");
       canvasView.eraseAt(store.cursor.row, store.cursor.col);
       store.commit();
@@ -2009,6 +2037,7 @@ function setupKeyboard() {
     if (lower === "p") { store.setTool("pencil"); $("chart-canvas").focus(); return; }
     if (lower === "e") { store.setTool("eraser"); $("chart-canvas").focus(); return; }
     if (lower === "h") { store.setTool("pan"); $("chart-canvas").focus(); return; }
+    if (lower === "l") { store.setTool("guide"); $("chart-canvas").focus(); return; }
     if (lower === "t") { openTableDialog(); return; }
     if (lower === "m") { if (event.shiftKey) mirrorV(); else mirrorH(); return; }
   });
@@ -2022,6 +2051,7 @@ function renderShortcuts() {
     ["P", i18n.t("shortcut.pencil")],
     ["E", i18n.t("shortcut.eraser")],
     ["H", i18n.t("shortcut.pan")],
+    ["L", i18n.t("shortcut.guide")],
     ["Ctrl+Z", i18n.t("shortcut.undo")],
     ["Ctrl+Shift+Z", i18n.t("shortcut.redo")],
     ["Ctrl+S", i18n.t("shortcut.save")],

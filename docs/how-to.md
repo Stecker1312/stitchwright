@@ -68,6 +68,9 @@ The legend gives the exact cable direction.
 - You can switch the legend off for the screen and on for export.
 - Optional **Stitch counts** put a small number at the first stitch of each run
   of equal stitches.
+- Choose the **Guide line** tool, pick a colour and click a stitch boundary for
+  a full-height line, or drag along it for a shorter line. Guide lines are
+  reading aids and are not in the legend.
 
 ## 7. Save and back up
 

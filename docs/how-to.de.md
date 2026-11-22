@@ -71,6 +71,9 @@ Die Legende nennt die genaue Zopfrichtung.
 - Du kannst die Legende am Bildschirm ausblenden und für den Export einblenden.
 - Die optionalen **Maschenzahlen** setzen eine kleine Zahl an den Anfang jeder
   Folge gleicher Maschen.
+- Wähle das Werkzeug **Hilfslinie**, eine Farbe und klicke auf eine
+  Maschengrenze für eine Linie über die ganze Höhe; Ziehen begrenzt sie auf
+  Reihen. Hilfslinien sind Lesehilfen und stehen nicht in der Legende.
 
 ## 7. Speichern und sichern
 

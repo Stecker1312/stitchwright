@@ -7,7 +7,13 @@
  * can only confirm the exact revision it wrote.
  */
 
-import { cloneChart, touchChartMeta, visibleRows } from "../core/chart.js";
+import {
+  cloneChart,
+  DEFAULT_GUIDE_COLOR,
+  isGuideColor,
+  touchChartMeta,
+  visibleRows
+} from "../core/chart.js";
 
 const HISTORY_BUDGET_BYTES = 32 * 1024 * 1024;
 const MAX_HISTORY = 80;
@@ -19,6 +25,7 @@ export class Store {
     this.tool = "pencil";
     this.symbol = { id: "k" };
     this.color = null;
+    this.guideColor = isGuideColor(settings.guideColor) ? settings.guideColor : DEFAULT_GUIDE_COLOR;
     this.selection = null;
     this.selectedGroupId = null;
     this.headerSelection = null;
@@ -237,6 +244,14 @@ export class Store {
     if (this.color === next) return;
     this.color = next;
     this.emit("color");
+  }
+
+  /** Choose the colour for new guide lines. Existing lines keep their colour. */
+  setGuideColor(color) {
+    if (!isGuideColor(color)) return;
+    if (this.guideColor === color) return;
+    this.guideColor = color;
+    this.emit("tool");
   }
 
   setSelection(selection) {

@@ -531,3 +531,40 @@ nennt vorne/hinten und die Maschen auf der Hilfsnadel ausdrücklich.
 - Commit `6167c68`, Tag `v0.6.1-alpha.1`, Push und GitHub Release.
 - GitHub Pages gebaut; `src/version.js`, `about.html` und die Legende im
   Beispiel-SVG live geprüft.
+
+## 2026-11-22 – Farbige Hilfslinien zwischen Maschen
+
+**Beobachtet:** Daniel markiert in Strickschriften Grenzen zwischen zwei
+Maschen, zum Beispiel die Mitte zwischen Masche 13 und 14, um symmetrische
+oder geteilte Muster leichter zu lesen. Die vorhandenen Maschenmarker sind
+dafür zu starr: immer gestrichelt, immer violett und immer über die ganze
+Höhe. Die Linie soll eine eigene Farbe haben und per Ziehen über den gewählten
+Maschengrenzen entstehen. Sie ist ausdrücklich nur eine Lesehilfe.
+
+**Getan:**
+
+- Neues optionales Chart-Feld `guides` (D012): `{id, color, boundary,
+  fromRow, toRow}`. `boundary` zählt Bildspalten von links, `fromRow`/`toRow`
+  sind inklusiv. Die Farbe ist ein eigener Hex-Wert, keine Paletten-ID.
+- Modell: Anlegen, Entfernen, Leeren, Überlappungssuche; Reihen-/Spalten-
+  Einfügen und -Löschen, Verkleinern sowie Spiegeln verschieben oder kürzen
+  die Linien mit dem Raster.
+- Canvas und SVG zeichnen Hilfslinien oberhalb der Maschen, damit Zöpfe sie
+  nicht verdecken. Die Linienbreite skaliert mit der Zelle, nicht mit dem
+  Viewport.
+- Editor: neues Werkzeug „Hilfslinie“ (Taste L) mit Farbwähler, Linienzähler
+  und „Linien löschen“ im Werkzeugpanel. Klick setzt eine Linie über die ganze
+  Höhe, Ziehen begrenzt sie auf Reihen; Klick oder Rechtsklick auf eine
+  bestehende Linie entfernt sie. Die zuletzt gewählte Farbe bleibt in den
+  Einstellungen.
+- Schema, Format-Dokumentation (`docs/format.md`), README, Projektseite,
+  How-tos und Hilfe erklären die Hilfslinien. Die Legende bleibt unverändert.
+- 13 neue Node-Tests für Modell, Geometrie, Validierung und SVG; insgesamt
+  148 Tests und `npm run check` grün.
+- Browser: 42 × 26-Chart, rote Linie über die ganze Höhe, grüne Teil-Linie
+  über Ziehen, Klick- und Rechtsklick-Löschen, Alle-löschen, Rückgängig,
+  Autosave und Neuladen geprüft; SVG-Export enthält die Linien.
+
+**Offen:** Ob Hilfslinien auch waagerecht oder als Treppenlinie gebraucht
+werden, entscheidet Daniel nach einer echten Strickschrift. Das aktuelle
+Modell kann nur senkrechte Linien auf Maschengrenzen.

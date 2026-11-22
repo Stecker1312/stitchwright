@@ -42,6 +42,7 @@
     <symbol id="i-file-plus" viewBox="0 0 24 24"><path d="M14 3H5v18h14V8l-5-5z"/><path d="M14 3v5h5"/><path d="M12 12v5M9.5 14.5h5"/></symbol>
     <symbol id="i-cable" viewBox="0 0 24 24"><path d="M4 18c0-8 16-4 16-12"/><path d="M4 6c0 8 16 4 16 12"/></symbol>
     <symbol id="i-marker" viewBox="0 0 24 24"><path d="M12 4v16"/><path d="M12 6h6l-2 3 2 3h-6"/></symbol>
+    <symbol id="i-guide" viewBox="0 0 24 24"><path d="M8 4h8"/><path d="M12 4v16"/><path d="M8 20h8"/></symbol>
     <symbol id="i-color" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l5 5L20 6"/></symbol>
   </svg>
@@ -115,6 +116,19 @@
             <button class="tool-button" data-tool="marker" type="button" data-i18n-title="tool.marker.hint" data-i18n-aria-label="tool.marker" title="Place stitch markers">
               <svg class="icon"><use href="#i-marker"/></svg>
             </button>
+            <button class="tool-button" data-tool="guide" type="button" data-i18n-title="tool.guide.hint" data-i18n-aria-label="tool.guide" title="Guide line">
+              <svg class="icon"><use href="#i-guide"/></svg>
+            </button>
+          </div>
+          <div class="guide-tool-options" id="guide-tool-options" hidden>
+            <div class="tool-options">
+              <label class="field compact">
+                <span class="field-label" data-i18n="tool.guide.color">Line colour</span>
+                <input id="guide-color" type="color" value="#1a1a1a">
+              </label>
+              <button class="button subtle small" id="btn-guide-clear" type="button" data-i18n="tool.guide.clear">Clear lines</button>
+            </div>
+            <p class="hint"><span id="guide-count"></span><span data-i18n="tool.guide.hint"></span></p>
           </div>
         </div>
 
@@ -471,6 +485,7 @@
           <h3 data-i18n="dialog.help.rows">Wrong-side rows</h3>
           <p data-i18n="help.rows"></p>
           <p data-i18n="help.markers"></p>
+          <p data-i18n="help.guides"></p>
           <h3 data-i18n="dialog.help.colors">Colours</h3>
           <p data-i18n="help.colors"></p>
         </section>

@@ -8,15 +8,19 @@
 
 import {
   addGroup,
+  addGuide,
   eraseCell,
   getCell,
   getColor,
   groupAt,
+  guidesOverlapping,
   paintCell,
+  removeGuide,
   setColor,
   toggleMarker,
   visibleRows
 } from "../core/chart.js";
+import { findGuideAt } from "../core/guides.js";
 import { isGroupSymbol, symbolSpan } from "../core/symbols.js";
 import { drawChart } from "../core/render-canvas.js";
 import {
@@ -69,6 +73,7 @@ export class CanvasView {
     this.ctx = canvas.getContext("2d", { alpha: false });
     this.pointers = new Map();
     this.gesture = null;
+    this.guidePreview = null;
     this.frame = null;
     this.dpr = 1;
     this.width = 1;
@@ -138,7 +143,8 @@ export class CanvasView {
         hover: this.store.hover,
         cursor: this.store.cursor,
         selectedGroupId: this.store.selectedGroupId,
-        headerSelection: this.store.headerSelection
+        headerSelection: this.store.headerSelection,
+        guidePreview: this.guidePreview
       });
     });
   }
@@ -165,10 +171,18 @@ export class CanvasView {
     if (event.button === 2) {
       // Right click is a quick eraser, even when the pencil is active.
       const point = this.localPoint(event);
+      event.preventDefault();
+      if (this.store.tool === "guide") {
+        const target = this.guideTargetAt(point);
+        if (target) {
+          const guide = findGuideAt(this.store.chart, target.boundary, target.row);
+          if (guide) this.removeGuideById(guide.id);
+        }
+        return;
+      }
       const cell = cellAt(this.store.chart, this.store.view, point.x, point.y);
       if (!cell) return;
       this.store.setCursor(cell);
-      event.preventDefault();
       if (this.store.tool === "marker") {
         this.toggleMarkerAt(cell.col);
         return;
@@ -216,6 +230,22 @@ export class CanvasView {
       };
       return;
     }
+    if (this.store.tool === "guide") {
+      const target = this.guideTargetAt(point);
+      if (!target) return;
+      const existing = findGuideAt(this.store.chart, target.boundary, target.row);
+      this.gesture = {
+        type: "guide",
+        boundary: target.boundary,
+        anchorRow: target.row,
+        currentRow: target.row,
+        startY: point.y,
+        removeId: existing?.id || null
+      };
+      this.store.setCursor({ row: target.row, col: target.boundary });
+      this.canvas.style.cursor = "col-resize";
+      return;
+    }
     if (!cell) return;
     this.store.setCursor(cell);
 
@@ -256,10 +286,75 @@ export class CanvasView {
   }
 
   cancelGesture() {
-    if (this.gesture && (this.gesture.type === "paint" || this.gesture.type === "erase")) {
+    if (this.gesture?.type === "paint" || this.gesture?.type === "erase") {
       this.store.cancel();
     }
+    if (this.gesture?.type === "guide") {
+      this.guidePreview = null;
+      this.render();
+    }
     this.gesture = null;
+  }
+
+  /**
+   * Snap a pointer to the nearest stitch boundary and its row. A guide line
+   * only exists between two columns, never on the outer border.
+   */
+  guideTargetAt(point) {
+    const chart = this.store.chart;
+    const view = this.store.view;
+    const rows = visibleRows(chart);
+    const chartW = chart.width * view.scale;
+    const chartH = rows.length * view.scale;
+    if (point.x < view.offsetX || point.x > view.offsetX + chartW
+      || point.y < view.offsetY || point.y > view.offsetY + chartH) {
+      return null;
+    }
+    const boundary = Math.round((point.x - view.offsetX) / view.scale);
+    if (boundary < 1 || boundary >= chart.width) return null;
+    const row = headerIndexAt(chart, view, "row", point.x, point.y);
+    return row === null ? null : { boundary, row };
+  }
+
+  removeGuideById(id) {
+    try {
+      this.store.edit("Remove guide line", (chart) => removeGuide(chart, id));
+    } catch (error) {
+      this.onError(error);
+    }
+  }
+
+  /** Commit the current guide gesture: remove, add a span, or add full height. */
+  finishGuideGesture() {
+    const gesture = this.gesture;
+    this.gesture = null;
+    this.guidePreview = null;
+    if (!gesture) return;
+    const color = this.store.guideColor;
+    try {
+      if (gesture.currentRow !== gesture.anchorRow) {
+        const fromRow = Math.min(gesture.anchorRow, gesture.currentRow);
+        const toRow = Math.max(gesture.anchorRow, gesture.currentRow);
+        this.store.edit("Guide line", (chart) => {
+          for (const guide of guidesOverlapping(chart, gesture.boundary, fromRow, toRow)) {
+            removeGuide(chart, guide.id);
+          }
+          addGuide(chart, { boundary: gesture.boundary, fromRow, toRow, color });
+        });
+      } else if (gesture.removeId) {
+        this.removeGuideById(gesture.removeId);
+      } else {
+        this.store.edit("Guide line", (chart) => {
+          for (const guide of chart.guides.filter((item) => item.boundary === gesture.boundary)) {
+            removeGuide(chart, guide.id);
+          }
+          addGuide(chart, { boundary: gesture.boundary, fromRow: 1, toRow: chart.height, color });
+        });
+      }
+    } catch (error) {
+      this.onError(error);
+    }
+    this.canvas.style.cursor = "col-resize";
   }
 
   pointerMove(event) {
@@ -294,9 +389,33 @@ export class CanvasView {
       return;
     }
 
+    if (this.gesture?.type === "guide") {
+      const dragged = Math.abs(point.y - this.gesture.startY) >= this.store.view.scale * 0.35;
+      const row = dragged
+        ? headerIndexAt(this.store.chart, this.store.view, "row", point.x, point.y)
+        : this.gesture.anchorRow;
+      if (row !== null) {
+        this.gesture.currentRow = row;
+        this.guidePreview = row === this.gesture.anchorRow
+          ? null
+          : {
+            boundary: this.gesture.boundary,
+            fromRow: Math.min(this.gesture.anchorRow, row),
+            toRow: Math.max(this.gesture.anchorRow, row),
+            color: this.store.guideColor
+          };
+        this.render();
+      }
+      this.store.setHover(null);
+      this.canvas.style.cursor = "col-resize";
+      return;
+    }
+
     const header = headerAt(this.store.chart, this.store.view, point.x, point.y);
     if (!this.gesture) {
-      this.canvas.style.cursor = header ? "pointer" : "";
+      this.canvas.style.cursor = header
+        ? "pointer"
+        : (this.store.tool === "guide" ? "col-resize" : "");
     }
 
     const cell = cellAt(this.store.chart, this.store.view, point.x, point.y);
@@ -344,6 +463,13 @@ export class CanvasView {
     }
     if (this.gesture?.type === "paint" || this.gesture?.type === "erase") {
       this.commitGesture();
+    } else if (this.gesture?.type === "guide") {
+      const point = this.localPoint(event);
+      if (Math.abs(point.y - this.gesture.startY) >= this.store.view.scale * 0.35) {
+        const row = headerIndexAt(this.store.chart, this.store.view, "row", point.x, point.y);
+        if (row !== null) this.gesture.currentRow = row;
+      }
+      this.finishGuideGesture();
     } else if (this.gesture?.type === "select") {
       if (!this.gesture.moved) {
         const group = groupAt(this.store.chart, this.gesture.anchor.row, this.gesture.anchor.col);
@@ -469,6 +595,7 @@ export class CanvasView {
 
   /** Paint or erase at the keyboard cursor. */
   paintCursor() {
+    if (this.store.tool === "guide") return;
     if (this.store.tool === "marker") {
       this.toggleMarkerAt(this.store.cursor.col);
       return;
