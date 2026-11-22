@@ -38,6 +38,7 @@ import {
 import { createBrowserI18n, HTML_LANGUAGE, LANGUAGE_META } from "./core/i18n.js";
 import { renderSvg } from "./core/render-svg.js";
 import { DARK_THEME, LIGHT_THEME } from "./core/render-canvas.js";
+import { scrollbarMetrics, viewportFrame } from "./core/viewport.js";
 import { MM_PER_INCH } from "./core/units.js";
 import { groupLegend, isGroupSymbol, symbolName } from "./core/symbols.js";
 import { hasErrors, validateChart } from "./core/validate.js";
@@ -95,8 +96,8 @@ let customCables = [];
 let lastCableDraft = { left: 2, right: 2, direction: "front" };
 
 const scrollState = {
-  x: { max: 0, track: 0, thumb: 0 },
-  y: { max: 0, track: 0, thumb: 0 }
+  x: { max: 0, track: 0, thumb: 0, start: 0 },
+  y: { max: 0, track: 0, thumb: 0, start: 0 }
 };
 let scrollDrag = null;
 
@@ -632,7 +633,7 @@ function currentScroll(axis) {
   const state = scrollState[axis];
   if (!state) return 0;
   const offset = axis === "x" ? store.view.offsetX : store.view.offsetY;
-  return Math.min(state.max, Math.max(0, -offset));
+  return Math.min(state.max, Math.max(0, state.start - offset));
 }
 
 function setScroll(axis, value) {
@@ -640,20 +641,22 @@ function setScroll(axis, value) {
   if (!state || state.max <= 0) return;
   const next = Math.min(state.max, Math.max(0, value));
   const view = { ...store.view };
-  if (axis === "x") view.offsetX = -next;
-  else view.offsetY = -next;
+  if (axis === "x") view.offsetX = state.start - next;
+  else view.offsetY = state.start - next;
   store.setView(view);
 }
 
 function updateCanvasScrollbars() {
   if (!store || !canvasView) return;
   const rows = visibleRows(store.chart).length;
+  const frame = viewportFrame(canvasView.width, canvasView.height);
   updateScrollbar(
     "scroll-h",
     "scroll-h-thumb",
     "x",
     store.chart.width * store.view.scale,
-    canvasView.width,
+    Math.max(1, frame.right - frame.left),
+    frame.left,
     store.view.offsetX
   );
   updateScrollbar(
@@ -661,21 +664,23 @@ function updateCanvasScrollbars() {
     "scroll-v-thumb",
     "y",
     rows * store.view.scale,
-    canvasView.height,
+    Math.max(1, frame.bottom - frame.top),
+    frame.top,
     store.view.offsetY
   );
 }
 
-function updateScrollbar(trackId, thumbId, axis, chartSize, viewSize, offset) {
+function updateScrollbar(trackId, thumbId, axis, chartSize, contentSize, contentStart, offset) {
   const track = $(trackId);
   const thumb = $(thumbId);
   if (!track || !thumb) return;
 
-  const max = Math.max(0, chartSize - viewSize);
-  const visible = max > 1;
+  const metrics = scrollbarMetrics(chartSize, contentSize, contentStart, offset);
+  const { max, scroll } = metrics;
+  const visible = metrics.visible;
   track.hidden = !visible;
   if (!visible) {
-    scrollState[axis] = { max: 0, track: 0, thumb: 0 };
+    scrollState[axis] = { max: 0, track: 0, thumb: 0, start: metrics.start };
     track.setAttribute("aria-valuemax", "0");
     track.setAttribute("aria-valuenow", "0");
     return;
@@ -683,9 +688,8 @@ function updateScrollbar(trackId, thumbId, axis, chartSize, viewSize, offset) {
 
   const trackLength = axis === "x" ? track.clientWidth : track.clientHeight;
   const thumbLength = trackLength > 0
-    ? Math.max(22, Math.min(trackLength, (viewSize / chartSize) * trackLength))
+    ? Math.max(22, Math.min(trackLength, (contentSize / chartSize) * trackLength))
     : 0;
-  const scroll = Math.min(max, Math.max(0, -offset));
   const travel = Math.max(0, trackLength - thumbLength);
   const position = max > 0 ? (scroll / max) * travel : 0;
 
@@ -701,7 +705,7 @@ function updateScrollbar(trackId, thumbId, axis, chartSize, viewSize, offset) {
 
   track.setAttribute("aria-valuemax", String(Math.round(max)));
   track.setAttribute("aria-valuenow", String(Math.round(scroll)));
-  scrollState[axis] = { max, track: trackLength, thumb: thumbLength };
+  scrollState[axis] = { max, track: trackLength, thumb: thumbLength, start: metrics.start };
 }
 
 function updateSaveIndicator() {

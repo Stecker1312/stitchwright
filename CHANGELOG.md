@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.6.4-alpha.1 – 22 November 2026
+
+Scroll past the pattern edges.
+
+### Fixed
+
+- The scrollbars now allow 40 px of overscroll at both ends. When zoomed in,
+  the first and last stitch can be moved fully into view with background
+  between the pattern and the frame instead of being cut by the frame.
+- Scrollbar range and thumb size are based on the inner drawing area, not the
+  full canvas, so the numbers and frame stay reachable at every zoom level.
+
+### Checks
+
+- 154 Node tests green.
+- Browser check: example chart at 286 % zoom; scrollbar Home shows the first
+  stitch and the left pattern edge clear of the frame, End shows the last
+  stitch and the right edge clear of the frame.
+
 ## 0.6.3-alpha.1 – 22 November 2026
 
 A permanent background frame around the drawing area.

@@ -689,3 +689,24 @@ verfügbar sein, die Daniel benutzt.
 - GitHub Pages gebaut; `src/version.js`, `sw.js` und der Badge live geprüft.
   Die gehostete App zeigt bei 286 % Zoom den festen Rahmen an allen vier
   Seiten; nach dem Leeren des alten Caches wurde der neue Stand geladen.
+
+## 2026-11-22 – Scrollbalken mit Überweg über die Musterkante
+
+**Beobachtet:** Daniel hat bei starkem Zoom an die Musterkante gescrollt. Die
+erste Masche lag unter dem neuen Rahmen und war abgeschnitten. Der
+Scrollbalken endete bisher genau an der Canvas-Kante und kannte den Rahmen
+nicht.
+
+**Getan:**
+
+- Neuer Überweg `VIEWPORT_PAN_OVERSCROLL = 40`: Der Scrollbalken reicht an
+  beiden Enden 40 px über das Muster hinaus. Bei maximalem Scrollstand steht
+  die erste bzw. letzte Masche vollständig mit Hintergrund vor dem Rahmen.
+- `scrollbarMetrics` berechnet Bereich und Startposition aus der Innenfläche
+  des Rahmens. `currentScroll`/`setScroll` arbeiten mit dieser Startposition,
+  nicht mehr mit `-offset`.
+- Die Scrollbalken erscheinen weiterhin nur, wenn das Muster größer als die
+  Innenfläche ist; beim Einpassen bleiben sie verborgen.
+- Test für den Überweg und die Randstände; insgesamt 154 Tests grün.
+- Browser: 32 × 20-Beispiel bei 286 % Zoom. Home zeigt die linke Musterkante
+  vollständig, End die rechte; dazwischen bleibt der Rahmen sichtbar.

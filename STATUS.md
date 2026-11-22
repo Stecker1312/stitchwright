@@ -1,7 +1,7 @@
 # Status
 
 - Stand: 2026-11-22
-- Version: **0.6.3-alpha.1**
+- Version: **0.6.4-alpha.1**
 - Phase: Öffentliche Vorabversion (Alpha)
 - Sichtbarkeit: öffentlich, GitHub Pages:
   <https://stecker1312.github.io/stitchwright/>
@@ -44,6 +44,8 @@
 - Fester Hintergrundrahmen um die Zeichenfläche: Auch bei maximalem Zoom
   bleiben an allen vier Seiten Rand und Hintergrund sichtbar; die
   Nummernspalten liegen in diesem Rahmen, nicht auf den Maschen
+- Scrollbalken erlauben an beiden Enden 40 px Überweg; die erste und letzte
+  Masche lassen sich vollständig mit Hintergrund vor den Rahmen schieben
 - Maschenmarker als gestrichelte Zeichenhilfe, einzeln oder alle N Maschen;
   nicht Teil der Strickanleitung
 - Bereiche auswählen, kopieren und einfügen, inklusive Farben und Gruppen
@@ -69,9 +71,9 @@
 - Englisch (britisch) als Standardsprache in Oberfläche, Startseite,
   Validierungsmeldungen, CLI, Manifest und README; Beispiel-Charts englisch
 - PWA mit Service Worker, offline getestet
-- 153 Node-Tests grün; Browserprüfung mit Chromium/Playwright
+- 154 Node-Tests grün; Browserprüfung mit Chromium/Playwright
 - Englische Projektseite `about.html` mit Browser-first-Schnellstart, Preisvergleich, Clear-Symbolpack und Planned-Liste
-- Englischer Screenshot, Version 0.6.3 (beidseitige Randnummern)
+- Englischer Screenshot, Version 0.6.4 (beidseitige Randnummern)
 - Audit-Pakete A, B und C umgesetzt: Dokument-/Speichersicherheit, valide
   UI-Kommandos, Rohvalidierung, sichere Symbol-Lookups und CLI-Vertrag;
   zentrale Teile von D, E und F folgen mit den verbleibenden P2-Punkten
@@ -127,7 +129,7 @@
 
 ## Tests
 
-`npm test`: 153 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
+`npm test`: 154 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
 Einheiten, Viewport, Hilfslinien, CLI, Performance).
 `npm run check`: Syntax- und JSON-Prüfung plus Tests grün.
 Browser: Zeichnen, Farben, Zöpfe, Rückreihen, Undo, Export, Scrollbalken,
@@ -143,6 +145,9 @@ Zoom oben und unten angeheftet, Klick auf die obere Nummer wählt Spalte 24,
 Klick auf die untere Spalte 21.
 Rahmen: bei 286 % Zoom auf allen vier Seiten sichtbar; Klick in den rechten
 Rahmen wählt Reihe 12 und malt keine Zelle. Hell und dunkel geprüft.
+Scrollbalken: bei 286 % Zoom zeigt Home die erste Masche vollständig mit
+Rand, End die letzte Masche vollständig mit Rand; 40 px Überweg an beiden
+Seiten.
 Hilfslinien: Linie über die ganze Höhe, Teil-Linie über Ziehen, zwei Farben,
 Klick- und Rechtsklick-Löschen, Alle-löschen, Rückgängig sowie Autosave und
 Neuladen mit 42 × 26-Chart geprüft.

@@ -18,6 +18,11 @@ export const MAX_SCALE = 80;
  */
 export const VIEWPORT_MARGIN_X = 44;
 export const VIEWPORT_MARGIN_Y = 28;
+/**
+ * Extra room beyond the pattern at each end of the scrollbar. At high zoom
+ * this keeps the first or last stitch fully visible with background around it.
+ */
+export const VIEWPORT_PAN_OVERSCROLL = 40;
 
 /** Interactive width of the row-number strips beside the paper. */
 const ROW_NUMBER_HIT_WIDTH = 44;
@@ -27,13 +32,27 @@ const COLUMN_NUMBER_HIT_HEIGHT = 28;
 const ROW_NUMBER_GAP = 7;
 /** Distance from the paper edge to the centre of a column number. */
 const COLUMN_NUMBER_GAP = 12;
-/** Keep digits away from the inner edge of the frame. */
-const ROW_NUMBER_EDGE = 6;
 /**
  * The vertical scrollbar overlays the right side of the frame. Pinned row
  * numbers leave room for it so the digits never sit underneath the thumb.
  */
 const SCROLLBAR_SPACE = 18;
+
+/**
+ * Scrollbar range for one axis.
+ *
+ * The thumb moves over the paper plus a little overscroll at both ends. That
+ * lets the user push the pattern inward far enough to see its first or last
+ * stitch completely, with background between the stitch and the frame.
+ */
+export function scrollbarMetrics(chartSize, contentSize, contentStart, offset) {
+  const max = chartSize > contentSize
+    ? chartSize - contentSize + VIEWPORT_PAN_OVERSCROLL * 2
+    : 0;
+  const start = contentStart + VIEWPORT_PAN_OVERSCROLL;
+  const scroll = Math.min(max, Math.max(0, start - offset));
+  return { max, start, scroll, visible: max > 0 };
+}
 
 /**
  * Inner drawing area and the surrounding frame. Tiny canvases shrink the

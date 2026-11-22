@@ -9,8 +9,10 @@ import {
   headerAt,
   zoomAt,
   panBy,
+  scrollbarMetrics,
   VIEWPORT_MARGIN_X,
   VIEWPORT_MARGIN_Y,
+  VIEWPORT_PAN_OVERSCROLL,
   visibleColumns
 } from "../src/core/viewport.js";
 
@@ -80,6 +82,22 @@ test("the drawing frame rejects cells and keeps a background margin", () => {
   const fitted = fitView(chart, 400, 400);
   assert.ok(fitted.offsetX >= VIEWPORT_MARGIN_X);
   assert.ok(fitted.offsetY >= VIEWPORT_MARGIN_Y);
+});
+
+test("scrollbar keeps a little overscroll at both pattern edges", () => {
+  const contentStart = VIEWPORT_MARGIN_X;
+  const contentSize = 800;
+  assert.equal(scrollbarMetrics(700, contentSize, contentStart, 0).visible, false);
+
+  const left = scrollbarMetrics(1000, contentSize, contentStart, contentStart + VIEWPORT_PAN_OVERSCROLL);
+  assert.equal(left.max, 1000 - contentSize + VIEWPORT_PAN_OVERSCROLL * 2);
+  assert.equal(left.scroll, 0);
+
+  const rightOffset = left.start - left.max;
+  const right = scrollbarMetrics(1000, contentSize, contentStart, rightOffset);
+  assert.equal(right.scroll, right.max);
+  // First/last stitch plus background stays clear of the frame.
+  assert.equal(rightOffset + 1000, contentStart + contentSize - VIEWPORT_PAN_OVERSCROLL);
 });
 
 test("row numbers pin to the viewport when the chart is wider than the screen", () => {
