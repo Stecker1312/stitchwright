@@ -6,7 +6,7 @@
  * print. It uses no external fonts, images or styles: a single file is enough.
  */
 
-import { getCell, getColor, groupSpan, visibleRows } from "./chart.js";
+import { getCell, getColor, groupSpan, rowNumberOnRight, visibleRows } from "./chart.js";
 import { backgroundFor, contrastColor, groupBackground, groupContrast } from "./color.js";
 import { GUIDE_WIDTH_CELLS, guideLine } from "./guides.js";
 import { legendEntries } from "./legend.js";
@@ -329,8 +329,9 @@ export function renderSvg(chart, {
     parts.push(`<line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" stroke="${escapeXml(guide.color)}" stroke-width="${guideWidth}" stroke-linecap="round"/>`);
   }
 
-  // Row numbers on both sides. On long charts, print every few rows to avoid
-  // a wall of text.
+  // Row numbers sit where the row starts. Flat knitting alternates edges;
+  // rounds and right-side-only charts keep every number on the right. On long
+  // charts, print every few rows to avoid a wall of text.
   if (chart.options?.showRowNumbers !== false) {
     const rowStep = chart.height > 120 ? 5 : chart.height > 60 ? 2 : 1;
     const rightX = chartX + chartW + 8;
@@ -339,8 +340,12 @@ export function renderSvg(chart, {
       const row = rows[visibleIndex];
       const y = chartY + (rowCount - 1 - visibleIndex) * cellPx + cellPx * 0.7;
       const label = String(row);
-      parts.push(text(label, chartX - 8, y, { size: 10, anchor: "end", fill: "#555555" }));
-      parts.push(text(label, rightX, y, { size: 10, anchor: "start", fill: "#555555" }));
+      const onRight = rowNumberOnRight(chart, row);
+      parts.push(text(label, onRight ? rightX : chartX - 8, y, {
+        size: 10,
+        anchor: onRight ? "start" : "end",
+        fill: "#555555"
+      }));
     }
   }
 

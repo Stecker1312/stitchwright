@@ -338,7 +338,7 @@ test("SW-19: right-side row numbers follow visible rows", () => {
   const chart = createChart({ width: 10, height: 100 });
   chart.options.rowsMode = "rs";
   const svg = renderSvg(chart);
-  const numbers = [...svg.matchAll(/x="36"[^>]*>(\d+)<\/text>/g)].map((match) => Number(match[1]));
+  const numbers = [...svg.matchAll(/x="292"[^>]*>(\d+)<\/text>/g)].map((match) => Number(match[1]));
   assert.ok(numbers.length > 1);
   assert.equal(numbers[0], 1);
   assert.ok(numbers.every((value) => value % 2 === 1));

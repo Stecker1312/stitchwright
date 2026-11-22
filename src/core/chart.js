@@ -973,6 +973,22 @@ export function visibleRows(chart) {
 }
 
 /**
+ * Which edge carries a row number.
+ *
+ * Flat knitting is read back and forth: a right-side row starts at the right
+ * edge, a wrong-side row at the left. The number sits where the row starts, so
+ * the knitter can see the direction without reading the whole chart.
+ *
+ * Rounds and right-side-only charts always start on the right, so every
+ * visible number stays on the right edge.
+ */
+export function rowNumberOnRight(chart, row) {
+  if (isInTheRound(chart)) return true;
+  if (chart.options?.rowsMode === "rs") return true;
+  return row % 2 === 1;
+}
+
+/**
  * Quickly check whether a chart contains anything worth rendering.
  * This is used by the empty-state overlay and must not scan a million cells
  * on every brush stroke, so it exits on the first hit.

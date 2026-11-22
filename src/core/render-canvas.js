@@ -9,7 +9,7 @@
  * The canvas is for speed; the SVG is for print.
  */
 
-import { getCell, getColor, groupSpan, visibleRows } from "./chart.js";
+import { getCell, getColor, groupSpan, rowNumberOnRight, visibleRows } from "./chart.js";
 import { backgroundFor, contrastColor, groupBackground, groupContrast, withAlpha } from "./color.js";
 import { GUIDE_WIDTH_CELLS, guideLine } from "./guides.js";
 import { stitchCountRuns } from "./run-lengths.js";
@@ -503,15 +503,14 @@ export function drawChart(ctx, chart, view, {
     const step = scale < 14 ? 5 : scale < 22 ? 2 : 1;
     ctx.font = "10px system-ui, sans-serif";
     ctx.textBaseline = "middle";
-    const showRight = rowNumbers.right.x - rowNumbers.left.x > 12;
     for (let visibleIndex = Math.max(0, firstVisibleRow); visibleIndex <= lastVisibleRow; visibleIndex += 1) {
       if (visibleIndex % step !== 0 && visibleIndex !== 0 && visibleIndex !== rowCount - 1) continue;
       const row = rows[visibleIndex];
       const y = view.offsetY + (rowCount - 1 - visibleIndex) * scale + scale * 0.5;
       if (y < 0 || y > height) continue;
       const label = String(row);
-      drawNumber(ctx, label, rowNumbers.left.x, y, rowNumbers.left.align, theme);
-      if (showRight) drawNumber(ctx, label, rowNumbers.right.x, y, rowNumbers.right.align, theme);
+      const side = rowNumberOnRight(chart, row) ? rowNumbers.right : rowNumbers.left;
+      drawNumber(ctx, label, side.x, y, side.align, theme);
     }
   }
 }

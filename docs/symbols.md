@@ -76,7 +76,9 @@ charts use the grid and the legend instead.
 | `ssp` | 2 | mirrored diagonal with a purl dot | slip, slip, purl |
 
 The slope follows the lean of the resulting stitch. The purl dot tells knit
-and purl decreases apart without adding an arrowhead.
+and purl decreases apart without adding an arrowhead. The glyph uses the full
+span: a two-stitch decrease covers two cells, a three-stitch decrease three,
+so no empty cell inside the group looks like a knit stitch.
 
 ## Cables
 

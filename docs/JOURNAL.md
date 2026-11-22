@@ -818,3 +818,29 @@ der öffentlichen Fassung haben.
 - Live geprüft: <https://stecker1312.github.io/stitchwright/> liefert
   `APP_VERSION = "0.6.6-alpha.1"`, Cache `stitchwright-v0.6.6`; die Palette
   zeigt unter Utility den Eintrag „short row turn“.
+
+## 2026-11-22 – Reihennummern an der Startseite, Abnahmen in voller Breite
+
+**Beobachtet:** Daniel liest Flachstrickschriften von der Startseite her:
+Reihe 1 beginnt rechts, Reihe 2 links. Beidseitige Nummern zeigen die
+Richtung nicht. Außerdem wirkten die Abnahmen wie eine einzelne Masche,
+obwohl sie zwei oder drei Maschen verbrauchen; die leeren Zellen innerhalb
+der Gruppe sahen wie rechte Maschen aus.
+
+**Getan:**
+
+- `rowNumberOnRight` in `chart.js`: Hinreihen rechts, Rückreihen links; in
+  Runden und bei „Nur Hinreihen“ immer rechts.
+- Canvas und SVG zeichnen pro Reihe nur noch die Nummer an der Startseite.
+  Die Nummernspalten bleiben beidseitig anklickbar und heften sich beim
+  Zoomen an den Viewport.
+- Die Abnahme-Glyphen für k2tog, ssk, p2tog, ssp (2 Zellen) und k3tog, sk2p,
+  cdd (3 Zellen) nutzen jetzt die volle Span-Breite. Die Legende zeigt
+  dieselbe Breite.
+- Tests: neuer Chart-Test für die Seitenwahl, neuer Symbol-Test für die
+  Glyphenbreite; SVG-Tests auf wechselnde Seiten, Runden und Nur-Hinreihen
+  angepasst. 167 Tests und `npm run check` grün.
+- Browser: Round test (12 × 6, flach) zeigt 1 rechts, 2 links … 6 links; die
+  ssk-Glyphe deckt zwei Zellen und schließt direkt an die „keine Masche“-Zellen
+  an. Service-Worker-Cache im Testbrowser vorher geleert, damit die neuen
+  Module geladen werden.

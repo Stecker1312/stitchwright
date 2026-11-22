@@ -40,7 +40,8 @@
 - Leer-Hinweis schließbar und persistent; Schnell-Buttons für Reihen/Spalten
 - Reihen- und Spaltennummern anklickbar; Papierkorb löscht die ausgewählte
   Reihe oder Spalte nach Bestätigung
-- Reihennummern stehen links und rechts. Beim Hineinzoomen bleiben sie am
+- Reihennummern stehen an der Startseite: Hinreihen rechts, Rückreihen links;
+  in Runden und bei „Nur Hinreihen“ rechts. Beim Hineinzoomen bleiben sie am
   Viewport-Rand sichtbar; die Nummernspalten sind auf beiden Seiten anklickbar
 - Spaltennummern stehen oben und unten. Auch sie heften sich beim Zoomen an
   den Viewport-Rand und sind oben und unten anklickbar
@@ -137,7 +138,7 @@
 
 ## Tests
 
-`npm test`: 165 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
+`npm test`: 167 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
 Einheiten, Viewport, Hilfslinien, Runden, CLI, Performance).
 `npm run check`: Syntax- und JSON-Prüfung plus Tests grün.
 Browser: Zeichnen, Farben, Zöpfe, Rückreihen, Undo, Export, Scrollbalken,
@@ -145,9 +146,12 @@ eigene Gruppen mit Legendentext, PWA offline manuell mit Playwright geprüft.
 Zusätzlich: 2/1-Zopf hinten aus dem Dialog platziert und bei 70 % und 146 %
 Zoom geprüft; Vorderband durchgehend, hinterer Schenkel rechts. Die
 Properties-Legende zeigt „Cable 2/1 · 1 held back“.
-Reihennummern: bei 286 % Zoom auf einem 42 × 26-Chart links und rechts
-sichtbar; links angeheftet und rechts am Papierrand, nach dem Scrollen
-umgekehrt; Klick auf die rechte Nummer wählt Reihe 17.
+Reihennummern: im Round-test-Chart wechseln sie mit der Reihe (1 rechts,
+2 links …); in Runden und bei „Nur Hinreihen“ stehen alle rechts. Beim Zoomen
+bleiben sie am Viewport-Rand sichtbar; beide Nummernspalten wählen dieselbe
+Reihe.
+Abnahmen: ssk deckt im Chart zwei Zellen und schließt direkt an die
+„keine Masche“-Zellen an; k3tog und cdd decken drei Zellen.
 Spaltennummern: bei 105 % und 286 % Zoom oben und unten sichtbar; im
 Zoom oben und unten angeheftet, Klick auf die obere Nummer wählt Spalte 24,
 Klick auf die untere Spalte 21.

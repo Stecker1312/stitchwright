@@ -19,6 +19,7 @@ import {
   pasteFragment,
   removeGroupAt,
   resizeChart,
+  rowNumberOnRight,
   setCell,
   setColor,
   setMarkerEvery,
@@ -42,6 +43,21 @@ test("flat knitting is the default construction", () => {
   const chart = createChart({ width: 4, height: 3 });
   assert.equal(chart.options.construction, "flat");
   assert.equal(isInTheRound(chart), false);
+});
+
+test("row numbers follow the knitting direction", () => {
+  const flat = createChart({ width: 4, height: 4 });
+  assert.equal(rowNumberOnRight(flat, 1), true);
+  assert.equal(rowNumberOnRight(flat, 2), false);
+  assert.equal(rowNumberOnRight(flat, 3), true);
+
+  flat.options.rowsMode = "rs";
+  assert.equal(rowNumberOnRight(flat, 1), true);
+  assert.equal(rowNumberOnRight(flat, 3), true);
+
+  const round = createChart({ width: 4, height: 4, construction: "round" });
+  assert.equal(rowNumberOnRight(round, 1), true);
+  assert.equal(rowNumberOnRight(round, 2), true);
 });
 
 test("a chart can be created for working in the round", () => {

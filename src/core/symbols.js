@@ -381,9 +381,9 @@ const DEFINITIONS = Object.assign(Object.create(null), {
 const C_GLYPHS = {
   p: [circle(0.5, 0.5, 0.075, { fill: true })],
   yo: [circle(0.5, 0.5, 0.215, { width: 0.055 })],
-  k2tog: [path("M.22 .79 L.72 .23 M.72 .79 V.23", { width: 0.052 })],
-  ssk: [path("M.78 .79 L.28 .23 M.28 .79 V.23", { width: 0.052 })],
-  cdd: [path("M.2 .79 L.5 .23 L.8 .79 M.5 .23 V.79", { width: 0.052 })],
+  k2tog: [path("M.15 .79 L1.85 .23 M1.85 .79 V.23", { width: 0.052 })],
+  ssk: [path("M1.85 .79 L.15 .23 M.15 .79 V.23", { width: 0.052 })],
+  cdd: [path("M.15 .79 L1.5 .23 L2.85 .79 M1.5 .23 V.79", { width: 0.052 })],
   m1l: [path("M.68 .8 L.48 .47 V.21 M.48 .47 L.22 .21 M.48 .47 V.8", { width: 0.052 })],
   m1r: [path("M.32 .8 L.52 .47 V.21 M.52 .47 L.78 .21 M.52 .47 V.8", { width: 0.052 })],
   kfb: [path("M.5 .8 V.48 M.23 .21 V.32 L.5 .48 L.77 .32 V.21", { width: 0.052 })],
@@ -398,15 +398,15 @@ const C_GLYPHS = {
     line(0.22, 0.81, 0.78, 0.81, { width: 0.055 })
   ],
   p2tog: [
-    path("M.22 .79 L.72 .23 M.72 .79 V.23", { width: 0.052 }),
+    path("M.15 .79 L1.85 .23 M1.85 .79 V.23", { width: 0.052 }),
     circle(0.23, 0.31, 0.058, { fill: true })
   ],
   ssp: [
-    path("M.78 .79 L.28 .23 M.28 .79 V.23", { width: 0.052 }),
-    circle(0.77, 0.31, 0.058, { fill: true })
+    path("M1.85 .79 L.15 .23 M.15 .79 V.23", { width: 0.052 }),
+    circle(1.77, 0.31, 0.058, { fill: true })
   ],
-  k3tog: [path("M.2 .79 L.77 .21 M.49 .79 L.77 .21 M.77 .79 V.21", { width: 0.052 })],
-  sk2p: [path("M.8 .79 L.23 .21 M.51 .79 L.23 .21 M.23 .79 V.21", { width: 0.052 })],
+  k3tog: [path("M.15 .79 L2.85 .21 M1.5 .79 L2.85 .21 M2.85 .79 V.21", { width: 0.052 })],
+  sk2p: [path("M2.85 .79 L.15 .21 M1.5 .79 L.15 .21 M.15 .79 V.21", { width: 0.052 })],
   bobble: [{
     type: "path",
     d: "M.5 .2 L.8 .5 L.5 .8 L.2 .5 Z",

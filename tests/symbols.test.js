@@ -36,6 +36,29 @@ test("spans are correct", () => {
   assert.equal(isGroupSymbol("cable"), true);
 });
 
+test("decrease glyphs span the stitches they consume", () => {
+  for (const id of ["k2tog", "ssk", "p2tog", "ssp", "k3tog", "sk2p", "cdd"]) {
+    const span = symbolSpan(id);
+    const glyph = glyphFor(id);
+    const xs = [];
+    for (const primitive of glyph) {
+      if (primitive.type === "path") {
+        for (const match of primitive.d.matchAll(/(-?\d*\.?\d+) (-?\d*\.?\d+)/g)) {
+          xs.push(Number(match[1]));
+        }
+      } else if (primitive.type === "circle") {
+        xs.push(primitive.cx - primitive.r, primitive.cx + primitive.r);
+      }
+    }
+    assert.ok(xs.length > 0, `${id} has coordinates`);
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs);
+    assert.ok(minX >= -0.05, `${id} starts at ${minX}`);
+    assert.ok(maxX >= span - 0.2, `${id} reaches ${maxX}, span ${span}`);
+    assert.ok(maxX <= span + 0.05, `${id} ends at ${maxX}, span ${span}`);
+  }
+});
+
 test("constructive symmetric cable has two lines and one halo", () => {
   const glyph = cableGlyph({ left: 2, right: 2, direction: "front" });
   const strands = glyph.filter((item) => item.type === "path" && !item.halo);

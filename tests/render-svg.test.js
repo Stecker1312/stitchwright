@@ -33,30 +33,33 @@ test("SVG uses millimetres based on cell size", () => {
   assert.match(svg, /height="\d+\.\d+mm"/);
 });
 
-test("rows mode rs hides even rows and numbers odd rows", () => {
+test("rows mode rs hides even rows and keeps odd numbers on the right", () => {
   const chart = sample();
   chart.options.rowsMode = "rs";
   const svg = renderSvg(chart);
-  // Row numbers live at x=36 (chartX - 8). Even rows must not appear there.
-  assert.match(svg, /x="36"[^>]*>1<\/text>/);
-  assert.match(svg, /x="36"[^>]*>3<\/text>/);
-  assert.doesNotMatch(svg, /x="36"[^>]*>2<\/text>/);
+  // Right-side rows start at the right edge (x=340); even rows are not rendered.
+  assert.match(svg, /x="340"[^>]*>1<\/text>/);
+  assert.match(svg, /x="340"[^>]*>3<\/text>/);
+  assert.doesNotMatch(svg, /x="340"[^>]*>2<\/text>/);
+  assert.doesNotMatch(svg, /x="36"[^>]*>1<\/text>/);
 });
 
-test("round charts show every round number", () => {
+test("round charts show every round number on the right", () => {
   const chart = sample();
   chart.options.construction = "round";
   chart.options.rowsMode = "rs"; // defensive: round must still show all rounds
   const svg = renderSvg(chart);
-  assert.match(svg, /x="36"[^>]*>2<\/text>/);
+  assert.match(svg, /x="340"[^>]*>2<\/text>/);
 });
 
-test("row numbers appear on both sides", () => {
+test("row numbers alternate sides in flat charts", () => {
   const chart = sample();
   const svg = renderSvg(chart);
-  // Left numbers end at chartX - 8 = 36; right numbers start at chartX + chartW + 8.
+  // Odd rows start on the right (x=340), even rows on the left (x=36).
+  assert.match(svg, /x="340"[^>]*>7<\/text>/);
   assert.match(svg, /x="36"[^>]*>8<\/text>/);
-  assert.match(svg, /x="340"[^>]*>8<\/text>/);
+  assert.doesNotMatch(svg, /x="36"[^>]*>7<\/text>/);
+  assert.doesNotMatch(svg, /x="340"[^>]*>8<\/text>/);
 });
 
 test("stitch numbers appear above and below the grid", () => {

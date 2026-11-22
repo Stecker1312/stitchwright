@@ -179,7 +179,7 @@ A group is a symbol that takes several stitches in one row.
 |---|---|---|
 | `construction` | `"flat"` or `"round"` | back-and-forth rows or right-side rounds; default `"flat"` |
 | `rowsMode` | `"all"` or `"rs"` | all rows or right-side rows only (1, 3, 5 …); flat only |
-| `showRowNumbers` | boolean | row numbers on both edges |
+| `showRowNumbers` | boolean | row numbers on the starting edge; flat charts alternate (odd right, even left), rounds stay right |
 | `showStitchNumbers` | boolean | stitch numbers above and below |
 | `showStitchCounts` | boolean | small run-length numbers inside the first cell of a run |
 | `showLegend` | boolean | legend in the export |
