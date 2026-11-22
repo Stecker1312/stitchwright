@@ -710,3 +710,21 @@ nicht.
 - Test für den Überweg und die Randstände; insgesamt 154 Tests grün.
 - Browser: 32 × 20-Beispiel bei 286 % Zoom. Home zeigt die linke Musterkante
   vollständig, End die rechte; dazwischen bleibt der Rahmen sichtbar.
+
+## 2026-11-22 – 0.6.4-alpha.1 veröffentlicht
+
+**Anlass:** Der Scrollbalken-Überweg soll in der öffentlichen Version
+verfügbar sein, damit die erste und letzte Masche bei starkem Zoom nicht mehr
+abgeschnitten werden.
+
+**Getan:**
+
+- Version 0.6.4-alpha.1 in `package.json`, `src/version.js`, STATUS, README,
+  Projektseite, How-tos, AGENTS, D009 und SOP-004 gesetzt.
+- Service-Worker-Cache auf `stitchwright-v0.6.4`; der Regressionstest behält
+  v0.6.4 und löscht die Caches bis v0.6.3.
+- Changelog und Status aktualisiert; 154 Tests und `npm run check` grün.
+- Commit `cb2adde`, Push auf `main`, Tag `v0.6.4-alpha.1` und GitHub Release.
+- GitHub Pages gebaut; live geprüft: Home zeigt die linke Musterkante samt
+  erster Nummer mit 40 px Hintergrund vor dem Rahmen, End die rechte Kante
+  samt letzter Masche.
