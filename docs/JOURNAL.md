@@ -799,3 +799,22 @@ brauchen eine sichtbare Markierung im Chart.
 - Browser: Wende in der Palette, per Tastatur platziert, Status und Legende
   zeigen „Wende/wenden“; danach rückgängig gemacht, das bestehende Chart
   bleibt unverändert. SVG-Ausgabe enthält Glyph und Legendentext.
+
+## 2026-11-22 – 0.6.6-alpha.1 veröffentlicht
+
+**Anlass:** Die Wende ist zurück in der Palette; Daniel wollte sie sofort in
+der öffentlichen Fassung haben.
+
+**Getan:**
+
+- Version 0.6.6-alpha.1 in `package.json`, `src/version.js`, STATUS, README,
+  Projektseite, How-tos, AGENTS, D009 und SOP-004 gesetzt.
+- Service-Worker-Cache auf `stitchwright-v0.6.6`; der Regressionstest behält
+  v0.6.6 und löscht die Caches bis v0.6.5.
+- Changelog, Status und Symbol-Doku aktualisiert; 165 Tests und
+  `npm run check` grün.
+- Commit `6b70f7e`, Push auf `main`, Tag `v0.6.6-alpha.1` und GitHub Release.
+- Check-Run `45059185113` und Pages-Run `45059184873` grün.
+- Live geprüft: <https://stecker1312.github.io/stitchwright/> liefert
+  `APP_VERSION = "0.6.6-alpha.1"`, Cache `stitchwright-v0.6.6`; die Palette
+  zeigt unter Utility den Eintrag „short row turn“.
