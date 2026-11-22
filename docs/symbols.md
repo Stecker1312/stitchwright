@@ -105,7 +105,8 @@ A cable is a group with `symbol: "cable"` and parameters:
   because the bundle behind disappears behind the front band. This matches the
   hand sketch for 1/2 and 2/1 cables.
 - The glyph does not draw one line per stitch; the legend carries the exact
-  counts.
+  counts. Cables with the same span and direction share one shape (for example
+  1/2 and 2/1 back); the legend disambiguates them.
 - The bands run as straight open crossings, not closed ropes.
 
 This covers 1/1, 2/2, 3/3 and 4/4 as well as asymmetric widths such as 1/2,
