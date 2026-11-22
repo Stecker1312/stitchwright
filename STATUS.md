@@ -37,6 +37,8 @@
 - Leer-Hinweis schließbar und persistent; Schnell-Buttons für Reihen/Spalten
 - Reihen- und Spaltennummern anklickbar; Papierkorb löscht die ausgewählte
   Reihe oder Spalte nach Bestätigung
+- Reihennummern stehen links und rechts. Beim Hineinzoomen bleiben sie am
+  Viewport-Rand sichtbar; die Nummernspalten sind auf beiden Seiten anklickbar
 - Maschenmarker als gestrichelte Zeichenhilfe, einzeln oder alle N Maschen;
   nicht Teil der Strickanleitung
 - Bereiche auswählen, kopieren und einfügen, inklusive Farben und Gruppen
@@ -62,7 +64,7 @@
 - Englisch (britisch) als Standardsprache in Oberfläche, Startseite,
   Validierungsmeldungen, CLI, Manifest und README; Beispiel-Charts englisch
 - PWA mit Service Worker, offline getestet
-- 148 Node-Tests grün; Browserprüfung mit Chromium/Playwright
+- 150 Node-Tests grün; Browserprüfung mit Chromium/Playwright
 - Englische Projektseite `about.html` mit Browser-first-Schnellstart, Preisvergleich, Clear-Symbolpack und Planned-Liste
 - Englischer Screenshot, Version 0.6.1 (Legende „2 held front“)
 - Audit-Pakete A, B und C umgesetzt: Dokument-/Speichersicherheit, valide
@@ -120,7 +122,7 @@
 
 ## Tests
 
-`npm test`: 148 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
+`npm test`: 150 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
 Einheiten, Viewport, Hilfslinien, CLI, Performance).
 `npm run check`: Syntax- und JSON-Prüfung plus Tests grün.
 Browser: Zeichnen, Farben, Zöpfe, Rückreihen, Undo, Export, Scrollbalken,
@@ -128,6 +130,9 @@ eigene Gruppen mit Legendentext, PWA offline manuell mit Playwright geprüft.
 Zusätzlich: 2/1-Zopf hinten aus dem Dialog platziert und bei 70 % und 146 %
 Zoom geprüft; Vorderband durchgehend, hinterer Schenkel rechts. Die
 Properties-Legende zeigt „Cable 2/1 · 1 held back“.
+Reihennummern: bei 286 % Zoom auf einem 42 × 26-Chart links und rechts
+sichtbar; links angeheftet und rechts am Papierrand, nach dem Scrollen
+umgekehrt; Klick auf die rechte Nummer wählt Reihe 17.
 Hilfslinien: Linie über die ganze Höhe, Teil-Linie über Ziehen, zwei Farben,
 Klick- und Rechtsklick-Löschen, Alle-löschen, Rückgängig sowie Autosave und
 Neuladen mit 42 × 26-Chart geprüft.

@@ -62,9 +62,18 @@ test("visible columns are clipped to the chart", () => {
 test("row and column number margins are clickable", () => {
   const chart = createChart({ width: 4, height: 3 });
   const view = { scale: 10, offsetX: 40, offsetY: 40 };
-  assert.deepEqual(headerAt(chart, view, 32, 45), { kind: "row", index: 3 });
-  assert.deepEqual(headerAt(chart, view, 45, 74), { kind: "column", index: 1 });
-  assert.equal(headerAt(chart, view, 10, 10), null);
+  assert.deepEqual(headerAt(chart, view, 32, 45, 300), { kind: "row", index: 3 });
+  assert.deepEqual(headerAt(chart, view, 85, 45, 300), { kind: "row", index: 3 });
+  assert.deepEqual(headerAt(chart, view, 45, 74, 300), { kind: "column", index: 1 });
+  assert.equal(headerAt(chart, view, 10, 10, 300), null);
+});
+
+test("row numbers pin to the viewport when the chart is wider than the screen", () => {
+  const chart = createChart({ width: 100, height: 100 });
+  const view = { scale: 10, offsetX: -500, offsetY: 0 };
+  // The chart spans -500…500, so both paper edges are outside a 200 px view.
+  assert.deepEqual(headerAt(chart, view, 10, 45, 200), { kind: "row", index: 96 });
+  assert.deepEqual(headerAt(chart, view, 190, 45, 200), { kind: "row", index: 96 });
 });
 
 test("hidden numbers do not create invisible hit areas", () => {
@@ -72,6 +81,7 @@ test("hidden numbers do not create invisible hit areas", () => {
   chart.options.showRowNumbers = false;
   chart.options.showStitchNumbers = false;
   const view = { scale: 10, offsetX: 40, offsetY: 40 };
-  assert.equal(headerAt(chart, view, 32, 45), null);
-  assert.equal(headerAt(chart, view, 45, 74), null);
+  assert.equal(headerAt(chart, view, 32, 45, 300), null);
+  assert.equal(headerAt(chart, view, 85, 45, 300), null);
+  assert.equal(headerAt(chart, view, 45, 74, 300), null);
 });

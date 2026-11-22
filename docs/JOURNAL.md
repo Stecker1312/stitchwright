@@ -568,3 +568,34 @@ Maschengrenzen entstehen. Sie ist ausdrücklich nur eine Lesehilfe.
 **Offen:** Ob Hilfslinien auch waagerecht oder als Treppenlinie gebraucht
 werden, entscheidet Daniel nach einer echten Strickschrift. Das aktuelle
 Modell kann nur senkrechte Linien auf Maschengrenzen.
+
+## 2026-11-22 – Reihennummern beidseitig und beim Zoomen sichtbar
+
+**Beobachtet:** Bei großen Charts verschwinden beim Hineinzoomen die
+Papierränder aus dem Bild. Damit waren auch die Reihennummern weg, obwohl
+gerade dann der Bezug zur Reihe wichtig ist. Außerdem standen sie nur links.
+
+**Getan:**
+
+- Canvas: Reihennummern stehen jetzt links und rechts. Liegt ein Papierrand
+  außerhalb des Viewports, wird die zugehörige Nummernspalte an den
+  Viewport-Rand geheftet; ist der Rand sichtbar, bleibt sie direkt daneben.
+  Die Zahlen haben einen Hintergrund-Halo, damit sie über Maschen lesbar
+  bleiben.
+- Beide Nummernspalten sind anklickbar und wählen dieselbe Reihe; Ziehen
+  erweitert die Reihenauswahl wie bisher. `headerAt` kennt dafür die
+  Viewport-Breite; die Layoutlogik liegt geteilt in `rowNumberLayout`.
+- `fitView` lässt 44 px Rand, damit die beidseitigen Nummern auch im
+  eingepassten Zustand Platz haben.
+- SVG-Export und CLI rendern die Reihennummern ebenfalls links und rechts;
+  der rechte Rand wuchs von 20 auf 44 px.
+- Tests: neuer Viewport-Test für geheftete Nummern, Klick auf die rechte
+  Nummernspalte und ein SVG-Test für beidseitige Reihennummern; insgesamt
+  150 Tests und `npm run check` grün.
+- Browser: 42 × 26-Chart bei 286 % Zoom. Beide Spalten sichtbar, links
+  geheftet und rechts am Papierrand; nach dem Scrollen umgekehrt. Klick auf
+  die rechte Nummer wählt Reihe 17.
+
+**Offen:** Spaltennummern bleiben nur unten. Ob sie bei sehr breiten Charts
+ebenfalls geheftet werden sollen, entscheidet Daniel nach der nächsten
+Strickschrift.

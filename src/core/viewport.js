@@ -11,6 +11,18 @@ import { visibleRows } from "./chart.js";
 export const MIN_SCALE = 0.5;
 export const MAX_SCALE = 80;
 
+/** Interactive width of the row-number strips beside the paper. */
+const ROW_NUMBER_HIT_WIDTH = 44;
+/** Space between the paper edge and the first digit. */
+const ROW_NUMBER_GAP = 7;
+/** Keep digits away from the viewport edge. */
+const ROW_NUMBER_EDGE = 6;
+/**
+ * The vertical scrollbar overlays the right edge of the canvas. Pinned row
+ * numbers leave room for it so the digits never sit underneath the thumb.
+ */
+const SCROLLBAR_SPACE = 22;
+
 export function createView({ scale = 28, offsetX = 40, offsetY = 40 } = {}) {
   return { scale, offsetX, offsetY };
 }
@@ -53,7 +65,7 @@ export function cellAt(chart, view, x, y) {
 }
 
 /** Fit the whole chart into a canvas, with a little breathing room. */
-export function fitView(chart, viewportWidth, viewportHeight, { padding = 36 } = {}) {
+export function fitView(chart, viewportWidth, viewportHeight, { padding = 44 } = {}) {
   const rows = visibleRows(chart);
   const availableWidth = Math.max(1, viewportWidth - padding * 2);
   const availableHeight = Math.max(1, viewportHeight - padding * 2);
@@ -112,25 +124,82 @@ export function rowVisible(chart, view, row, viewportHeight) {
 }
 
 /**
+ * Layout for the two row-number columns.
+ *
+ * Numbers normally sit just outside the paper. When an edge is zoomed out of
+ * view, its numbers stick to the viewport edge instead. That keeps the row
+ * reference visible while working deep inside a large chart. Both columns
+ * share the same vertical positions, and each returns an x anchor plus the
+ * clickable strip around it.
+ *
+ * Returns null when row numbers are disabled or the chart is completely
+ * outside the horizontal viewport.
+ */
+export function rowNumberLayout(chart, view, viewportWidth) {
+  if (chart.options?.showRowNumbers === false) return null;
+  const rows = visibleRows(chart);
+  if (!rows.length) return null;
+  const width = Number.isFinite(viewportWidth) && viewportWidth > 0
+    ? viewportWidth
+    : view.offsetX + chart.width * view.scale + ROW_NUMBER_HIT_WIDTH;
+  const chartLeft = view.offsetX;
+  const chartRight = chartLeft + chart.width * view.scale;
+  if (chartRight <= 0 || chartLeft >= width) return null;
+
+  // Rough width of the widest label at 10 px system-ui. The canvas renderer
+  // and the hit test both use this estimate, so they cannot drift apart.
+  const digits = String(Math.max(1, chart.height)).length;
+  const textWidth = Math.ceil(digits * 6.2);
+
+  const leftAttached = chartLeft - ROW_NUMBER_GAP;
+  const leftPinned = leftAttached - textWidth < ROW_NUMBER_EDGE;
+  const leftX = leftPinned ? textWidth + ROW_NUMBER_EDGE : leftAttached;
+  const leftEdge = leftPinned ? Math.min(width, leftX + 8) : Math.min(width, chartLeft);
+
+  const rightAttached = chartRight + ROW_NUMBER_GAP;
+  const rightPinned = rightAttached + textWidth > width - ROW_NUMBER_EDGE;
+  const rightX = rightPinned ? width - textWidth - SCROLLBAR_SPACE : rightAttached;
+  const rightEdge = rightPinned ? Math.max(0, rightX - 8) : Math.max(0, chartRight);
+
+  return {
+    left: {
+      x: leftX,
+      align: "right",
+      from: Math.max(0, leftEdge - ROW_NUMBER_HIT_WIDTH),
+      to: leftEdge
+    },
+    right: {
+      x: rightX,
+      align: "left",
+      from: rightEdge,
+      to: Math.min(width, rightEdge + ROW_NUMBER_HIT_WIDTH)
+    }
+  };
+}
+
+/**
  * Hit-test the row and column number margins.
  *
- * The canvas draws row numbers to the left of the chart and stitch numbers
- * below it. Clicking those numbers selects the whole row or column, which is
- * the natural way to choose what a delete button should remove.
+ * The canvas draws row numbers on both sides of the chart (pinned to the
+ * viewport edge when zoomed in) and stitch numbers below it. Clicking those
+ * numbers selects the whole row or column, which is the natural way to choose
+ * what a delete button should remove.
  */
-export function headerAt(chart, view, x, y) {
+export function headerAt(chart, view, x, y, viewportWidth) {
   const rows = visibleRows(chart);
   const chartW = chart.width * view.scale;
   const chartH = rows.length * view.scale;
   const chartBottom = view.offsetY + chartH;
 
-  if (chart.options?.showRowNumbers !== false
-    && x <= view.offsetX && x >= view.offsetX - 34
-    && y >= view.offsetY && y < chartBottom) {
-    const fromTop = Math.floor((y - view.offsetY) / view.scale);
-    const index = rows.length - 1 - fromTop;
-    if (index >= 0 && index < rows.length) {
-      return { kind: "row", index: rows[index] };
+  const numbers = rowNumberLayout(chart, view, viewportWidth);
+  if (numbers && y >= view.offsetY && y < chartBottom) {
+    for (const area of [numbers.left, numbers.right]) {
+      if (x < area.from || x >= area.to) continue;
+      const fromTop = Math.floor((y - view.offsetY) / view.scale);
+      const index = rows.length - 1 - fromTop;
+      if (index >= 0 && index < rows.length) {
+        return { kind: "row", index: rows[index] };
+      }
     }
   }
 

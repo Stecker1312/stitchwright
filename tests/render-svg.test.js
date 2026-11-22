@@ -43,6 +43,14 @@ test("rows mode rs hides even rows and numbers odd rows", () => {
   assert.doesNotMatch(svg, /x="36"[^>]*>2<\/text>/);
 });
 
+test("row numbers appear on both sides", () => {
+  const chart = sample();
+  const svg = renderSvg(chart);
+  // Left numbers end at chartX - 8 = 36; right numbers start at chartX + chartW + 8.
+  assert.match(svg, /x="36"[^>]*>8<\/text>/);
+  assert.match(svg, /x="340"[^>]*>8<\/text>/);
+});
+
 test("legend can be disabled", () => {
   const chart = sample();
   const svg = renderSvg(chart, { includeLegend: false });

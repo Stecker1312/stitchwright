@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="135.63mm" height="140.50mm" viewBox="0 0 542.5 562" role="img" aria-label="Asymmetric cables">
+<svg xmlns="http://www.w3.org/2000/svg" width="141.63mm" height="140.50mm" viewBox="0 0 566.5 562" role="img" aria-label="Asymmetric cables">
 <title>Asymmetric cables</title>
-<rect width="542.5" height="562" fill="#ffffff"/>
+<rect width="566.5" height="562" fill="#ffffff"/>
 <text x="44" y="28" font-family="system-ui, sans-serif" font-size="19" font-weight="700" text-anchor="start" fill="#111111">Asymmetric cables</text>
 <text x="44" y="45" font-family="system-ui, sans-serif" font-size="11" font-weight="400" text-anchor="start" fill="#666666">1/2 and 2/1 cables with a short rear leg; symmetric cables keep the full X.</text>
 <path d="M44 56V152M68 56V152M92 56V152M116 56V152M140 56V152M164 56V152M188 56V152M212 56V152M236 56V152M260 56V152M284 56V152M308 56V152M332 56V152M44 56H332M44 80H332M44 104H332M44 128H332M44 152H332" fill="none" stroke="#b8b8b8" stroke-width="0.7"/>
@@ -28,9 +28,13 @@
 <clipPath id="group-clip-10"><rect x="188" y="56" width="144" height="24"/></clipPath>
 <g clip-path="url(#group-clip-10)"><g transform="translate(188 56) scale(24)" color="#111111"><path d="M0.18 0.8 L5.82 0.2" stroke="#111111" stroke-width="0.065" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M0.18 0.2 L5.82 0.8" stroke="#ffffff" stroke-width="0.32" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M0.18 0.2 L5.82 0.8" stroke="#111111" stroke-width="0.065" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g></g>
 <text x="36" y="144.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">1</text>
+<text x="340" y="144.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">1</text>
 <text x="36" y="120.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">2</text>
+<text x="340" y="120.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">2</text>
 <text x="36" y="96.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">3</text>
+<text x="340" y="96.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">3</text>
 <text x="36" y="72.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">4</text>
+<text x="340" y="72.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">4</text>
 <text x="56" y="170" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="middle" fill="#555555">12</text>
 <text x="80" y="170" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="middle" fill="#555555">11</text>
 <text x="104" y="170" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="middle" fill="#555555">10</text>

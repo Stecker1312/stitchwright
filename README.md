@@ -72,7 +72,7 @@ Then open <http://localhost:8080>. If you do not want to run a local server,
 use the live demo.
 
 ```bash
-npm test      # 148 Node tests
+npm test      # 150 Node tests
 npm run check # tests and syntax checks
 ```
 

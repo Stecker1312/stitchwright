@@ -206,7 +206,7 @@ export class CanvasView {
     }
     if (this.pointers.size > 2) return;
 
-    const header = headerAt(this.store.chart, this.store.view, point.x, point.y);
+    const header = headerAt(this.store.chart, this.store.view, point.x, point.y, this.width);
     if (header) {
       const previous = this.store.headerSelection;
       const anchor = event.shiftKey && previous?.kind === header.kind
@@ -411,7 +411,7 @@ export class CanvasView {
       return;
     }
 
-    const header = headerAt(this.store.chart, this.store.view, point.x, point.y);
+    const header = headerAt(this.store.chart, this.store.view, point.x, point.y, this.width);
     if (!this.gesture) {
       this.canvas.style.cursor = header
         ? "pointer"

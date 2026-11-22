@@ -16,7 +16,7 @@ import { formatLength } from "./units.js";
 
 const CELL = 24;
 const MARGIN_LEFT = 44;
-const MARGIN_RIGHT = 20;
+const MARGIN_RIGHT = 44;
 const MARGIN_TOP = 56;
 const MARGIN_BOTTOM = 38;
 const LEGEND_ROW = 28;
@@ -329,14 +329,18 @@ export function renderSvg(chart, {
     parts.push(`<line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" stroke="${escapeXml(guide.color)}" stroke-width="${guideWidth}" stroke-linecap="round"/>`);
   }
 
-  // Row numbers. On long charts, print every few rows to avoid a wall of text.
+  // Row numbers on both sides. On long charts, print every few rows to avoid
+  // a wall of text.
   if (chart.options?.showRowNumbers !== false) {
     const rowStep = chart.height > 120 ? 5 : chart.height > 60 ? 2 : 1;
+    const rightX = chartX + chartW + 8;
     for (let visibleIndex = 0; visibleIndex < rowCount; visibleIndex += 1) {
       if (visibleIndex % rowStep !== 0 && visibleIndex !== 0 && visibleIndex !== rowCount - 1) continue;
       const row = rows[visibleIndex];
       const y = chartY + (rowCount - 1 - visibleIndex) * cellPx + cellPx * 0.7;
-      parts.push(text(String(row), chartX - 8, y, { size: 10, anchor: "end", fill: "#555555" }));
+      const label = String(row);
+      parts.push(text(label, chartX - 8, y, { size: 10, anchor: "end", fill: "#555555" }));
+      parts.push(text(label, rightX, y, { size: 10, anchor: "start", fill: "#555555" }));
     }
   }
 

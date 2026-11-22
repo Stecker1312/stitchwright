@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="208.00mm" height="222.50mm" viewBox="0 0 832 890" role="img" aria-label="Clear – example">
+<svg xmlns="http://www.w3.org/2000/svg" width="214.00mm" height="222.50mm" viewBox="0 0 856 890" role="img" aria-label="Clear – example">
 <title>Clear – example</title>
-<rect width="832" height="890" fill="#ffffff"/>
+<rect width="856" height="890" fill="#ffffff"/>
 <text x="44" y="28" font-family="system-ui, sans-serif" font-size="19" font-weight="700" text-anchor="start" fill="#111111">Clear – example</text>
 <text x="44" y="45" font-family="system-ui, sans-serif" font-size="11" font-weight="400" text-anchor="start" fill="#666666">Zöpfe, Umschlag, Abnahme, Farben</text>
 <defs>
@@ -367,25 +367,45 @@
 <clipPath id="group-clip-13"><rect x="500" y="152" width="72" height="24"/></clipPath>
 <g clip-path="url(#group-clip-13)"><g transform="translate(500 152) scale(24)" color="#111111"><path d="M.2 .79 L.5 .23 L.8 .79 M.5 .23 V.79" stroke="#111111" stroke-width="0.052" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g></g>
 <text x="36" y="528.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">1</text>
+<text x="820" y="528.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">1</text>
 <text x="36" y="504.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">2</text>
+<text x="820" y="504.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">2</text>
 <text x="36" y="480.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">3</text>
+<text x="820" y="480.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">3</text>
 <text x="36" y="456.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">4</text>
+<text x="820" y="456.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">4</text>
 <text x="36" y="432.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">5</text>
+<text x="820" y="432.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">5</text>
 <text x="36" y="408.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">6</text>
+<text x="820" y="408.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">6</text>
 <text x="36" y="384.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">7</text>
+<text x="820" y="384.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">7</text>
 <text x="36" y="360.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">8</text>
+<text x="820" y="360.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">8</text>
 <text x="36" y="336.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">9</text>
+<text x="820" y="336.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">9</text>
 <text x="36" y="312.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">10</text>
+<text x="820" y="312.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">10</text>
 <text x="36" y="288.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">11</text>
+<text x="820" y="288.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">11</text>
 <text x="36" y="264.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">12</text>
+<text x="820" y="264.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">12</text>
 <text x="36" y="240.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">13</text>
+<text x="820" y="240.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">13</text>
 <text x="36" y="216.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">14</text>
+<text x="820" y="216.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">14</text>
 <text x="36" y="192.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">15</text>
+<text x="820" y="192.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">15</text>
 <text x="36" y="168.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">16</text>
+<text x="820" y="168.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">16</text>
 <text x="36" y="144.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">17</text>
+<text x="820" y="144.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">17</text>
 <text x="36" y="120.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">18</text>
+<text x="820" y="120.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">18</text>
 <text x="36" y="96.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">19</text>
+<text x="820" y="96.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">19</text>
 <text x="36" y="72.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="end" fill="#555555">20</text>
+<text x="820" y="72.8" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#555555">20</text>
 <text x="56" y="554" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="middle" fill="#555555">32</text>
 <text x="80" y="554" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="middle" fill="#555555">31</text>
 <text x="104" y="554" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="middle" fill="#555555">30</text>
