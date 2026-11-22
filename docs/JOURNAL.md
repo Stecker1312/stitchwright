@@ -671,3 +671,21 @@ immer ein Stück Rand sichtbar bleiben.
 - Browser: 32 × 20-Beispiel bei 286 % Zoom, hell und dunkel. Rahmen an allen
   vier Seiten sichtbar; Klick in den rechten Rahmen wählt Reihe 12 und malt
   keine Zelle.
+
+## 2026-11-22 – 0.6.3-alpha.1 veröffentlicht
+
+**Anlass:** Der feste Hintergrundrahmen soll in der öffentlichen Version
+verfügbar sein, die Daniel benutzt.
+
+**Getan:**
+
+- Version 0.6.3-alpha.1 in `package.json`, `src/version.js`, STATUS, README,
+  Projektseite, How-tos, AGENTS, D009 und SOP-004 gesetzt.
+- Service-Worker-Cache auf `stitchwright-v0.6.3`; der Regressionstest behält
+  v0.6.3 und löscht die Caches bis v0.6.2.
+- Changelog, Status und Screenshot aktualisiert; 153 Tests und
+  `npm run check` grün.
+- Commit `af284da`, Push auf `main`, Tag `v0.6.3-alpha.1` und GitHub Release.
+- GitHub Pages gebaut; `src/version.js`, `sw.js` und der Badge live geprüft.
+  Die gehostete App zeigt bei 286 % Zoom den festen Rahmen an allen vier
+  Seiten; nach dem Leeren des alten Caches wurde der neue Stand geladen.
