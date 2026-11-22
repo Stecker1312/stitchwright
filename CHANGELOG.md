@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.6.7-alpha.1 – 22 November 2026
+
+Row numbers sit where the row starts; decreases use their full width.
+
+### New
+
+- Flat charts number rows on the starting edge: odd rows on the right, even
+  rows on the left. Round charts and right-side-only charts keep every number
+  on the right.
+- Decrease glyphs now span the stitches they consume: `k2tog`, `ssk`, `p2tog`
+  and `ssp` cover two cells; `k3tog`, `sk2p` and `cdd` cover three. No empty
+  cell inside a decrease looks like a knit stitch any more.
+- The SVG export uses the same rules as the editor.
+
+### Checks
+
+- 167 Node tests green; `npm run check` green.
+- Browser check: Round test shows alternating row numbers; `ssk` covers two
+  cells and meets the no-stitch cells; the legend matches the chart.
+
 ## 0.6.6-alpha.1 – 22 November 2026
 
 The short-row turn is back in the palette.

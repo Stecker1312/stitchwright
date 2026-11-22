@@ -1,7 +1,7 @@
 # Status
 
 - Stand: 2026-11-22
-- Version: **0.6.6-alpha.1**
+- Version: **0.6.7-alpha.1**
 - Phase: Öffentliche Vorabversion (Alpha)
 - Sichtbarkeit: öffentlich, GitHub Pages:
   <https://stecker1312.github.io/stitchwright/>
@@ -25,6 +25,8 @@
 
 ## Erledigt
 
+- 0.6.7-alpha.1 veröffentlicht (2026-11-22): Reihennummern an der Startseite,
+  Abnahmen in voller Maschenbreite
 - 0.6.6-alpha.1 veröffentlicht (2026-11-22): Wende wieder in der Palette
 - 0.6.5-alpha.1 veröffentlicht (2026-11-22): Runden als Chart-Eigenschaft,
   CI-Check ohne Lockfile-Abhängigkeit

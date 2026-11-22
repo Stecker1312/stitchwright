@@ -3,7 +3,7 @@
 **Knit charts, local and free.** An editor for knitting diagrams that runs in
 the browser, works offline and sends nothing anywhere.
 
-> **Early alpha 0.6.6-alpha.1 (22 November 2026).**
+> **Early alpha 0.6.7-alpha.1 (22 November 2026).**
 > Not ready for important work. Bugs, rough edges and changes to the file
 > format are likely. Please keep an extra JSON copy of charts you care about.
 >
