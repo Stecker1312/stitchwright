@@ -145,9 +145,9 @@ Zoom oben und unten angeheftet, Klick auf die obere Nummer wählt Spalte 24,
 Klick auf die untere Spalte 21.
 Rahmen: bei 286 % Zoom auf allen vier Seiten sichtbar; Klick in den rechten
 Rahmen wählt Reihe 12 und malt keine Zelle. Hell und dunkel geprüft.
-Scrollbalken: bei 286 % Zoom zeigt Home die erste Masche vollständig mit
-Rand, End die letzte Masche vollständig mit Rand; 40 px Überweg an beiden
-Seiten.
+Scrollbalken: bei 286 % Zoom zeigt Home die linke Musterkante und die
+äußerste Masche vollständig mit Rand, End die rechte Kante und Masche 1;
+40 px Überweg an beiden Seiten.
 Hilfslinien: Linie über die ganze Höhe, Teil-Linie über Ziehen, zwei Farben,
 Klick- und Rechtsklick-Löschen, Alle-löschen, Rückgängig sowie Autosave und
 Neuladen mit 42 × 26-Chart geprüft.

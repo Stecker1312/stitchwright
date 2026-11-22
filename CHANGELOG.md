@@ -15,9 +15,9 @@ Scroll past the pattern edges.
 ### Checks
 
 - 154 Node tests green.
-- Browser check: example chart at 286 % zoom; scrollbar Home shows the first
-  stitch and the left pattern edge clear of the frame, End shows the last
-  stitch and the right edge clear of the frame.
+- Browser check: example chart at 286 % zoom; scrollbar Home shows the left
+  pattern edge and its outermost stitch clear of the frame, End shows the
+  right edge and stitch 1 clear of the frame.
 
 ## 0.6.3-alpha.1 – 22 November 2026
 

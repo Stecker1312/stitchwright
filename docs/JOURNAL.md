@@ -726,5 +726,5 @@ abgeschnitten werden.
 - Changelog und Status aktualisiert; 154 Tests und `npm run check` grün.
 - Commit `cb2adde`, Push auf `main`, Tag `v0.6.4-alpha.1` und GitHub Release.
 - GitHub Pages gebaut; live geprüft: Home zeigt die linke Musterkante samt
-  erster Nummer mit 40 px Hintergrund vor dem Rahmen, End die rechte Kante
-  samt letzter Masche.
+  äußerer Masche mit 40 px Hintergrund vor dem Rahmen, End die rechte Kante
+  samt Masche 1.
