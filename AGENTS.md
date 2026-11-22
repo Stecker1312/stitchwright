@@ -33,7 +33,8 @@ hält Erweiterungspunkte offen, aber niemand baut sie ohne neue Entscheidung.
 
 ## Arbeitsweise
 
-1. Vor Änderungen `STATUS.md`, `docs/JOURNAL.md` und die betroffenen ADRs lesen.
+1. Vor Änderungen `STATUS.md` und die betroffenen ADRs lesen. Aus
+   `docs/JOURNAL.md` nur die letzten zwei Einträge; nicht das ganze Journal.
 2. Erst den Test oder die Abnahme formulieren, dann ändern.
 3. `npm test` muss grün sein. Browser-Änderungen zusätzlich mit Playwright
    prüfen.
@@ -43,6 +44,18 @@ hält Erweiterungspunkte offen, aber niemand baut sie ohne neue Entscheidung.
 6. Kleine, nachvollziehbare Commits. Commit-Nachricht: was und warum.
 7. Nie `git push --force`. Veröffentlichung über SOP-004; der aktuelle Stand
    ist eine öffentliche Alpha (0.6.1-alpha.1).
+
+## Kontext sparsam
+
+- Eine Session = ein Feature. Bei Themenwechsel neue Session und Handoff in
+  `STATUS.md`.
+- Für Routinearbeit die Reasoning-Variante `high` verwenden; `max` nur für
+  schwere Fehler.
+- Originalbilder nie direkt lesen. Erst eine Vorschau mit maximal 1024 px
+  erzeugen, zum Beispiel
+  `magick bild.png -resize 1024x1024 -quality 80 /tmp/opencode/preview.jpg`,
+  und nur diese lesen. Screenshots mit `scale: css` und passendem Ausschnitt
+  aufnehmen; dasselbe Bild nicht mehrfach einlesen.
 
 ## Befehle
 
