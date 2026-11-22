@@ -625,3 +625,23 @@ weg; Daniel möchte die Spalten jederzeit ablesen können.
 - Browser: 32 × 20-Beispiel bei 105 % und 286 % Zoom, hell und dunkel. Oben
   und unten sichtbar; Klick auf die obere Nummer wählt Spalte 24, Klick auf
   die untere Spalte 21.
+
+## 2026-11-22 – 0.6.2-alpha.1 veröffentlicht
+
+**Anlass:** Daniel nutzt die öffentliche Version und wollte die neuen
+Randnummern und Hilfslinien dort haben.
+
+**Getan:**
+
+- Version 0.6.2-alpha.1 in `package.json`, `src/version.js`, STATUS, README,
+  Projektseite, How-tos, AGENTS, D009 und SOP-004 gesetzt.
+- Service-Worker-Cache auf `stitchwright-v0.6.2`; der Regressionstest prüft,
+  dass v0.6.2 aktiv bleibt und die älteren Caches bis v0.6.1 verschwinden.
+- Changelog-Eintrag mit Hilfslinien und beidseitigen Randnummern; 152 Tests
+  und `npm run check` grün.
+- Beispiel-SVGs neu gerendert; Editor-Screenshot auf den Beispielchart mit
+  Nummern an allen vier Rändern und Hilfslinien umgestellt.
+- Commit `2e2bc34`, Push auf `main`, Tag `v0.6.2-alpha.1` und GitHub Release.
+- GitHub Pages gebaut; `src/version.js`, `sw.js` und der Versions-Badge live
+  geprüft. Die gehostete App lädt den Beispielchart mit oberen und unteren
+  Spaltennummern.
