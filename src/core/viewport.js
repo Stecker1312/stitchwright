@@ -180,10 +180,12 @@ export function rowNumberLayout(chart, view, viewportWidth) {
   const width = Number.isFinite(viewportWidth) && viewportWidth > 0
     ? viewportWidth
     : view.offsetX + chart.width * view.scale + VIEWPORT_MARGIN_X;
-  const frame = viewportFrame(width, 0);
+  const marginX = Math.min(VIEWPORT_MARGIN_X, Math.floor(width / 4));
+  const frameLeft = marginX;
+  const frameRight = width - marginX;
   const chartLeft = view.offsetX;
   const chartRight = chartLeft + chart.width * view.scale;
-  if (chartRight <= frame.left || chartLeft >= frame.right) return null;
+  if (chartRight <= frameLeft || chartLeft >= frameRight) return null;
 
   // Rough width of the widest label at 10 px system-ui. The canvas renderer
   // and the hit test both use this estimate, so they cannot drift apart.
@@ -191,23 +193,23 @@ export function rowNumberLayout(chart, view, viewportWidth) {
   const textWidth = Math.ceil(digits * 6.2);
 
   const leftAttached = chartLeft - ROW_NUMBER_GAP;
-  const leftPinned = leftAttached - textWidth < frame.left + 4;
-  const leftX = leftPinned ? frame.left - ROW_NUMBER_GAP : leftAttached;
+  const leftPinned = leftAttached - textWidth < frameLeft + 4;
+  const leftX = leftPinned ? frameLeft - ROW_NUMBER_GAP : leftAttached;
   const leftArea = leftPinned
-    ? { from: 0, to: frame.left }
+    ? { from: 0, to: frameLeft }
     : {
-      from: Math.max(frame.left, chartLeft - ROW_NUMBER_HIT_WIDTH),
-      to: Math.min(frame.right, chartLeft)
+      from: Math.max(frameLeft, chartLeft - ROW_NUMBER_HIT_WIDTH),
+      to: Math.min(frameRight, chartLeft)
     };
 
   const rightAttached = chartRight + ROW_NUMBER_GAP;
-  const rightPinned = rightAttached + textWidth > frame.right - 4;
+  const rightPinned = rightAttached + textWidth > frameRight - 4;
   const rightX = rightPinned ? width - textWidth - SCROLLBAR_SPACE : rightAttached;
   const rightArea = rightPinned
-    ? { from: frame.right, to: width }
+    ? { from: frameRight, to: width }
     : {
-      from: Math.max(frame.left, chartRight),
-      to: Math.min(frame.right, chartRight + ROW_NUMBER_HIT_WIDTH)
+      from: Math.max(frameLeft, chartRight),
+      to: Math.min(frameRight, chartRight + ROW_NUMBER_HIT_WIDTH)
     };
 
   return {
