@@ -9,6 +9,8 @@ import {
   headerAt,
   zoomAt,
   panBy,
+  VIEWPORT_MARGIN_X,
+  VIEWPORT_MARGIN_Y,
   visibleColumns
 } from "../src/core/viewport.js";
 
@@ -65,8 +67,19 @@ test("row and column number margins are clickable", () => {
   assert.deepEqual(headerAt(chart, view, 32, 45, 300, 300), { kind: "row", index: 3 });
   assert.deepEqual(headerAt(chart, view, 85, 45, 300, 300), { kind: "row", index: 3 });
   assert.deepEqual(headerAt(chart, view, 45, 74, 300, 300), { kind: "column", index: 1 });
-  assert.deepEqual(headerAt(chart, view, 55, 28, 300, 300), { kind: "column", index: 2 });
+  assert.deepEqual(headerAt(chart, view, 55, 20, 300, 300), { kind: "column", index: 2 });
   assert.equal(headerAt(chart, view, 10, 10, 300, 300), null);
+});
+
+test("the drawing frame rejects cells and keeps a background margin", () => {
+  const chart = createChart({ width: 10, height: 10 });
+  const view = { scale: 20, offsetX: 0, offsetY: 0 };
+  assert.equal(cellAt(chart, view, 20, 100, 400, 400), null);
+  assert.equal(cellAt(chart, view, 50, 10, 400, 400), null);
+  assert.deepEqual(cellAt(chart, view, 50, 100), { row: 5, col: 3 });
+  const fitted = fitView(chart, 400, 400);
+  assert.ok(fitted.offsetX >= VIEWPORT_MARGIN_X);
+  assert.ok(fitted.offsetY >= VIEWPORT_MARGIN_Y);
 });
 
 test("row numbers pin to the viewport when the chart is wider than the screen", () => {
@@ -93,5 +106,5 @@ test("hidden numbers do not create invisible hit areas", () => {
   assert.equal(headerAt(chart, view, 32, 45, 300, 300), null);
   assert.equal(headerAt(chart, view, 85, 45, 300, 300), null);
   assert.equal(headerAt(chart, view, 45, 74, 300, 300), null);
-  assert.equal(headerAt(chart, view, 55, 28, 300, 300), null);
+  assert.equal(headerAt(chart, view, 55, 20, 300, 300), null);
 });

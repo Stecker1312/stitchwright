@@ -645,3 +645,29 @@ Randnummern und Hilfslinien dort haben.
 - GitHub Pages gebaut; `src/version.js`, `sw.js` und der Versions-Badge live
   geprüft. Die gehostete App lädt den Beispielchart mit oberen und unteren
   Spaltennummern.
+
+## 2026-11-22 – Fester Hintergrundrahmen um die Zeichenfläche
+
+**Beobachtet:** Daniel hat im Testbrowser bis 286 % gezoomt. Rechts lief das
+Muster bis an die Canvas-Kante, die angehefteten Reihennummern lagen auf den
+Maschen, und nirgends war mehr Hintergrund zu sehen. Bei starkem Zoom soll
+immer ein Stück Rand sichtbar bleiben.
+
+**Getan:**
+
+- Neuer fester Rahmen: 44 px links und rechts, 28 px oben und unten. Der
+  Chart wird an der Innenkante beschnitten; die vier Randstreifen werden nach
+  dem Zeichnen mit der Hintergrundfarbe übermalt und tragen die Nummern.
+- `viewportFrame` teilt die Innenfläche zwischen Renderer, Trefferprüfung,
+  Zeigerlogik und `fitView`. `fitView` lässt jetzt 56 px Rand.
+- `cellAt`, `guideTargetAt` und `ensureVisible` kennen den Rahmen: Klicks,
+  Hilfslinien und der Tastaturcursor bleiben in der Zeichenfläche, der Rand
+  wählt weiterhin Reihen und Spalten.
+- Die Nummernspalten sitzen im Rahmen: links/rechts Reihennummern, oben/unten
+  Spaltennummern. Der rechte Scrollbalken liegt ebenfalls im Rahmen und
+  überdeckt die Zahlen nicht.
+- Tests: neuer Viewport-Test für Rahmen-Treffer und Fit-Rand; insgesamt
+  153 Tests und `npm run check` grün.
+- Browser: 32 × 20-Beispiel bei 286 % Zoom, hell und dunkel. Rahmen an allen
+  vier Seiten sichtbar; Klick in den rechten Rahmen wählt Reihe 12 und malt
+  keine Zelle.

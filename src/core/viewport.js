@@ -11,6 +11,14 @@ import { visibleRows } from "./chart.js";
 export const MIN_SCALE = 0.5;
 export const MAX_SCALE = 80;
 
+/**
+ * The editor keeps a permanent background frame around the drawing area.
+ * Even at maximum zoom the pattern is cut at this frame, so there is always
+ * visible canvas background and a place for the number margins.
+ */
+export const VIEWPORT_MARGIN_X = 44;
+export const VIEWPORT_MARGIN_Y = 28;
+
 /** Interactive width of the row-number strips beside the paper. */
 const ROW_NUMBER_HIT_WIDTH = 44;
 /** Interactive height of the column-number strips above and below the paper. */
@@ -19,15 +27,32 @@ const COLUMN_NUMBER_HIT_HEIGHT = 28;
 const ROW_NUMBER_GAP = 7;
 /** Distance from the paper edge to the centre of a column number. */
 const COLUMN_NUMBER_GAP = 12;
-/** Keep digits away from the viewport edge. */
+/** Keep digits away from the inner edge of the frame. */
 const ROW_NUMBER_EDGE = 6;
 /**
- * The vertical scrollbar overlays the right edge of the canvas. Pinned row
+ * The vertical scrollbar overlays the right side of the frame. Pinned row
  * numbers leave room for it so the digits never sit underneath the thumb.
  */
-const SCROLLBAR_SPACE = 22;
-/** Leave room for the horizontal scrollbar when bottom numbers are pinned. */
-const BOTTOM_SCROLLBAR_SPACE = 22;
+const SCROLLBAR_SPACE = 18;
+
+/**
+ * Inner drawing area and the surrounding frame. Tiny canvases shrink the
+ * frame instead of leaving no room at all for the chart.
+ */
+export function viewportFrame(viewportWidth, viewportHeight) {
+  const width = Number.isFinite(viewportWidth) && viewportWidth > 0 ? viewportWidth : 0;
+  const height = Number.isFinite(viewportHeight) && viewportHeight > 0 ? viewportHeight : 0;
+  const x = width > 0 ? Math.min(VIEWPORT_MARGIN_X, Math.floor(width / 4)) : VIEWPORT_MARGIN_X;
+  const y = height > 0 ? Math.min(VIEWPORT_MARGIN_Y, Math.floor(height / 4)) : VIEWPORT_MARGIN_Y;
+  return {
+    x,
+    y,
+    left: x,
+    right: width - x,
+    top: y,
+    bottom: height - y
+  };
+}
 
 export function createView({ scale = 28, offsetX = 40, offsetY = 40 } = {}) {
   return { scale, offsetX, offsetY };
@@ -56,8 +81,16 @@ export function cellRect(chart, view, row, col) {
   };
 }
 
-/** Convert a canvas point to a cell. Returns null outside the chart. */
-export function cellAt(chart, view, x, y) {
+/**
+ * Convert a canvas point to a cell. Returns null outside the chart or in the
+ * permanent frame around the drawing area.
+ */
+export function cellAt(chart, view, x, y, viewportWidth, viewportHeight) {
+  if (Number.isFinite(viewportWidth) && Number.isFinite(viewportHeight)
+    && viewportWidth > 0 && viewportHeight > 0) {
+    const frame = viewportFrame(viewportWidth, viewportHeight);
+    if (x < frame.left || x >= frame.right || y < frame.top || y >= frame.bottom) return null;
+  }
   const rows = visibleRows(chart);
   const localX = x - view.offsetX;
   const localY = y - view.offsetY;
@@ -70,8 +103,8 @@ export function cellAt(chart, view, x, y) {
   return { row, col };
 }
 
-/** Fit the whole chart into a canvas, with a little breathing room. */
-export function fitView(chart, viewportWidth, viewportHeight, { padding = 44 } = {}) {
+/** Fit the whole chart into the drawing area, with a little breathing room. */
+export function fitView(chart, viewportWidth, viewportHeight, { padding = VIEWPORT_MARGIN_X + 12 } = {}) {
   const rows = visibleRows(chart);
   const availableWidth = Math.max(1, viewportWidth - padding * 2);
   const availableHeight = Math.max(1, viewportHeight - padding * 2);
@@ -132,14 +165,13 @@ export function rowVisible(chart, view, row, viewportHeight) {
 /**
  * Layout for the two row-number columns.
  *
- * Numbers normally sit just outside the paper. When an edge is zoomed out of
- * view, its numbers stick to the viewport edge instead. That keeps the row
- * reference visible while working deep inside a large chart. Both columns
- * share the same vertical positions, and each returns an x anchor plus the
- * clickable strip around it.
+ * Numbers normally sit just outside the paper. When an edge is zoomed past the
+ * permanent drawing frame, its numbers move into the frame instead. That keeps
+ * the row reference visible while working deep inside a large chart, and the
+ * frame always shows background rather than pattern.
  *
  * Returns null when row numbers are disabled or the chart is completely
- * outside the horizontal viewport.
+ * outside the drawing area.
  */
 export function rowNumberLayout(chart, view, viewportWidth) {
   if (chart.options?.showRowNumbers === false) return null;
@@ -147,10 +179,11 @@ export function rowNumberLayout(chart, view, viewportWidth) {
   if (!rows.length) return null;
   const width = Number.isFinite(viewportWidth) && viewportWidth > 0
     ? viewportWidth
-    : view.offsetX + chart.width * view.scale + ROW_NUMBER_HIT_WIDTH;
+    : view.offsetX + chart.width * view.scale + VIEWPORT_MARGIN_X;
+  const frame = viewportFrame(width, 0);
   const chartLeft = view.offsetX;
   const chartRight = chartLeft + chart.width * view.scale;
-  if (chartRight <= 0 || chartLeft >= width) return null;
+  if (chartRight <= frame.left || chartLeft >= frame.right) return null;
 
   // Rough width of the widest label at 10 px system-ui. The canvas renderer
   // and the hit test both use this estimate, so they cannot drift apart.
@@ -158,28 +191,28 @@ export function rowNumberLayout(chart, view, viewportWidth) {
   const textWidth = Math.ceil(digits * 6.2);
 
   const leftAttached = chartLeft - ROW_NUMBER_GAP;
-  const leftPinned = leftAttached - textWidth < ROW_NUMBER_EDGE;
-  const leftX = leftPinned ? textWidth + ROW_NUMBER_EDGE : leftAttached;
-  const leftEdge = leftPinned ? Math.min(width, leftX + 8) : Math.min(width, chartLeft);
+  const leftPinned = leftAttached - textWidth < frame.left + 4;
+  const leftX = leftPinned ? frame.left - ROW_NUMBER_GAP : leftAttached;
+  const leftArea = leftPinned
+    ? { from: 0, to: frame.left }
+    : {
+      from: Math.max(frame.left, chartLeft - ROW_NUMBER_HIT_WIDTH),
+      to: Math.min(frame.right, chartLeft)
+    };
 
   const rightAttached = chartRight + ROW_NUMBER_GAP;
-  const rightPinned = rightAttached + textWidth > width - ROW_NUMBER_EDGE;
+  const rightPinned = rightAttached + textWidth > frame.right - 4;
   const rightX = rightPinned ? width - textWidth - SCROLLBAR_SPACE : rightAttached;
-  const rightEdge = rightPinned ? Math.max(0, rightX - 8) : Math.max(0, chartRight);
+  const rightArea = rightPinned
+    ? { from: frame.right, to: width }
+    : {
+      from: Math.max(frame.left, chartRight),
+      to: Math.min(frame.right, chartRight + ROW_NUMBER_HIT_WIDTH)
+    };
 
   return {
-    left: {
-      x: leftX,
-      align: "right",
-      from: Math.max(0, leftEdge - ROW_NUMBER_HIT_WIDTH),
-      to: leftEdge
-    },
-    right: {
-      x: rightX,
-      align: "left",
-      from: rightEdge,
-      to: Math.min(width, rightEdge + ROW_NUMBER_HIT_WIDTH)
-    }
+    left: { x: leftX, align: "right", ...leftArea },
+    right: { x: rightX, align: "left", ...rightArea }
   };
 }
 
@@ -187,12 +220,12 @@ export function rowNumberLayout(chart, view, viewportWidth) {
  * Layout for the two stitch-number rows above and below the paper.
  *
  * Like the row numbers, each column-number strip follows its paper edge while
- * that edge is visible and sticks to the viewport edge when the chart is
- * zoomed past it. The numbers themselves are centred over their stitches, so
- * the columns still line up with the grid.
+ * that edge is inside the drawing area, and moves into the permanent frame
+ * when the chart is zoomed past it. The numbers themselves are centred over
+ * their stitches, so the columns still line up with the grid.
  *
  * Returns null when stitch numbers are disabled or the chart is completely
- * outside the viewport.
+ * outside the drawing area.
  */
 export function columnNumberLayout(chart, view, viewportWidth, viewportHeight) {
   if (chart.options?.showStitchNumbers === false) return null;
@@ -203,40 +236,37 @@ export function columnNumberLayout(chart, view, viewportWidth, viewportHeight) {
     : view.offsetX + chart.width * view.scale;
   const height = Number.isFinite(viewportHeight) && viewportHeight > 0
     ? viewportHeight
-    : view.offsetY + rows.length * view.scale + COLUMN_NUMBER_HIT_HEIGHT;
+    : view.offsetY + rows.length * view.scale + VIEWPORT_MARGIN_Y;
+  const frame = viewportFrame(width, height);
   const chartW = chart.width * view.scale;
   const chartH = rows.length * view.scale;
   const chartTop = view.offsetY;
   const chartBottom = chartTop + chartH;
-  if (chartBottom <= 0 || chartTop >= height) return null;
+  if (chartBottom <= frame.top || chartTop >= frame.bottom) return null;
 
-  const fromX = Math.max(0, view.offsetX);
-  const toX = Math.min(width, view.offsetX + chartW);
+  const fromX = Math.max(frame.left, view.offsetX);
+  const toX = Math.min(frame.right, view.offsetX + chartW);
   if (toX <= fromX) return null;
 
   const topAttached = chartTop - COLUMN_NUMBER_GAP;
-  const topPinned = topAttached - 5 < ROW_NUMBER_EDGE;
-  const topY = topPinned ? 14 : topAttached;
-  const topEdge = topPinned ? Math.min(height, topY + 8) : Math.min(height, chartTop);
+  const topPinned = topAttached - 5 < frame.top;
+  const topY = topPinned ? Math.max(8, frame.top - 14) : topAttached;
+  const topArea = topPinned
+    ? { from: 0, to: frame.top }
+    : { from: Math.max(frame.top, chartTop - COLUMN_NUMBER_HIT_HEIGHT), to: Math.min(frame.bottom, chartTop) };
 
   const bottomAttached = chartBottom + COLUMN_NUMBER_GAP;
-  const bottomPinned = bottomAttached + 5 > height - BOTTOM_SCROLLBAR_SPACE;
-  const bottomY = bottomPinned ? height - 24 : bottomAttached;
-  const bottomEdge = bottomPinned ? Math.max(0, bottomY - 8) : Math.max(0, chartBottom);
+  const bottomPinned = bottomAttached + 5 > frame.bottom;
+  const bottomY = bottomPinned ? Math.max(8, Math.min(height - 8, frame.bottom + 6)) : bottomAttached;
+  const bottomArea = bottomPinned
+    ? { from: frame.bottom, to: height }
+    : { from: Math.max(frame.top, chartBottom), to: Math.min(frame.bottom, chartBottom + COLUMN_NUMBER_HIT_HEIGHT) };
 
   return {
     fromX,
     toX,
-    top: {
-      y: topY,
-      from: Math.max(0, topEdge - COLUMN_NUMBER_HIT_HEIGHT),
-      to: topEdge
-    },
-    bottom: {
-      y: bottomY,
-      from: bottomEdge,
-      to: Math.min(height, bottomEdge + COLUMN_NUMBER_HIT_HEIGHT)
-    }
+    top: { y: topY, ...topArea },
+    bottom: { y: bottomY, ...bottomArea }
   };
 }
 

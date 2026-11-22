@@ -14,7 +14,7 @@ import { backgroundFor, contrastColor, groupBackground, groupContrast, withAlpha
 import { GUIDE_WIDTH_CELLS, guideLine } from "./guides.js";
 import { stitchCountRuns } from "./run-lengths.js";
 import { glyphFor } from "./symbols.js";
-import { cellRect, columnNumberLayout, rowNumberLayout, visibleColumns } from "./viewport.js";
+import { cellRect, columnNumberLayout, rowNumberLayout, viewportFrame, visibleColumns } from "./viewport.js";
 
 export const LIGHT_THEME = {
   background: "#eef0f3",
@@ -218,7 +218,8 @@ export function drawChart(ctx, chart, view, {
   selectedGroupId = null,
   headerSelection = null,
   guidePreview = null,
-  showNumbers = true
+  showNumbers = true,
+  showFrame = true
 } = {}) {
   const scale = view.scale;
   const rows = visibleRows(chart);
@@ -226,6 +227,7 @@ export function drawChart(ctx, chart, view, {
   const chartW = chart.width * scale;
   const chartH = rowCount * scale;
   const palette = new Map(chart.palette.map((entry) => [entry.id, entry.hex]));
+  const frame = showFrame ? viewportFrame(width, height) : null;
 
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, width, height);
@@ -462,6 +464,17 @@ export function drawChart(ctx, chart, view, {
 
   drawSelection(ctx, chart, view, selection, theme, rows);
 
+  // Repaint the permanent frame on top of the chart. This is what guarantees
+  // visible background at every zoom level: the pattern is cut at the inner
+  // edge instead of running underneath the number margins.
+  if (frame) {
+    ctx.fillStyle = theme.background;
+    ctx.fillRect(0, 0, width, frame.top);
+    ctx.fillRect(0, frame.bottom, width, height - frame.bottom);
+    ctx.fillRect(0, 0, frame.left, height);
+    ctx.fillRect(frame.right, 0, width - frame.right, height);
+  }
+
   // Column numbers are UI, not part of the paper. Draw them above and below
   // the grid; when the chart is zoomed they stick to the viewport edge.
   const columnNumbers = showNumbers && showDetail
@@ -476,6 +489,7 @@ export function drawChart(ctx, chart, view, {
       const stitch = chart.width - col + 1;
       if (stitch % step !== 0 && stitch !== 1 && stitch !== chart.width) continue;
       const x = view.offsetX + (col - 0.5) * scale;
+      if (frame && (x < frame.left + 6 || x > frame.right - 6)) continue;
       const label = String(stitch);
       drawNumber(ctx, label, x, columnNumbers.top.y, "center", theme);
       if (showBottom) drawNumber(ctx, label, x, columnNumbers.bottom.y, "center", theme);
@@ -516,6 +530,7 @@ export function drawThumbnail(ctx, chart, width, height, theme = LIGHT_THEME) {
     height,
     dpr: typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1,
     theme,
-    showNumbers: false
+    showNumbers: false,
+    showFrame: false
   });
 }

@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.6.3-alpha.1 – 22 November 2026
+
+A permanent background frame around the drawing area.
+
+### Fixed
+
+- At high zoom the pattern used to run edge to edge and the pinned numbers
+  sat on top of stitches. The editor now keeps a fixed background frame around
+  the drawing area, so there is always visible canvas background on all four
+  sides, at every zoom level. The frame also holds the row and column numbers.
+- Pointer painting, guide placement, hover and the keyboard cursor stay inside
+  the drawing area; clicks in the frame do not modify cells.
+- `fitView` keeps the paper clear of the frame.
+
+### Checks
+
+- 153 Node tests green.
+- Browser check: example chart at fit, 286 % zoom and in dark mode; visible
+  frame on all sides, clickable row and column numbers in the frame, painting
+  and panning unchanged.
+
 ## 0.6.2-alpha.1 – 22 November 2026
 
 Readable margins while zoomed, plus coloured reading guides.

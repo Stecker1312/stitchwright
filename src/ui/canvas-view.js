@@ -30,6 +30,7 @@ import {
   headerAt,
   headerIndexAt,
   panBy,
+  viewportFrame,
   zoomAt
 } from "../core/viewport.js";
 
@@ -180,7 +181,7 @@ export class CanvasView {
         }
         return;
       }
-      const cell = cellAt(this.store.chart, this.store.view, point.x, point.y);
+      const cell = cellAt(this.store.chart, this.store.view, point.x, point.y, this.width, this.height);
       if (!cell) return;
       this.store.setCursor(cell);
       if (this.store.tool === "marker") {
@@ -303,6 +304,11 @@ export class CanvasView {
   guideTargetAt(point) {
     const chart = this.store.chart;
     const view = this.store.view;
+    const frame = viewportFrame(this.width, this.height);
+    if (point.x < frame.left || point.x >= frame.right
+      || point.y < frame.top || point.y >= frame.bottom) {
+      return null;
+    }
     const rows = visibleRows(chart);
     const chartW = chart.width * view.scale;
     const chartH = rows.length * view.scale;
@@ -627,11 +633,13 @@ export class CanvasView {
     if (!rect) return;
     let dx = 0;
     let dy = 0;
-    const margin = this.store.view.scale * 2;
-    if (rect.x < margin) dx = margin - rect.x;
-    if (rect.x + rect.size > this.width - margin) dx = this.width - margin - (rect.x + rect.size);
-    if (rect.y < margin) dy = margin - rect.y;
-    if (rect.y + rect.size > this.height - margin) dy = this.height - margin - (rect.y + rect.size);
+    const frame = viewportFrame(this.width, this.height);
+    const marginX = Math.min(this.store.view.scale * 2, (frame.right - frame.left) / 3);
+    const marginY = Math.min(this.store.view.scale * 2, (frame.bottom - frame.top) / 3);
+    if (rect.x < frame.left + marginX) dx = frame.left + marginX - rect.x;
+    if (rect.x + rect.size > frame.right - marginX) dx = frame.right - marginX - (rect.x + rect.size);
+    if (rect.y < frame.top + marginY) dy = frame.top + marginY - rect.y;
+    if (rect.y + rect.size > frame.bottom - marginY) dy = frame.bottom - marginY - (rect.y + rect.size);
     if (dx || dy) this.store.setView(panBy(this.store.view, dx, dy));
   }
 }
