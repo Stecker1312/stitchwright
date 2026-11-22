@@ -91,6 +91,12 @@ A cable is a group with `symbol: "cable"` and parameters:
   picture) lie in front, so the **front band is continuous** (C4F).
 - `direction: "back"` means the first-knitted stitches lie behind, so the
   **other band is continuous** (C4B).
+- The legend uses standard front/back counts: the first number is the bundle
+  in front, the second the bundle behind. The second line names the stitches
+  on the cable needle. For example, `left: 2, right: 1, direction: "back"`
+  gives **Cable 2/1 · 1 held back**: two stitches in front, one held behind.
+  For `direction: "front"` the right bundle is in front, so the numbers are
+  `right/left`; for `direction: "back"` they are `left/right`.
 - The span is `left + right`.
 - Combinations outside the presets are kept in the editor's **Custom cables**
   library (German: **Eigene Zöpfe**) so they can be placed again with one

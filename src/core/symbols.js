@@ -572,18 +572,38 @@ export function symbolLegend(id, lang = "en") {
 }
 
 /**
+ * Cable legend in standard front/back notation.
+ *
+ * The first number is the bundle in front, the second the bundle behind. The
+ * text names the bundle on the cable needle: the front bundle for a front
+ * cable, the back bundle for a back cable. This avoids reading "2/1 back" as
+ * "two stitches held back".
+ */
+export function cableLegendParts(group, lang = "en") {
+  const front = group.direction === "front";
+  const frontCount = front ? group.right : group.left;
+  const backCount = front ? group.left : group.right;
+  const held = front ? frontCount : backCount;
+  if (lang === "de") {
+    return {
+      name: `Zopf ${frontCount}/${backCount}`,
+      text: `${held} ${held === 1 ? "Masche" : "Maschen"} ${front ? "vorne" : "hinten"}`
+    };
+  }
+  return {
+    name: `Cable ${frontCount}/${backCount}`,
+    text: `${held} held ${front ? "front" : "back"}`
+  };
+}
+
+/**
  * Legend text for a group. Cables include the split and direction, because
  * the drawing alone cannot tell whether the designer meant 2/2 or 3/1.
  */
 export function groupLegend(group, lang = "en") {
   if (group.symbol === "cable") {
-    const side = lang === "de" ? "nach" : "to";
-    const where = group.direction === "front"
-      ? (lang === "de" ? "vorne" : "front")
-      : (lang === "de" ? "hinten" : "back");
-    return lang === "de"
-      ? `Zopf ${group.left}/${group.right} ${side} ${where}`
-      : `Cable ${group.left}/${group.right} ${side} ${where}`;
+    const { name, text } = cableLegendParts(group, lang);
+    return `${name}: ${text}`;
   }
   if (group.symbol === "custom") {
     const label = group.label || (lang === "de" ? "eigene Gruppe" : "custom group");

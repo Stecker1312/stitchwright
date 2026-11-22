@@ -494,3 +494,23 @@ Live-Fassung auf GitHub Pages.
 **Hinweis:** Die lokale Zopf-Bibliothek ist browsergebunden. Ein 1/2-Zopf
 hinten wird als eigener Zopf mit linker Seite 2, rechter Seite 1 und Richtung
 Hinten angelegt; danach bleibt er in der Bibliothek.
+
+## 2026-11-22 – Zopf-Legende eindeutig
+
+**Beobachtet:** Daniel hat „Cable 2/1 to back“ als „2 Maschen nach hinten“
+gelesen. Standard ist aber vorne/hinten: 2/1 back heißt 2 vorne, 1 hinten und
+passt zu seinem Bild. Bei Richtung „front“ waren die Zahlen dagegen wirklich
+vertauscht, weil die Legende die Bildseiten links/rechts statt vorne/hinten
+zeigte.
+
+**Getan:**
+
+- `cableLegendParts` berechnet die Zahlen in Standardreihenfolge vorne/hinten
+  und nennt zusätzlich die Maschen auf der Hilfsnadel, zum Beispiel
+  „Cable 2/1 · 1 held back“.
+- `groupLegend` und `legendEntries` nutzen dieselbe Funktion; die doppelte
+  Zopf-Logik in `legend.js` ist entfernt.
+- Tests für 2/1 hinten, 1/2 vorne und 2/1 vorne; 135 Tests grün.
+- Beide Beispiel-SVGs neu gerendert. Browser: Properties-Legende zeigt
+  „Cable 2/1 · 1 held back“.
+- Version auf 0.6.1-alpha.1 gesetzt.

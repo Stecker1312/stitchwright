@@ -422,11 +422,11 @@
 <use href="#sym-p" transform="translate(45 591) scale(18)" color="#111111"/>
 <text x="86" y="609" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#111111">purl · p</text>
 <g transform="translate(310 591) scale(8.5)" color="#111111"><path d="M0.18 0.8 L3.82 0.2" stroke="#111111" stroke-width="0.065" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M0.18 0.2 L3.82 0.8" stroke="#ffffff" stroke-width="0.32" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M0.18 0.2 L3.82 0.8" stroke="#111111" stroke-width="0.065" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g>
-<text x="351" y="609" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#111111">Cable 2/2 · to front</text>
+<text x="351" y="609" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#111111">Cable 2/2 · 2 held front</text>
 <g transform="translate(45 619) scale(8.5)" color="#111111"><path d="M0.18 0.2 L3.82 0.8" stroke="#111111" stroke-width="0.065" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M0.18 0.8 L3.82 0.2" stroke="#ffffff" stroke-width="0.32" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M0.18 0.8 L3.82 0.2" stroke="#111111" stroke-width="0.065" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g>
-<text x="86" y="637" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#111111">Cable 2/2 · to back</text>
+<text x="86" y="637" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#111111">Cable 2/2 · 2 held back</text>
 <g transform="translate(310 619) scale(5.666666666666667)" color="#111111"><path d="M0.18 0.8 L5.82 0.2" stroke="#111111" stroke-width="0.065" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M0.18 0.2 L5.82 0.8" stroke="#ffffff" stroke-width="0.32" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M0.18 0.2 L5.82 0.8" stroke="#111111" stroke-width="0.065" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g>
-<text x="351" y="637" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#111111">Cable 3/3 · to front</text>
+<text x="351" y="637" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#111111">Cable 3/3 · 3 held front</text>
 <use href="#sym-yo" transform="translate(45 647) scale(18)" color="#111111"/>
 <text x="86" y="665" font-family="system-ui, sans-serif" font-size="10" font-weight="400" text-anchor="start" fill="#111111">yarn over · yo</text>
 <g transform="translate(310 647) scale(17)" color="#111111"><path d="M.22 .79 L.72 .23 M.72 .79 V.23" stroke="#111111" stroke-width="0.052" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g>

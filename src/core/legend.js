@@ -7,7 +7,7 @@
  */
 
 import { usedLegendKeys, groupSpan } from "./chart.js";
-import { glyphFor, symbolLegend, symbolName } from "./symbols.js";
+import { cableLegendParts, glyphFor, symbolLegend, symbolName } from "./symbols.js";
 
 /** Build localised legend entries for the chart. */
 export function legendEntries(chart, lang = "en") {
@@ -39,12 +39,7 @@ export function legendEntries(chart, lang = "en") {
     if (entry.kind === "group") {
       const group = entry.group;
       const span = groupSpan(chart, group);
-      const cableName = lang === "de"
-        ? `Zopf ${group.left}/${group.right}`
-        : `Cable ${group.left}/${group.right}`;
-      const cableDirection = lang === "de"
-        ? (group.direction === "front" ? "nach vorne" : "nach hinten")
-        : (group.direction === "front" ? "to front" : "to back");
+      const cable = group.symbol === "cable" ? cableLegendParts(group, lang) : null;
       return {
         kind: "group",
         symbol: group.symbol,
@@ -53,9 +48,9 @@ export function legendEntries(chart, lang = "en") {
         span,
         name: group.symbol === "custom"
           ? group.label
-          : (group.symbol === "cable" ? cableName : symbolName(group.symbol, lang)),
-        text: group.symbol === "cable"
-          ? cableDirection
+          : (cable ? cable.name : symbolName(group.symbol, lang)),
+        text: cable
+          ? cable.text
           : (group.symbol === "custom"
             ? (group.legend || (lang === "de" ? "eigene Gruppe" : "custom group"))
             : symbolLegend(group.symbol, lang))

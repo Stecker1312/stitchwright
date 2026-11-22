@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.6.1-alpha.1 – 22 November 2026
+
+Cable legend clarification.
+
+### Fixed
+
+- Cable legends now use standard front/back counts and name the stitches on
+  the cable needle, for example **Cable 2/1 · 1 held back** (two in front, one
+  held behind). This also fixes front-direction asymmetric legends, which
+  previously showed the counts the wrong way round.
+- The asymmetric cable sample and both sample SVGs are regenerated with the
+  new legend text.
+
+### Checks
+
+- 135 Node tests green.
+- Browser check: the 2/1-back cable legend reads "Cable 2/1 · 1 held back".
+
 ## 0.6.0-alpha.1 – 22 November 2026
 
 Range selection, optional stitch counts and corrected asymmetric cables.

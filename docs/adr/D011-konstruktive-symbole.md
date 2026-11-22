@@ -67,6 +67,10 @@ Entscheidung:
   rechter Schenkel (rechtes Bündel hinten), `front` = linker Schenkel (linkes
   Bündel hinten).
 - Die Maschenzahlen bleiben in der Legende; der Schenkel ist kein Ersatz für
-  eine Strichzählung.
+  eine Strichzählung. Die Legende nennt die Zahlen in Standardreihenfolge
+  vorne/hinten und zusätzlich die Maschen auf der Hilfsnadel. `left: 2,
+  right: 1, direction: "back"` ergibt „Cable 2/1 · 1 held back“ (zwei vorne,
+  eine hinten). Bei `direction: "front"` liegen die Zahlen andersherum, weil
+  dann das rechte Bündel vorne liegt.
 - Symmetrische Zöpfe behalten das volle X aus Studie C.
 - Regressionstests decken 1/2 und 2/1 in beiden Richtungen ab.

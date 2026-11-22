@@ -101,9 +101,21 @@ test("cable presets are valid", () => {
 
 test("group legends describe cables in both languages", () => {
   const group = { symbol: "cable", left: 2, right: 2, direction: "front" };
-  assert.match(groupLegend(group, "de"), /2\/2/);
-  assert.match(groupLegend(group, "de"), /vorne/);
-  assert.match(groupLegend(group, "en"), /front/);
+  assert.equal(groupLegend(group, "de"), "Zopf 2/2: 2 Maschen vorne");
+  assert.equal(groupLegend(group, "en"), "Cable 2/2: 2 held front");
+});
+
+test("asymmetric cable legends use front/back counts and name the held side", () => {
+  const back = { symbol: "cable", left: 2, right: 1, direction: "back" };
+  assert.equal(groupLegend(back, "en"), "Cable 2/1: 1 held back");
+  assert.equal(groupLegend(back, "de"), "Zopf 2/1: 1 Masche hinten");
+
+  const front = { symbol: "cable", left: 2, right: 1, direction: "front" };
+  assert.equal(groupLegend(front, "en"), "Cable 1/2: 1 held front");
+  assert.equal(groupLegend(front, "de"), "Zopf 1/2: 1 Masche vorne");
+
+  const twoFront = { symbol: "cable", left: 1, right: 2, direction: "front" };
+  assert.equal(groupLegend(twoFront, "en"), "Cable 2/1: 2 held front");
 });
 
 test("custom group legends include the user's explanation", () => {

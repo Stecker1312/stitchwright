@@ -1,7 +1,7 @@
 # Status
 
 - Stand: 2026-11-22
-- Version: **0.6.0-alpha.1**
+- Version: **0.6.1-alpha.1**
 - Phase: Öffentliche Vorabversion (Alpha)
 - Sichtbarkeit: öffentlich, GitHub Pages:
   <https://stecker1312.github.io/stitchwright/>
@@ -62,9 +62,9 @@
 - Englisch (britisch) als Standardsprache in Oberfläche, Startseite,
   Validierungsmeldungen, CLI, Manifest und README; Beispiel-Charts englisch
 - PWA mit Service Worker, offline getestet
-- 134 Node-Tests grün; Browserprüfung mit Chromium/Playwright
+- 135 Node-Tests grün; Browserprüfung mit Chromium/Playwright
 - Englische Projektseite `about.html` mit Browser-first-Schnellstart, Preisvergleich, Clear-Symbolpack und Planned-Liste
-- Englischer Screenshot (0.5.1), weiterhin gültig
+- Englischer Screenshot, Version 0.6.1 (Legende „2 held front“)
 - Audit-Pakete A, B und C umgesetzt: Dokument-/Speichersicherheit, valide
   UI-Kommandos, Rohvalidierung, sichere Symbol-Lookups und CLI-Vertrag;
   zentrale Teile von D, E und F folgen mit den verbleibenden P2-Punkten
@@ -77,6 +77,9 @@
 - Asymmetrische Zöpfe zeichnen das hintere Bündel als kurzen Schenkel, der ins
   durchgehende Vorderband mündet; symmetrische Zöpfe behalten das volle X
   (D011-Nachtrag)
+- Zopf-Legenden nennen die Zahlen vorne/hinten und die Maschen auf der
+  Hilfsnadel („Cable 2/1 · 1 held back“); asymmetrische Front-Legenden waren
+  vorher vertauscht
 - Beispiel `samples/asymmetric-cables.strickschrift.json` mit gerendertem SVG
   vergleicht 1/2, 2/1 und 3/2 mit symmetrischen Kontrollen
 
@@ -112,13 +115,14 @@
 
 ## Tests
 
-`npm test`: 134 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
+`npm test`: 135 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
 Einheiten, Viewport, CLI, Performance).
 `npm run check`: Syntax- und JSON-Prüfung plus Tests grün.
 Browser: Zeichnen, Farben, Zöpfe, Rückreihen, Undo, Export, Scrollbalken,
 eigene Gruppen mit Legendentext, PWA offline manuell mit Playwright geprüft.
 Zusätzlich: 2/1-Zopf hinten aus dem Dialog platziert und bei 70 % und 146 %
-Zoom geprüft; Vorderband durchgehend, hinterer Schenkel rechts.
+Zoom geprüft; Vorderband durchgehend, hinterer Schenkel rechts. Die
+Properties-Legende zeigt „Cable 2/1 · 1 held back“.
 
 Audit-Ergänzung: `node docs/audits/2026-11-19-probes.mjs` reproduziert
 Fehler am Ausgangscommit `d3b1ff8`; kein Sollverhalten und kein Ersatz für
