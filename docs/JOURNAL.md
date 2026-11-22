@@ -473,3 +473,24 @@ hinten war davon ebenfalls betroffen.
 die Bildseiten (links/rechts) und die Richtung, nicht die Zahl der gehaltenen
 Maschen. Eine eigene 1/2-Voreinstellung ist nicht nötig, weil eigene Zöpfe
 bereits in der lokalen Bibliothek bleiben.
+
+## 2026-11-22 – 0.6.0-alpha.1 veröffentlicht
+
+**Anlass:** Der asymmetrische Zopf-Glyph war korrigiert; Daniel prüft die
+Live-Fassung auf GitHub Pages.
+
+**Getan:**
+
+- Version 0.6.0-alpha.1 und Datum 2026-11-22 in `package.json`,
+  `src/version.js`, STATUS, README, Projektseite, How-tos, AGENTS, D009 und
+  SOP-004 gesetzt.
+- Service-Worker-Cache auf `stitchwright-v0.6.0` angehoben; der
+  Regressionstest löscht die alten Caches bis v0.5.1.
+- 134 Tests und `npm run check` grün.
+- Commit `af8d231`, Tag `v0.6.0-alpha.1`, Push und GitHub Release.
+- GitHub Pages gebaut; `src/version.js`, `about.html` und das neue Sample
+  live geprüft. Der Beispiel-SVG enthält den kurzen Schenkel.
+
+**Hinweis:** Die lokale Zopf-Bibliothek ist browsergebunden. Ein 1/2-Zopf
+hinten wird als eigener Zopf mit linker Seite 2, rechter Seite 1 und Richtung
+Hinten angelegt; danach bleibt er in der Bibliothek.
