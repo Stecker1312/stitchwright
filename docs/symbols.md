@@ -1,6 +1,6 @@
 # The Clear symbol set
 
-Updated 20 November 2026. This file is the authoritative description of the
+Updated 22 November 2026. This file is the authoritative description of the
 standard pack. The implementation is in `src/core/symbols.js`.
 
 The visual language is the **constructive** study: thin converging lines,
@@ -17,9 +17,10 @@ keeps the same three anchors and the same chart format.
    is drawn once, not six times.
 4. **Direction is shape, not colour.** Slants and branches carry the direction;
    there are no arrowheads. Black and white must be enough.
-5. **Cables are open crossings.** Two thin bands cross; the front band is
-   continuous, the back band is broken at the crossing. The legend names the
-   stitch counts and the direction.
+5. **Cables are open crossings.** In a symmetric cable two thin bands cross;
+   the front band is continuous, the back band is broken at the crossing. In
+   an asymmetric cable the bundle behind is a short leg on its side of the
+   front band. The legend names the stitch counts and the direction.
 6. **Text only as an exception.** Labelled groups (for example `TL`) are
    allowed, but not the normal case.
 7. **The legend is required.** Every chart builds a legend from the symbols it
@@ -94,13 +95,22 @@ A cable is a group with `symbol: "cable"` and parameters:
 - Combinations outside the presets are kept in the editor's **Custom cables**
   library (German: **Eigene Zöpfe**) so they can be placed again with one
   click. The chart file still carries the full parameters.
-- The glyph uses two crossing bands and a paper-coloured halo around the front
-  band. It does not draw one line per stitch; the legend carries the exact
+- The glyph keeps the front band continuous across the whole group.
+- For a **symmetric** cable (`left === right`) both bands are full-width
+  crossing lines. A paper-coloured halo around the front band breaks the back
+  band at the crossing.
+- For an **asymmetric** cable the bundle behind is only a short leg: it starts
+  at the outer bottom corner on its side (right for `back`, left for `front`)
+  and joins the front band. The second full-width line is deliberately absent,
+  because the bundle behind disappears behind the front band. This matches the
+  hand sketch for 1/2 and 2/1 cables.
+- The glyph does not draw one line per stitch; the legend carries the exact
   counts.
 - The bands run as straight open crossings, not closed ropes.
 
-This covers 1/1, 2/2, 3/3 and 4/4 without new glyphs. The legend gives the
-exact direction.
+This covers 1/1, 2/2, 3/3 and 4/4 as well as asymmetric widths such as 1/2,
+2/1 and 3/2 without new glyphs. The legend gives the exact counts and
+direction.
 
 ## Labelled groups
 

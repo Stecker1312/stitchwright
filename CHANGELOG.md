@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.6.0-alpha.1 – 22 November 2026
+
+Range selection, optional stitch counts and corrected asymmetric cables.
 
 ### New
 
@@ -15,11 +17,24 @@
 - The turn, bind off and cast on glyphs are hidden from the palette. Old charts
   still load, render and export them.
 
+### Fixed
+
+- Asymmetric cables now draw the bundle behind as a short leg that joins the
+  continuous front band, matching the 1/2-back hand sketch. Symmetric cables
+  keep the full X. The stitch counts stay in the legend.
+
+### Samples
+
+- `samples/asymmetric-cables.strickschrift.json` (with rendered SVG) compares
+  1/2, 2/1 and 3/2 cables with symmetric controls.
+
 ### Checks
 
-- 130 Node tests green.
+- 134 Node tests green.
 - Browser check: row drag and Shift-click, range delete, rectangle selection
   starting on a group, Ctrl+C / Ctrl+V, stitch counts and SVG output.
+- Browser check: a 2/1-back cable placed from the custom cable dialog shows the
+  continuous front band and the short rear leg at 70 % and 146 % zoom.
 
 ## 0.5.1-alpha.1 – 21 November 2026
 

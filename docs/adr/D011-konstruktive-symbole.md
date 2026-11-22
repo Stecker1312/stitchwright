@@ -23,9 +23,12 @@ bisherigen Symbole ab.
 - Die Studie ergänzt eine Linksmaschen-Variante (`ptbl`), zwei
   Abhebevarianten (Faden hinten/vorne) und zwei Linksabnahmen (`p2tog`, `ssp`).
   Sie werden als eigene Symbole aufgenommen, nicht als UI-Sonderfälle.
-- Zöpfe werden als zwei offene, dünne Kreuzungsbänder gezeichnet. Das vordere
-  Band ist durchgehend, das hintere wird an der Kreuzung unterbrochen. Die
-  Maschenzahl steht in der Legende, nicht als zusätzliche Strichanzahl.
+- Zöpfe werden als offene, dünne Kreuzungsbänder gezeichnet. Bei gleich breiten
+  Feldern ist das vordere Band durchgehend und das hintere an der Kreuzung
+  unterbrochen. Bei ungleich breiten Feldern bleibt nur das vordere Band über
+  die ganze Gruppe durchgehend; das hintere erscheint als kurzer Schenkel auf
+  seiner Seite. Die Maschenzahl steht in der Legende, nicht als zusätzliche
+  Strichanzahl.
 - Keine Pfeilspitzen bei Abnahmen. Richtung entsteht durch Neigung, Gabelung
   oder die Lage des Purpunkts.
 - Die konkreten Pfade und die zusätzlichen Symbole liegen in
@@ -48,3 +51,22 @@ bisherigen Symbole ab.
   weich und bei 22 px unruhiger.
 - **Alte Symbole behalten:** hätte keine Migration erfordert, aber Daniel hat
   sich ausdrücklich für C entschieden.
+
+## Nachtrag 2026-11-22 – asymmetrische Zöpfe
+
+Daniel hat einen 1/2-Zopf „hinter die Arbeit“ skizziert: drei Maschen, ein
+durchgehendes vorderes Band von links unten nach rechts oben und ein kurzer
+hinterer Schenkel nur in der rechten Zelle. Der bisherige Glyph zeichnete zwei
+volle Kreuzungslinien und traf die Asymmetrie nicht.
+
+Entscheidung:
+
+- Bei `left !== right` läuft das vordere Band weiter über die ganze Gruppe.
+- Das hintere Bündel wird nur als kurzer Schenkel von der äußeren unteren Ecke
+  zur Vorderbandlinie gezeichnet. Die Seite folgt der Richtung: `back` =
+  rechter Schenkel (rechtes Bündel hinten), `front` = linker Schenkel (linkes
+  Bündel hinten).
+- Die Maschenzahlen bleiben in der Legende; der Schenkel ist kein Ersatz für
+  eine Strichzählung.
+- Symmetrische Zöpfe behalten das volle X aus Studie C.
+- Regressionstests decken 1/2 und 2/1 in beiden Richtungen ab.

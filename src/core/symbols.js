@@ -83,9 +83,14 @@ function arrow(x1, y1, x2, y2, width = STROKE) {
 /**
  * A cable is an open crossing of two bands.
  *
- * The front band is drawn twice: first a paper-coloured halo, then the black
- * band. That makes the band behind look interrupted at the crossing. The
- * number of stitches per side lives in the legend, not in extra lines.
+ * Symmetric cables keep the full X from study C: the front band is continuous,
+ * the back band is broken at the crossing by a paper-coloured halo.
+ *
+ * Asymmetric cables show the bundle behind as a short leg only. The front band
+ * still runs across the whole group; the back leg rises from the outer bottom
+ * corner on its side and joins the front band. That matches the hand sketch for
+ * 1/2 and 2/1 cables and keeps the glyph readable at small sizes. The stitch
+ * counts live in the legend, not in extra lines.
  */
 export function cableGlyph({ left, right, direction = "front" }) {
   if (!Number.isInteger(left) || !Number.isInteger(right) || left < 1 || right < 1) {
@@ -98,11 +103,28 @@ export function cableGlyph({ left, right, direction = "front" }) {
   const span = left + right;
   const x1 = 0.18;
   const x2 = span - 0.18;
-  const falling = path(`M${x1} 0.2 L${x2} 0.8`, { width: 0.065 });
-  const rising = path(`M${x1} 0.8 L${x2} 0.2`, { width: 0.065 });
-  // The front strand is drawn last with a paper-coloured halo. The back
-  // strand stays continuous on both sides of the crossing.
+  const yTop = 0.2;
+  const yBottom = 0.8;
+  const rising = path(`M${x1} ${yBottom} L${x2} ${yTop}`, { width: 0.065 });
+  const falling = path(`M${x1} ${yTop} L${x2} ${yBottom}`, { width: 0.065 });
   const front = direction === "front" ? falling : rising;
+
+  if (left !== right) {
+    // The right bundle lies behind when the direction is "back"; for "front"
+    // the left bundle is behind. Its visible tail has a short fixed length,
+    // so even a wide bundle reads as a leg behind the front band.
+    const tail = 0.8;
+    const behindOnRight = direction === "back";
+    const outerX = behindOnRight ? x2 : x1;
+    const branchX = behindOnRight ? span - tail : tail;
+    const t = (branchX - x1) / (x2 - x1);
+    const branchY = direction === "back"
+      ? yBottom + (yTop - yBottom) * t
+      : yTop + (yBottom - yTop) * t;
+    const back = path(`M${outerX} ${yBottom} L${branchX} ${branchY}`, { width: 0.065 });
+    return [back, front];
+  }
+
   const back = direction === "front" ? rising : falling;
   return [
     back,

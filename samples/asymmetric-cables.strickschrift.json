@@ -1,0 +1,286 @@
+{
+  "schema": "strickschrift/1",
+  "id": "asymmetric-cables-mwrtzl2c-f1a86362",
+  "title": "Asymmetric cables",
+  "width": 12,
+  "height": 4,
+  "rows": [
+    [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  ],
+  "colors": [
+    [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  ],
+  "groups": [
+    {
+      "id": "g1",
+      "symbol": "cable",
+      "row": 1,
+      "col": 1,
+      "left": 1,
+      "right": 2,
+      "direction": "back"
+    },
+    {
+      "id": "g2",
+      "symbol": "cable",
+      "row": 2,
+      "col": 1,
+      "left": 1,
+      "right": 2,
+      "direction": "front"
+    },
+    {
+      "id": "g3",
+      "symbol": "cable",
+      "row": 1,
+      "col": 4,
+      "left": 2,
+      "right": 1,
+      "direction": "back"
+    },
+    {
+      "id": "g4",
+      "symbol": "cable",
+      "row": 2,
+      "col": 4,
+      "left": 2,
+      "right": 1,
+      "direction": "front"
+    },
+    {
+      "id": "g5",
+      "symbol": "cable",
+      "row": 1,
+      "col": 7,
+      "left": 3,
+      "right": 2,
+      "direction": "back"
+    },
+    {
+      "id": "g6",
+      "symbol": "cable",
+      "row": 2,
+      "col": 7,
+      "left": 3,
+      "right": 2,
+      "direction": "front"
+    },
+    {
+      "id": "g7",
+      "symbol": "cable",
+      "row": 3,
+      "col": 1,
+      "left": 1,
+      "right": 1,
+      "direction": "back"
+    },
+    {
+      "id": "g8",
+      "symbol": "cable",
+      "row": 3,
+      "col": 4,
+      "left": 2,
+      "right": 2,
+      "direction": "back"
+    },
+    {
+      "id": "g9",
+      "symbol": "cable",
+      "row": 3,
+      "col": 8,
+      "left": 2,
+      "right": 2,
+      "direction": "front"
+    },
+    {
+      "id": "g10",
+      "symbol": "cable",
+      "row": 4,
+      "col": 1,
+      "left": 3,
+      "right": 3,
+      "direction": "back"
+    },
+    {
+      "id": "g11",
+      "symbol": "cable",
+      "row": 4,
+      "col": 7,
+      "left": 3,
+      "right": 3,
+      "direction": "front"
+    }
+  ],
+  "palette": [
+    {
+      "id": "A",
+      "name": "A",
+      "hex": "#ffffff"
+    },
+    {
+      "id": "B",
+      "name": "B",
+      "hex": "#1a1a1a"
+    },
+    {
+      "id": "C",
+      "name": "C",
+      "hex": "#b3261e"
+    },
+    {
+      "id": "D",
+      "name": "D",
+      "hex": "#1f5fa8"
+    },
+    {
+      "id": "E",
+      "name": "E",
+      "hex": "#2e7d32"
+    },
+    {
+      "id": "F",
+      "name": "F",
+      "hex": "#e0a800"
+    },
+    {
+      "id": "G",
+      "name": "G",
+      "hex": "#7a7a7a"
+    },
+    {
+      "id": "H",
+      "name": "H",
+      "hex": "#e8e8e8"
+    }
+  ],
+  "options": {
+    "rowsMode": "all",
+    "showRowNumbers": true,
+    "showStitchNumbers": true,
+    "showStitchCounts": false,
+    "showLegend": true,
+    "repeat": null,
+    "cellMm": 6,
+    "paper": "A4",
+    "subtitle": "1/2 and 2/1 cables with a short rear leg; symmetric cables keep the full X.",
+    "markers": []
+  },
+  "meta": {
+    "author": "",
+    "source": "",
+    "license": "",
+    "notes": "",
+    "created": "2026-11-22T12:46:40.740Z",
+    "modified": "2026-11-22T12:46:40.740Z"
+  }
+}

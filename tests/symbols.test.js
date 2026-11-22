@@ -36,12 +36,37 @@ test("spans are correct", () => {
   assert.equal(isGroupSymbol("cable"), true);
 });
 
-test("constructive cable glyph has two lines and one halo", () => {
+test("constructive symmetric cable has two lines and one halo", () => {
   const glyph = cableGlyph({ left: 2, right: 2, direction: "front" });
   const strands = glyph.filter((item) => item.type === "path" && !item.halo);
   const halos = glyph.filter((item) => item.halo);
   assert.equal(strands.length, 2);
   assert.equal(halos.length, 1);
+});
+
+test("asymmetric cable keeps the front band continuous and draws one short back leg", () => {
+  const glyph = cableGlyph({ left: 1, right: 2, direction: "back" });
+  assert.equal(glyph.length, 2);
+  assert.equal(glyph.some((item) => item.halo), false);
+  const [back, front] = glyph;
+  assert.equal(front.d, "M0.18 0.8 L2.82 0.2");
+  assert.match(back.d, /^M2\.82 0\.8 L2\.2 0\.34/);
+});
+
+test("asymmetric cable mirrors with the direction", () => {
+  const back = cableGlyph({ left: 2, right: 1, direction: "back" });
+  const front = cableGlyph({ left: 2, right: 1, direction: "front" });
+  assert.equal(back[1].d, "M0.18 0.8 L2.82 0.2");
+  assert.equal(front[1].d, "M0.18 0.2 L2.82 0.8");
+  assert.match(back[0].d, /^M2\.82 0\.8 L2\.2 0\.34/);
+  assert.match(front[0].d, /^M0\.18 0\.8 L0\.8 0\.34/);
+});
+
+test("asymmetric cable counts do not add extra lines", () => {
+  for (const [left, right] of [[1, 2], [2, 1], [1, 3], [3, 1], [2, 3], [3, 2]]) {
+    const glyph = cableGlyph({ left, right, direction: "back" });
+    assert.equal(glyph.filter((item) => item.type === "path").length, 2, `${left}/${right}`);
+  }
 });
 
 test("cable direction changes which line is continuous", () => {

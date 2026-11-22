@@ -7,6 +7,8 @@ Synthetic charts, no personal project data.
 | `empty.strickschrift.json` | empty 24 × 16 chart, for testing import and the CLI |
 | `klar-demo.strickschrift.json` | 32 × 20 with cables, decreases, colours and a repeat |
 | `klar-demo.svg` | rendered version of the demo chart |
+| `asymmetric-cables.strickschrift.json` | 12 × 4 with 1/2, 2/1 and 3/2 cables plus symmetric controls |
+| `asymmetric-cables.svg` | rendered version of the cable comparison |
 
 ## Render again
 

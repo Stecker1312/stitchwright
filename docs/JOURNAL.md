@@ -445,3 +445,31 @@ sinnvoll.
 
 **Offen:** Touch-Abnahme; Zopf-Symbolstudie für asymmetrische Breiten liegt
 weiterhin bei Daniel; die Änderungen sind noch nicht veröffentlicht.
+
+## 2026-11-22 – Asymmetrische Zöpfe zeichnen
+
+**Beobachtet:** Daniel hat einen 1/2-Zopf „hinter die Arbeit“ skizziert: drei
+Maschen, ein durchgehendes Vorderband von links unten nach rechts oben und ein
+kurzer hinterer Schenkel nur in der rechten Zelle. Der bisherige Glyph zeichnete
+zwei volle Kreuzungslinien und traf die Asymmetrie nicht. Sein eigener 3/2-Zopf
+hinten war davon ebenfalls betroffen.
+
+**Getan:**
+
+- `cableGlyph` unterscheidet jetzt symmetrische und asymmetrische Breiten.
+  Symmetrische Zöpfe behalten das volle X aus Studie C. Bei `left !== right`
+  läuft das Vorderband über die ganze Gruppe; das hintere Bündel erscheint als
+  kurzer Schenkel von der äußeren unteren Ecke zur Vorderbandlinie. `back` legt
+  den Schenkel nach rechts, `front` nach links.
+- Der Schenkel wird vor dem Vorderband gezeichnet und mündet ohne Lücke in die
+  Linie. Es gibt keinen zusätzlichen Halo, weil er das Vorderband nicht kreuzt.
+- Regressionstests für 1/2 und 2/1 in beiden Richtungen; 134 Tests grün.
+- `docs/symbols.md` und ADR D011 um die asymmetrische Regel ergänzt.
+- Browser: 2/1-Zopf hinten über den Dialog angelegt und bei 70 % und 146 %
+  Zoom geprüft; Vorderband durchgehend, Schenkel rechts.
+- Version auf 0.6.0-alpha.1 und Datum 2026-11-22 gesetzt.
+
+**Offen:** Touch-, Druck- und reale Strickabnahme; die Legende nennt weiterhin
+die Bildseiten (links/rechts) und die Richtung, nicht die Zahl der gehaltenen
+Maschen. Eine eigene 1/2-Voreinstellung ist nicht nötig, weil eigene Zöpfe
+bereits in der lokalen Bibliothek bleiben.
