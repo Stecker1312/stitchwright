@@ -728,3 +728,28 @@ abgeschnitten werden.
 - GitHub Pages gebaut; live geprüft: Home zeigt die linke Musterkante samt
   äußerer Masche mit 40 px Hintergrund vor dem Rahmen, End die rechte Kante
   samt Masche 1.
+
+## 2026-11-22 – Runden als Chart-Eigenschaft
+
+**Beobachtet:** Stitchwright war auf Hin- und Rückreihen ausgelegt. Für Mützen,
+Socken, Yokes und andere Arbeiten in Runden fehlte die Bedeutung „jede Reihe
+ist eine Runde auf der rechten Seite“. Eine reine Anzeige-Umschaltung hätte
+nicht in der Datei gestanden und wäre beim Export oder Teilen verloren gegangen.
+
+**Getan:**
+
+- Neues optionales Chart-Feld `options.construction` mit `"flat"` (Default)
+  und `"round"` (D013). Rundcharts zeigen alle Runden, nummerieren 1 … n und
+  dürfen kein `rowsMode: "rs"` tragen; der Validator meldet
+  `E_ROUND_ROWS_MODE`. Alte Dateien bleiben flach, ältere Leser ignorieren das
+  Feld und rendern wegen `rowsMode: "all"` trotzdem alle Runden.
+- Oberfläche: „Strickweise“ im Dialog für neue Charts und in den
+  Chart-Einstellungen. Im Rundmodus verschwindet der Rückreihen-Umschalter;
+  Status, Tabelle, Inspector sowie Hinzufügen/Löschen sprechen von Runden.
+- CLI: `new --round`; Schema, Format-Doku, README, How-tos, Projektseite und
+  SOPs aktualisiert.
+- ADR D013 angelegt; D001 und D004 verweisen darauf.
+- 165 Node-Tests grün. Browser: 12 × 6-Rundchart angelegt, gezeichnet,
+  Tabelle und Status geprüft, auf flach zurückgeschaltet, Deutsch und Englisch,
+  hell und dunkel; Autosave und Reload behalten `construction: "round"` und
+  `rowsMode: "all"`. Keine Konsolenfehler.

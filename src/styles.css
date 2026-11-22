@@ -667,6 +667,9 @@ html[data-theme="high-contrast"] .button.primary { color: #000000; }
 
 .guide-tool-options { margin-top: 10px; }
 .guide-tool-options[hidden] { display: none; }
+.rows-mode-settings[hidden],
+.round-mode-hint[hidden],
+.stage-meta .button[hidden] { display: none; }
 
 .tool-options {
   display: flex;

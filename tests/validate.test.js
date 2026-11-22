@@ -86,6 +86,41 @@ test("hidden wrong-side patterning produces a warning", () => {
   assert.equal(hasErrors(diagnostics), false);
 });
 
+test("construction must be flat or round", () => {
+  const chart = createChart({ width: 10, height: 8 });
+  chart.options.construction = "tube";
+  const diagnostics = validateChart(chart);
+  assert.equal(diagnostics.some((item) => item.code === "E_CONSTRUCTION"), true);
+});
+
+test("round charts must show all rounds", () => {
+  const chart = createChart({ width: 10, height: 8, construction: "round" });
+  chart.options.rowsMode = "rs";
+  const diagnostics = validateChart(chart);
+  assert.equal(diagnostics.some((item) => item.code === "E_ROUND_ROWS_MODE"), true);
+  assert.equal(diagnostics.some((item) => item.code === "W_HIDDEN_WS"), false);
+});
+
+test("round charts do not warn about hidden wrong-side rows", () => {
+  const chart = createChart({ width: 10, height: 8, construction: "round" });
+  setCell(chart, 2, 1, "p");
+  const diagnostics = validateChart(chart);
+  assert.equal(diagnostics.some((item) => item.code === "W_HIDDEN_WS"), false);
+  assert.equal(hasErrors(diagnostics), false);
+});
+
+test("raw round charts with hidden rows are rejected before normalization", () => {
+  const raw = {
+    schema: "strickschrift/1",
+    width: 2,
+    height: 2,
+    rows: [[null, null], [null, null]],
+    options: { construction: "round", rowsMode: "rs" }
+  };
+  const diagnostics = validateChart(raw, { raw: true });
+  assert.equal(diagnostics.some((item) => item.code === "E_ROUND_ROWS_MODE"), true);
+});
+
 test("custom group legend must be a short string", () => {
   const chart = createChart({ width: 10, height: 8 });
   addGroup(chart, { row: 1, col: 1, symbol: "custom", span: 3, label: "TL" });

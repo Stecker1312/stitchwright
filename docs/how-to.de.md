@@ -16,8 +16,8 @@ Dateien, die du selbst speicherst.
 
 ## 2. Chart anlegen
 
-Wähle **Neu**, gib einen Titel, Breite in Maschen und Höhe in Reihen ein und
-klicke **Chart anlegen**.
+Wähle **Neu**, gib einen Titel, Breite in Maschen und Höhe ein, wähle **Flach**
+oder **In Runden** und klicke **Chart anlegen**.
 
 Oder wähle **Beispiel laden**, um ein fertiges Chart mit Zöpfen, Farben und
 Legende zu sehen.
@@ -54,15 +54,18 @@ Kästchen.
 
 Die Legende nennt die genaue Zopfrichtung.
 
-## 5. Reihen und Spalten
+## 5. Reihen, Runden und Spalten
 
 - **+ Reihe** und **+ Spalte** schaffen Platz.
 - Zum Löschen zuerst die Reihen- oder Spaltennummer anklicken, dann den
   Papierkorb und bestätigen.
 - Über mehrere Reihen- oder Spaltennummern ziehen oder mit Shift klicken
   markiert einen Bereich; der Papierkorb löscht ihn.
-- **Nur Hinreihen** blendet gerade Reihen aus und nummeriert 1, 3, 5 … Die
-  versteckten Reihen bleiben gespeichert.
+- **Strickweise** wählt Flachstricken oder Stricken in Runden. Bei flachen
+  Charts blendet **Nur Hinreihen** gerade Reihen aus und nummeriert 1, 3, 5 …
+  Die versteckten Reihen bleiben gespeichert.
+- In Runden ist jede Runde eine rechte Seite. Alle Runden werden angezeigt und
+  mit 1, 2, 3 … nummeriert; den Rückreihen-Umschalter gibt es dort nicht.
 
 ## 6. Rapport und Legende
 
@@ -114,7 +117,8 @@ Wähle zuerst ein Symbol oder lade das Beispiel. Eine Farbe allein zeichnet
 kein Symbol.
 
 **Reihen fehlen.**
-Schalte **Nur Hinreihen** aus, um alle Reihen zu sehen.
+Schalte **Nur Hinreihen** aus, um alle Reihen zu sehen. In Runden werden alle
+Runden immer angezeigt.
 
 **Es fragt nach ungespeicherten Änderungen.**
 Wähle **Speichern und weiter**, **Verwerfen** oder **Abbrechen**. Beim

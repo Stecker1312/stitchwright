@@ -34,19 +34,23 @@ Offline-Test zusätzlich einmal ohne Query laden und warten, bis
    Autosave an, Titel ändern, sofort Neu → alter Stand ist gespeichert.
 5. **Rückreihen:** RS-Modus, Pfeiltasten bleiben auf ungeraden Reihen.
    Auswahl über mehrere Reihen füllen: gerade Reihen bleiben unverändert.
-6. **Pointer:** schnelle Mausbewegung über zehn Zellen hinterlässt eine
+6. **Runden:** Chart auf „In Runden“ stellen. Der Rückreihen-Umschalter
+   verschwindet, alle Runden sind sichtbar, Beschriftung und Status sagen
+   „Runde“, und „Nur jede zweite Reihe“ ist nicht verfügbar. Zurück auf flach:
+   alle Reihen bleiben sichtbar.
+7. **Pointer:** schnelle Mausbewegung über zehn Zellen hinterlässt eine
    zusammenhängende Linie. Mittlere Maustaste verschiebt. Zweiter Finger
    bricht den ersten Strich ab und zoomt.
-7. **Dialoge/Drawer:** `aria-labelledby` vorhanden; auf 390 px sind
+8. **Dialoge/Drawer:** `aria-labelledby` vorhanden; auf 390 px sind
    geschlossene Seitenleisten `inert`, offene nehmen den Fokus auf;
    `Escape` schließt und gibt den Fokus zurück.
-8. **Export:** JSON + Druck druckt ein Diagramm, Legenden-Checkbox
+9. **Export:** JSON + Druck druckt ein Diagramm, Legenden-Checkbox
    überschreibt die Chart-Option, A4/A3/Letter werden als `@page` gesetzt.
    Sehr große PNGs melden die 8000-px-Kappung.
-9. **Offline:** Nach vollständiger Installation Netzwerk abschalten und neu
-   laden. App, Symbole und lokale Charts bleiben verfügbar. Ein fremder
-   Cache auf derselben Origin bleibt erhalten.
-10. **Fehler:** DevTools-Konsole während des Ablaufs ohne unbehandelte
+10. **Offline:** Nach vollständiger Installation Netzwerk abschalten und neu
+    laden. App, Symbole und lokale Charts bleiben verfügbar. Ein fremder
+    Cache auf derselben Origin bleibt erhalten.
+11. **Fehler:** DevTools-Konsole während des Ablaufs ohne unbehandelte
     Fehler prüfen.
 
 ## Ergebnis

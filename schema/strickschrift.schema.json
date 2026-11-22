@@ -224,7 +224,16 @@
     "options": {
       "type": "object",
       "properties": {
+        "construction": {
+          "description": "flat = back-and-forth rows; round = every row is a right-side round",
+          "enum": [
+            "flat",
+            "round"
+          ],
+          "default": "flat"
+        },
         "rowsMode": {
+          "description": "Flat charts only: all rows or right-side rows numbered 1, 3, 5 …",
           "enum": [
             "all",
             "rs"
@@ -292,6 +301,27 @@
           "uniqueItems": true
         }
       },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "construction"
+            ],
+            "properties": {
+              "construction": {
+                "const": "round"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "rowsMode": {
+                "const": "all"
+              }
+            }
+          }
+        }
+      ],
       "additionalProperties": true
     },
     "meta": {

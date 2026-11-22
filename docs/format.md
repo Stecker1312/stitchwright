@@ -55,6 +55,7 @@ unknown fields.
     { "id": "B", "name": "B", "hex": "#1a1a1a" }
   ],
   "options": {
+    "construction": "flat",
     "rowsMode": "all",
     "showRowNumbers": true,
     "showStitchNumbers": true,
@@ -88,6 +89,22 @@ order therefore follows the picture from left to right. Stitch numbers run
 from right to left for knitting reasons: stitch 1 is the right edge stitch.
 That is the usual reading direction for right-side rows and makes drawing
 with the mouse simple.
+
+## Flat and in the round
+
+`options.construction` says how the rows are worked:
+
+- `"flat"` (default) means back-and-forth knitting. Rows alternate between
+  right and wrong side. `rowsMode: "rs"` may hide the even wrong-side rows.
+- `"round"` means circular knitting. Every row is a right-side round, all
+  rounds are visible and numbered 1 … `height`, and stitch 1 is still the
+  right edge stitch. `rowsMode` must be `"all"`; the combination
+  `construction: "round"` and `rowsMode: "rs"` is invalid.
+
+The field is additive. A file without it is flat. Older readers ignore it and,
+because a round chart always stores `rowsMode: "all"`, still draw every round.
+The canvas stays rectangular; the setting changes meaning and labels, not the
+geometry.
 
 ## Cells
 
@@ -160,7 +177,8 @@ A group is a symbol that takes several stitches in one row.
 
 | Field | Type | Meaning |
 |---|---|---|
-| `rowsMode` | `"all"` or `"rs"` | all rows or right-side rows only (1, 3, 5 …) |
+| `construction` | `"flat"` or `"round"` | back-and-forth rows or right-side rounds; default `"flat"` |
+| `rowsMode` | `"all"` or `"rs"` | all rows or right-side rows only (1, 3, 5 …); flat only |
 | `showRowNumbers` | boolean | row numbers on both edges |
 | `showStitchNumbers` | boolean | stitch numbers above and below |
 | `showStitchCounts` | boolean | small run-length numbers inside the first cell of a run |
@@ -226,7 +244,8 @@ The CLI and the app use the same rules:
 - Cells under groups are `null`.
 - Palette IDs are unique; hex values use the form `#rrggbb`.
 - `repeat.start <= repeat.end` and both are inside the grid.
-- `rowsMode` is `"all"` or `"rs"`.
+- `construction` is `"flat"` or `"round"`, and `rowsMode` is `"all"` or `"rs"`.
+- A round chart must use `rowsMode: "all"` (`E_ROUND_ROWS_MODE`).
 - Guide line ids are unique; `color` uses `#rrggbb`; `boundary` is between two
   stitches and `fromRow <= toRow` stays inside the grid.
 
@@ -238,8 +257,9 @@ machine-readable JSON with `--json`.
 `strickschrift/1` is the first version. A new version only appears when the
 meaning of existing fields changes. In that case the app provides a migration
 and the CLI prints a warning. Unknown fields are ignored so newer files do not
-become unreadable at once. Optional additive fields such as `guides` keep the
-same version; older readers preserve or ignore them. The JSON Schema helps
+become unreadable at once. Optional additive fields such as `guides` and
+`options.construction` keep the same version; older readers preserve or ignore
+them. The JSON Schema helps
 editors and agents; the validator in `src/core/validate.js` is authoritative.
 
 ## Performance

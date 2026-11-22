@@ -23,7 +23,8 @@ Das native Format ist versioniertes JSON mit der Endung
 - Farben liegen in einer parallelen Matrix mit Paletten-IDs.
 - Mehrfachsymbole (Zöpfe, Abnahmen über mehrere Maschen) stehen in `groups`
   mit Zeile, Spalte, Spannweite und Parametern.
-- Optionen (Rückreihen, Nummerierung, Rapport, Legende) sind explizit.
+- Optionen (Chart-Art, Rückreihen, Nummerierung, Rapport, Legende) sind
+  explizit.
 - Das Format ist selbstbeschreibend und ohne Code lesbar.
 
 Ein JSON-Schema liegt unter `schema/strickschrift.schema.json`. Die CLI

@@ -23,6 +23,7 @@ import {
   hasContent,
   insertColumn,
   insertRow,
+  isInTheRound,
   mirrorHorizontal,
   mirrorVertical,
   normalizeChart,
@@ -267,6 +268,7 @@ function onStoreChange(type) {
 function renderAll() {
   renderTitle();
   renderSettings();
+  updateNewChartLabels();
   renderPalettePanel();
   renderInspectorPanel();
   renderLegendPanel();
@@ -296,6 +298,14 @@ function setIfIdle(id, value) {
   if (document.activeElement !== element) element.value = value;
 }
 
+function rowLabel(chart = store.chart) {
+  return i18n.t(isInTheRound(chart) ? "chart.roundLabel" : "chart.rowLabel");
+}
+
+function rowRange(chart, from, to) {
+  return i18n.t(isInTheRound(chart) ? "chart.roundRange" : "chart.rowRange", { from, to });
+}
+
 function renderSettings() {
   const chart = store.chart;
   const imperial = settings.units === "imperial";
@@ -303,9 +313,14 @@ function renderSettings() {
   const cellLabel = $("opt-cell-mm").closest("label").querySelector(".field-label");
   if (cellLabel) cellLabel.textContent = `${i18n.t("chart.cellSize")} (${cellUnit})`;
   const cellValue = imperial ? chart.options.cellMm / MM_PER_INCH : chart.options.cellMm;
+  const round = isInTheRound(chart);
   setIfIdle("chart-width", String(chart.width));
   setIfIdle("chart-height", String(chart.height));
+  setIfIdle("opt-construction", round ? "round" : "flat");
   setIfIdle("opt-rows-mode", chart.options.rowsMode);
+  $("rows-mode-settings").hidden = round;
+  $("round-mode-hint").hidden = !round;
+  $("btn-rows-mode").hidden = round;
   const repeat = chart.options.repeat;
   setIfIdle("opt-repeat-start", repeat ? String(columnToStitch(chart, repeat.end)) : "");
   setIfIdle("opt-repeat-end", repeat ? String(columnToStitch(chart, repeat.start)) : "");
@@ -325,14 +340,25 @@ function renderSettings() {
     : "";
 
   const pill = $("rows-mode-pill");
-  pill.textContent = chart.options.rowsMode === "rs" ? i18n.t("chart.rowsMode.rs") : i18n.t("chart.rowsMode.all");
-  $("btn-rows-mode").textContent = chart.options.rowsMode === "rs"
-    ? i18n.t("chart.rowsMode.all")
-    : i18n.t("chart.rowsMode.rs");
-  $("btn-row-above").textContent = `+ ${i18n.t("chart.rowAboveShort")}`;
-  $("btn-row-below").textContent = `+ ${i18n.t("chart.rowBelowShort")}`;
+  if (round) {
+    pill.textContent = i18n.t("chart.construction.round");
+  } else {
+    pill.textContent = chart.options.rowsMode === "rs"
+      ? i18n.t("chart.rowsMode.rs")
+      : i18n.t("chart.rowsMode.all");
+    $("btn-rows-mode").textContent = chart.options.rowsMode === "rs"
+      ? i18n.t("chart.rowsMode.all")
+      : i18n.t("chart.rowsMode.rs");
+  }
+  $("btn-row-above").textContent = `+ ${i18n.t(round ? "chart.roundAboveShort" : "chart.rowAboveShort")}`;
+  $("btn-row-below").textContent = `+ ${i18n.t(round ? "chart.roundBelowShort" : "chart.rowBelowShort")}`;
   $("btn-col-left").textContent = `+ ${i18n.t("chart.colLeftShort")}`;
   $("btn-col-right").textContent = `+ ${i18n.t("chart.colRightShort")}`;
+  $("btn-add-row-label").textContent = i18n.t(round ? "chart.addRoundShort" : "chart.addRowShort");
+  const addRowHint = i18n.t(round ? "chart.addRoundHint" : "chart.addRowHint");
+  $("btn-add-row").title = addRowHint;
+  $("btn-add-row").setAttribute("aria-label", addRowHint);
+  $("opt-row-numbers-label").textContent = i18n.t(round ? "chart.roundNumbers" : "chart.showRowNumbers");
 }
 
 function renderPalettePanel() {
@@ -467,10 +493,10 @@ function updateStatus() {
     const { kind, from, to } = store.headerSelection;
     if (from === to) {
       const value = kind === "row" ? from : columnToStitch(chart, from);
-      const label = kind === "row" ? i18n.t("chart.rowLabel") : i18n.t("chart.columnLabel");
+      const label = kind === "row" ? rowLabel(chart) : i18n.t("chart.columnLabel");
       $("status-cursor").textContent = `${label} ${value} · ${i18n.t("status.selected")}`;
     } else if (kind === "row") {
-      $("status-cursor").textContent = `${i18n.t("chart.rowRange", { from, to })} · ${i18n.t("status.selected")}`;
+      $("status-cursor").textContent = `${rowRange(chart, from, to)} · ${i18n.t("status.selected")}`;
     } else {
       const a = columnToStitch(chart, from);
       const b = columnToStitch(chart, to);
@@ -488,7 +514,7 @@ function updateStatus() {
     const cell = store.hover || store.cursor;
     if (cell) {
       const stitch = columnToStitch(chart, cell.col);
-      $("status-cursor").textContent = `${i18n.t("status.row")} ${cell.row} · ${i18n.t("chart.stitchLabel")} ${stitch}`;
+      $("status-cursor").textContent = `${i18n.t(isInTheRound(chart) ? "status.round" : "status.row")} ${cell.row} · ${i18n.t("chart.stitchLabel")} ${stitch}`;
     } else {
       $("status-cursor").textContent = i18n.t("status.ready");
     }
@@ -503,7 +529,7 @@ function updateStatus() {
       : (cell ? symbolName(cell, i18n.language) : i18n.t("table.knit"));
     $("chart-canvas").setAttribute(
       "aria-label",
-      `${i18n.t("chart.canvas")}. ${i18n.t("status.row")} ${active.row}, ${i18n.t("chart.stitchLabel")} ${columnToStitch(chart, active.col)}, ${symbol}`
+      `${i18n.t("chart.canvas")}. ${i18n.t(isInTheRound(chart) ? "status.round" : "status.row")} ${active.row}, ${i18n.t("chart.stitchLabel")} ${columnToStitch(chart, active.col)}, ${symbol}`
     );
   }
   updateZoomUI();
@@ -514,21 +540,23 @@ function updateAdders() {
   const selection = store.headerSelection;
   const label = $("header-selection");
   const button = $("btn-delete-header");
+  const round = isInTheRound(store.chart);
   if (!selection) {
     label.hidden = true;
     label.textContent = "";
     button.disabled = true;
-    button.title = i18n.t("chart.selectHeaderHint");
-    button.setAttribute("aria-label", i18n.t("chart.selectHeaderHint"));
+    const hint = i18n.t(round ? "chart.selectHeaderHintRound" : "chart.selectHeaderHint");
+    button.title = hint;
+    button.setAttribute("aria-label", hint);
     return;
   }
   const { kind, from, to } = selection;
   if (from === to) {
-    const name = kind === "row" ? i18n.t("chart.rowLabel") : i18n.t("chart.columnLabel");
+    const name = kind === "row" ? rowLabel(store.chart) : i18n.t("chart.columnLabel");
     const value = kind === "row" ? from : columnToStitch(store.chart, from);
     label.textContent = `${name} ${value}`;
   } else if (kind === "row") {
-    label.textContent = i18n.t("chart.rowRange", { from, to });
+    label.textContent = rowRange(store.chart, from, to);
   } else {
     const a = columnToStitch(store.chart, from);
     const b = columnToStitch(store.chart, to);
@@ -541,8 +569,9 @@ function updateAdders() {
   const selectedCount = to - from + 1;
   const total = kind === "row" ? store.chart.height : store.chart.width;
   button.disabled = selectedCount >= total;
-  button.title = i18n.t("chart.deleteHeader");
-  button.setAttribute("aria-label", i18n.t("chart.deleteHeader"));
+  const deleteLabel = i18n.t(round ? "chart.deleteHeaderRound" : "chart.deleteHeader");
+  button.title = deleteLabel;
+  button.setAttribute("aria-label", deleteLabel);
 }
 
 /* ------------------------------------------------------------------ */
@@ -876,7 +905,24 @@ function setupSidebar() {
 function setupChartSettings() {
   $("chart-width").addEventListener("change", () => resizeFromInputs());
   $("chart-height").addEventListener("change", () => resizeFromInputs());
+  $("opt-construction").addEventListener("change", (event) => {
+    const construction = event.target.value === "round" ? "round" : "flat";
+    store.edit("Construction", (chart) => {
+      chart.options.construction = construction;
+      // Older readers ignore construction; keeping rowsMode at "all" makes
+      // sure they still show every round instead of hiding every second one.
+      if (construction === "round") chart.options.rowsMode = "all";
+    });
+    store.setHeaderSelection(null);
+    ensureCursorVisible();
+    canvasView.fit();
+    renderSettings();
+  });
   $("opt-rows-mode").addEventListener("change", (event) => {
+    if (isInTheRound(store.chart)) {
+      renderSettings();
+      return;
+    }
     store.edit("Wrong-side rows", (chart) => {
       chart.options.rowsMode = event.target.value === "rs" ? "rs" : "all";
     });
@@ -985,6 +1031,7 @@ function ensureCursorVisible() {
 }
 
 function toggleRowsMode() {
+  if (isInTheRound(store.chart)) return;
   const next = store.chart.options.rowsMode === "rs" ? "all" : "rs";
   store.edit("Wrong-side rows", (chart) => { chart.options.rowsMode = next; });
   store.setHeaderSelection(null);
@@ -1073,19 +1120,22 @@ async function deleteSelectedHeader() {
   if (!selection) return;
   const { kind, from, to } = selection;
   const isRow = kind === "row";
+  const round = isInTheRound(store.chart);
   const count = to - from + 1;
   const total = isRow ? store.chart.height : store.chart.width;
   if (count >= total) {
-    showToast(i18n.t(isRow ? "chart.keepOneRow" : "chart.keepOneColumn"), "error");
+    showToast(i18n.t(isRow
+      ? (round ? "chart.keepOneRound" : "chart.keepOneRow")
+      : "chart.keepOneColumn"), "error");
     return;
   }
   let message;
   if (from === to) {
     message = isRow
-      ? i18n.t("chart.deleteRowConfirm", { row: from })
+      ? i18n.t(round ? "chart.deleteRoundConfirm" : "chart.deleteRowConfirm", { row: from })
       : i18n.t("chart.deleteColumnConfirm", { column: columnToStitch(store.chart, from) });
   } else if (isRow) {
-    message = i18n.t("chart.deleteRowsConfirm", { from, to });
+    message = i18n.t(round ? "chart.deleteRoundsConfirm" : "chart.deleteRowsConfirm", { from, to });
   } else {
     const a = columnToStitch(store.chart, from);
     const b = columnToStitch(store.chart, to);
@@ -1269,6 +1319,7 @@ function setupDialogs() {
   }
 
   $("btn-create-chart").addEventListener("click", createNewChart);
+  $("new-construction").addEventListener("change", updateNewChartLabels);
 
   $("btn-export-download").addEventListener("click", () => exportChart("download"));
   $("btn-export-print").addEventListener("click", () => exportChart("print"));
@@ -1352,10 +1403,17 @@ function openDialog(id) {
   if (!dialog.open) dialog.showModal();
 }
 
+function updateNewChartLabels() {
+  const round = $("new-construction").value === "round";
+  $("new-height-label").textContent = i18n.t(round ? "chart.new.heightRounds" : "chart.new.height");
+}
+
 function openNewDialog() {
   $("new-width").value = "40";
   $("new-height").value = "24";
   $("new-title").value = "";
+  $("new-construction").value = isInTheRound(store.chart) ? "round" : "flat";
+  updateNewChartLabels();
   openDialog("dialog-new");
 }
 
@@ -1367,7 +1425,8 @@ async function createNewChart() {
     return;
   }
   const title = $("new-title").value.trim();
-  const chart = createChart({ width, height, title });
+  const construction = $("new-construction").value === "round" ? "round" : "flat";
+  const chart = createChart({ width, height, title, construction });
   chart.id = storage.makeChartId(title || "chart");
   if (await switchDocument(chart, { save: true, fit: true })) $("dialog-new").close();
 }
@@ -1856,7 +1915,8 @@ function renderTable() {
   const table = document.createElement("table");
   const thead = document.createElement("thead");
   const headRow = document.createElement("tr");
-  for (const key of ["dialog.table.row", "dialog.table.stitch", "dialog.table.symbol", "dialog.table.color"]) {
+  const rowColumnKey = isInTheRound(chart) ? "dialog.table.round" : "dialog.table.row";
+  for (const key of [rowColumnKey, "dialog.table.stitch", "dialog.table.symbol", "dialog.table.color"]) {
     const th = document.createElement("th");
     th.textContent = i18n.t(key);
     headRow.append(th);

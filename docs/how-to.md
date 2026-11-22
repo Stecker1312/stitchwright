@@ -16,8 +16,8 @@ you save yourself.
 
 ## 2. Start a chart
 
-Choose **New**, enter a title, width in stitches and height in rows, then
-**Create chart**.
+Choose **New**, enter a title, width in stitches and height, choose **Flat**
+or **In the round**, then **Create chart**.
 
 Or choose **Load example** to see a finished chart with cables, colours and a
 legend.
@@ -50,15 +50,18 @@ Cables are one symbol across several stitches, not several separate cells.
 
 The legend gives the exact cable direction.
 
-## 5. Rows and columns
+## 5. Rows, rounds and columns
 
 - **+ Row** and **+ Column** add space.
 - To delete a row or column, click its number first, then the trash button and
   confirm.
 - Drag across several row or column numbers, or Shift-click, to select a range;
   the trash button deletes the whole range.
-- **Right-side rows only** hides even rows and numbers 1, 3, 5 … The hidden
-  rows are still stored.
+- **Construction** chooses flat knitting or knitting in the round. Flat charts
+  offer **Right-side rows only**: it hides even rows and numbers 1, 3, 5 …
+  The hidden rows are still stored.
+- In the round every round is a right-side round. All rounds are shown and
+  numbered 1, 2, 3 …; the wrong-side switch is not available.
 
 ## 6. Repeat and legend
 
@@ -110,7 +113,8 @@ Pick a symbol first, or use **Load example**. A colour alone does not draw a
 symbol.
 
 **Rows are missing.**
-Turn off **Right-side rows only** to show every row.
+Turn off **Right-side rows only** to show every row. In the round all rounds
+are always shown.
 
 **It asks about unsaved changes.**
 Choose **Save and continue**, **Discard** or **Cancel**. Nothing is lost when

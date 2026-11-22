@@ -42,6 +42,9 @@ export const DEFAULT_PALETTE = [
 ];
 
 export const DEFAULT_OPTIONS = {
+  // "flat" means back-and-forth knitting; "round" means every row is a
+  // right-side round. The field is additive: files without it are flat.
+  construction: "flat",
   rowsMode: "all",
   showRowNumbers: true,
   showStitchNumbers: true,
@@ -69,12 +72,15 @@ function validSize(value) {
 }
 
 /** Create a new, empty chart. */
-export function createChart({ width = 24, height = 24, title = "" } = {}) {
+export function createChart({ width = 24, height = 24, title = "", construction = "flat" } = {}) {
   if (!validSize(width) || !validSize(height)) {
     throw new Error(`width and height must be whole numbers between ${MIN_SIZE} and ${MAX_SIZE}`);
   }
   if (typeof title !== "string" || title.length > 120) {
     throw new Error("title must be a string of at most 120 characters");
+  }
+  if (construction !== "flat" && construction !== "round") {
+    throw new Error('construction must be "flat" or "round"');
   }
   return {
     schema: SCHEMA,
@@ -87,7 +93,7 @@ export function createChart({ width = 24, height = 24, title = "" } = {}) {
     groups: [],
     guides: [],
     palette: clone(DEFAULT_PALETTE),
-    options: { ...DEFAULT_OPTIONS, markers: [] },
+    options: { ...DEFAULT_OPTIONS, construction, markers: [] },
     meta: {
       author: "",
       source: "",
@@ -943,11 +949,21 @@ export function pasteFragment(chart, fragment, row, col) {
   return created;
 }
 
+/** True when every row is a right-side round instead of a flat row. */
+export function isInTheRound(chart) {
+  return chart?.options?.construction === "round";
+}
+
 /**
  * Rows that are visible in the current row mode, bottom to top.
  * "rs" shows only right-side rows (1, 3, 5 …), but all rows stay stored.
+ * Round charts always show every round; hiding every second round would
+ * silently drop half of the knitting.
  */
 export function visibleRows(chart) {
+  if (isInTheRound(chart)) {
+    return Array.from({ length: chart.height }, (_, index) => index + 1);
+  }
   if (chart.options?.rowsMode === "rs") {
     const rows = [];
     for (let row = 1; row <= chart.height; row += 2) rows.push(row);

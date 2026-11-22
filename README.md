@@ -42,7 +42,8 @@ command-line tool.
 - Drag or Shift-click row and column numbers to select a range and delete it
 - Optional stitch counts: a small number marks the first stitch of each run of
   equal stitches
-- Right-side and wrong-side rows, or right-side rows only numbered 1, 3, 5 …
+- Flat charts with right-side and wrong-side rows, right-side rows only
+  numbered 1, 3, 5 …, or charts in the round with every round numbered 1, 2, 3 …
 - Mark a repeat and build the legend automatically
 - Colour for each stitch, including Fair Isle and intarsia
 - Export as SVG, PNG and JSON; print from the browser
@@ -86,6 +87,7 @@ node cli/stitchwright.js validate chart.strickschrift.json
 node cli/stitchwright.js render chart.strickschrift.json chart.svg
 node cli/stitchwright.js new --width 40 --height 24 --out chart.strickschrift.json
 node cli/stitchwright.js legend chart.strickschrift.json
+node cli/stitchwright.js new --width 40 --height 24 --round --out round.json
 ```
 
 Details: [`docs/format.md`](docs/format.md). Schema:

@@ -43,6 +43,14 @@ test("rows mode rs hides even rows and numbers odd rows", () => {
   assert.doesNotMatch(svg, /x="36"[^>]*>2<\/text>/);
 });
 
+test("round charts show every round number", () => {
+  const chart = sample();
+  chart.options.construction = "round";
+  chart.options.rowsMode = "rs"; // defensive: round must still show all rounds
+  const svg = renderSvg(chart);
+  assert.match(svg, /x="36"[^>]*>2<\/text>/);
+});
+
 test("row numbers appear on both sides", () => {
   const chart = sample();
   const svg = renderSvg(chart);

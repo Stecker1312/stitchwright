@@ -6,7 +6,7 @@
  * text is written with textContent, never injected as HTML.
  */
 
-import { columnToStitch, groupSpan } from "../core/chart.js";
+import { columnToStitch, groupSpan, isInTheRound } from "../core/chart.js";
 import { legendEntries } from "../core/legend.js";
 import { getSymbol, glyphFor, symbolName } from "../core/symbols.js";
 import { glyphToSvg } from "../core/render-svg.js";
@@ -32,7 +32,7 @@ function groupEditor(group, chart, { t, lang, onUpdateGroup, onRemoveGroup }) {
 
   const span = groupSpan(chart, group);
   const meta = el("dl", "meta-list");
-  meta.append(el("dt", null, t("inspector.row")));
+  meta.append(el("dt", null, t(isInTheRound(chart) ? "inspector.round" : "inspector.row")));
   meta.append(el("dd", null, String(group.row)));
   meta.append(el("dt", null, t("inspector.column")));
   meta.append(el("dd", null, String(group.col)));
@@ -102,17 +102,20 @@ function groupEditor(group, chart, { t, lang, onUpdateGroup, onRemoveGroup }) {
 export function renderInspector({ container, store, t, lang = "en", onUpdateGroup, onRemoveGroup, onFillSelection, onClearSelection }) {
   container.replaceChildren();
   const chart = store.chart;
+  const round = isInTheRound(chart);
 
   if (store.headerSelection) {
     const card = el("div", "inspector-card");
     card.append(el("h3", null, t("status.selected")));
     const { kind, from, to } = store.headerSelection;
     if (from === to) {
-      const label = kind === "row" ? t("chart.rowLabel") : t("chart.columnLabel");
+      const label = kind === "row"
+        ? t(round ? "chart.roundLabel" : "chart.rowLabel")
+        : t("chart.columnLabel");
       const value = kind === "row" ? from : columnToStitch(chart, from);
       card.append(el("p", null, `${label} ${value}`));
     } else if (kind === "row") {
-      card.append(el("p", null, t("chart.rowRange", { from, to })));
+      card.append(el("p", null, t(round ? "chart.roundRange" : "chart.rowRange", { from, to })));
     } else {
       const a = columnToStitch(chart, from);
       const b = columnToStitch(chart, to);
@@ -121,7 +124,7 @@ export function renderInspector({ container, store, t, lang = "en", onUpdateGrou
         to: Math.max(a, b)
       })));
     }
-    card.append(el("p", "hint", t("chart.deleteHeader")));
+    card.append(el("p", "hint", t(round ? "chart.deleteHeaderRound" : "chart.deleteHeader")));
     container.append(card);
     return;
   }
@@ -141,7 +144,7 @@ export function renderInspector({ container, store, t, lang = "en", onUpdateGrou
     const right = Math.max(store.selection.col1, store.selection.col2);
     const card = el("div", "inspector-card");
     card.append(el("h3", null, t("inspector.selection")));
-    card.append(el("p", "muted", `${t("chart.rowLabel")} ${top}–${bottom}, ${t("chart.stitchLabel")} ${left}–${right}`));
+    card.append(el("p", "muted", `${t(round ? "chart.roundLabel" : "chart.rowLabel")} ${top}–${bottom}, ${t("chart.stitchLabel")} ${left}–${right}`));
     card.append(el("p", null, t("inspector.selection.count", { count: (bottom - top + 1) * (right - left + 1) })));
 
     if (top === bottom && left === right) {

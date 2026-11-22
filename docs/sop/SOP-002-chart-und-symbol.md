@@ -11,7 +11,8 @@ node cli/stitchwright.js new --width 40 --height 24 --title "Example chart" \
 node cli/stitchwright.js validate samples/example-chart.strickschrift.json
 ```
 
-Im Editor: „Neu“, Breite und Höhe eingeben, zeichnen, speichern.
+Im Editor: „Neu“, Breite und Höhe eingeben, „Flach“ oder „In Runden“ wählen,
+zeichnen, speichern. Die CLI legt mit `--round` ein Rundchart an.
 
 ## Neues Symbol
 

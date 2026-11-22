@@ -30,7 +30,7 @@ const COMMANDS = {
     positional: 0,
     flags: {
       json: "boolean", width: "value", height: "value", title: "value",
-      out: "value", force: "boolean"
+      round: "boolean", out: "value", force: "boolean"
     }
   },
   legend: {
@@ -51,7 +51,7 @@ function usage() {
 
   node cli/stitchwright.js validate <chart.json> [--json] [--strict]
   node cli/stitchwright.js render <chart.json> <out.svg> [--lang de|en] [--unit metric|imperial] [--force]
-  node cli/stitchwright.js new --width 40 --height 24 [--title "…"] --out <chart.json> [--force]
+  node cli/stitchwright.js new --width 40 --height 24 [--title "…"] [--round] --out <chart.json> [--force]
   node cli/stitchwright.js legend <chart.json> [--json] [--lang de|en]
 
 All commands work offline and use only Node's standard library.`);
@@ -204,7 +204,12 @@ function commandNew(args) {
   const out = args.flags.out;
   if (!out) throw new CliError("Missing --out", "E_ARGUMENTS");
   const title = args.flags.title === true ? "" : String(args.flags.title || "");
-  const chart = createChart({ width, height, title });
+  const chart = createChart({
+    width,
+    height,
+    title,
+    construction: args.flags.round ? "round" : "flat"
+  });
   const slug = String(title || "chart")
     .toLowerCase()
     .normalize("NFKD")

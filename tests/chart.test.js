@@ -13,7 +13,9 @@ import {
   getColor,
   insertColumn,
   insertRow,
+  isInTheRound,
   mirrorHorizontal,
+  normalizeChart,
   pasteFragment,
   removeGroupAt,
   resizeChart,
@@ -22,7 +24,8 @@ import {
   setMarkerEvery,
   toggleMarker,
   clearMarkers,
-  usedLegendKeys
+  usedLegendKeys,
+  visibleRows
 } from "../src/core/chart.js";
 
 test("a new chart is empty and valid-shaped", () => {
@@ -33,6 +36,47 @@ test("a new chart is empty and valid-shaped", () => {
   assert.equal(chart.rows[0].length, 10);
   assert.equal(getCell(chart, 1, 1), null);
   assert.equal(chart.groups.length, 0);
+});
+
+test("flat knitting is the default construction", () => {
+  const chart = createChart({ width: 4, height: 3 });
+  assert.equal(chart.options.construction, "flat");
+  assert.equal(isInTheRound(chart), false);
+});
+
+test("a chart can be created for working in the round", () => {
+  const chart = createChart({ width: 8, height: 5, construction: "round" });
+  assert.equal(chart.options.construction, "round");
+  assert.equal(isInTheRound(chart), true);
+  assert.deepEqual(visibleRows(chart), [1, 2, 3, 4, 5]);
+});
+
+test("round charts never hide every second round", () => {
+  const chart = createChart({ width: 8, height: 4, construction: "round" });
+  chart.options.rowsMode = "rs";
+  assert.deepEqual(visibleRows(chart), [1, 2, 3, 4]);
+});
+
+test("normalization defaults old files to flat and keeps round charts", () => {
+  const flat = normalizeChart({
+    schema: "strickschrift/1",
+    width: 2,
+    height: 2,
+    rows: [[null, null], [null, null]]
+  });
+  assert.equal(flat.options.construction, "flat");
+  const round = normalizeChart({
+    schema: "strickschrift/1",
+    width: 2,
+    height: 2,
+    rows: [[null, null], [null, null]],
+    options: { construction: "round", rowsMode: "all" }
+  });
+  assert.equal(round.options.construction, "round");
+});
+
+test("invalid construction is rejected on creation", () => {
+  assert.throws(() => createChart({ width: 4, height: 3, construction: "tube" }), /construction/);
 });
 
 test("cells and colours can be set and erased", () => {

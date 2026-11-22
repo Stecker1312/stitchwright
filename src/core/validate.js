@@ -10,7 +10,7 @@
  */
 
 import { hasSymbol, isGroupSymbol, symbolSpan } from "./symbols.js";
-import { isGuideColor, MAX_SIZE, MIN_SIZE, SCHEMA } from "./chart.js";
+import { isGuideColor, isInTheRound, MAX_SIZE, MIN_SIZE, SCHEMA } from "./chart.js";
 
 const HEX = /^#[0-9a-f]{6}$/i;
 const PAPERS = new Set(["A4", "A3", "Letter", "auto"]);
@@ -352,8 +352,16 @@ export function validateChart(chart, { strict = false, raw = false } = {}) {
     error("E_OPTIONS", "options", "options must be an object");
   } else {
     const given = (key) => !raw || Object.hasOwn(options, key);
+    if (given("construction") && options.construction !== "flat" && options.construction !== "round") {
+      error("E_CONSTRUCTION", "options.construction", "construction must be flat or round");
+    }
     if (given("rowsMode") && options.rowsMode !== "all" && options.rowsMode !== "rs") {
       error("E_ROWS_MODE", "options.rowsMode", "rowsMode must be all or rs");
+    }
+    if (options.construction === "round" && options.rowsMode === "rs") {
+      // Older readers ignore construction and would hide every second round.
+      // Keeping rowsMode at "all" makes the file render completely everywhere.
+      error("E_ROUND_ROWS_MODE", "options.rowsMode", "round charts must show all rounds");
     }
     for (const key of ["showRowNumbers", "showStitchNumbers", "showStitchCounts", "showLegend"]) {
       if (given(key) && typeof options[key] !== "boolean") {
@@ -411,7 +419,7 @@ export function validateChart(chart, { strict = false, raw = false } = {}) {
     warning("W_EMPTY", "$", "The chart is still empty");
   }
 
-  if (options?.rowsMode === "rs" && Array.isArray(chart.rows)) {
+  if (!isInTheRound(chart) && options?.rowsMode === "rs" && Array.isArray(chart.rows)) {
     const evenHasContent = chart.rows.some((row, index) => {
       if (index % 2 === 0) return false; // row 2, 4, ... are odd array indices
       return row?.some?.((cell) => cell !== null)

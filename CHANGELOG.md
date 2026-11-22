@@ -1,5 +1,28 @@
 # Changelog
 
+## Unreleased
+
+Charts can say they are worked in the round.
+
+### New
+
+- `options.construction` is `"flat"` by default or `"round"` for circular
+  knitting. Round charts show every round, number them 1, 2, 3 … and use
+  round wording in the editor. The wrong-side switch is only available for
+  flat charts.
+- New charts and the chart settings offer **Construction**: flat (back and
+  forth) or in the round.
+- The CLI can create a round chart with `new --round`.
+- The field is additive: older files stay flat, and older readers still show
+  every row of a round chart.
+
+### Checks
+
+- Node tests cover default flat, round creation, normalization, validation,
+  hidden-round prevention, SVG round numbers and the CLI flag.
+- Browser check: round chart in light and dark mode, round labels, hidden
+  wrong-side switch, switch back to flat.
+
 ## 0.6.4-alpha.1 – 22 November 2026
 
 Scroll past the pattern edges.

@@ -14,6 +14,7 @@ Browser zu bedienen. Die CLI nutzt denselben Kern wie die App.
 node cli/stitchwright.js validate chart.strickschrift.json
 node cli/stitchwright.js render chart.strickschrift.json chart.svg
 node cli/stitchwright.js new --width 40 --height 24 --out chart.strickschrift.json
+node cli/stitchwright.js new --width 40 --height 24 --round --out round.json
 node cli/stitchwright.js legend chart.strickschrift.json
 ```
 

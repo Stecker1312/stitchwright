@@ -10,7 +10,7 @@ Abnahme:
 
 - Chart zeichnen, speichern, neu laden
 - SVG exportieren und drucken
-- Zöpfe, Farben, Rückreihen-Umschalter
+- Zöpfe, Farben, Rückreihen-Umschalter und Runden
 - Tastatur und Touch
 - Deutsch und Englisch
 - Tests grün

@@ -37,6 +37,7 @@ Diese Begriffe brauchen besondere Sorgfalt:
 - cable, hold in front / hold in back
 - slip stitch
 - wrong side / right side
+- row / round, flat / in the round
 - cast on / bind off
 - repeat, edge stitch, no stitch
 

@@ -35,6 +35,23 @@ test("CLI creates, validates and renders a chart", () => {
   }
 });
 
+test("CLI creates a chart in the round with all rounds visible", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "stitchwright-"));
+  const chartFile = path.join(dir, "round.strickschrift.json");
+  try {
+    const created = run(["new", "--width", "8", "--height", "6", "--round", "--out", chartFile]);
+    assert.equal(created.status, 0, created.stderr);
+    const chart = JSON.parse(fs.readFileSync(chartFile, "utf8"));
+    assert.equal(chart.options.construction, "round");
+    assert.equal(chart.options.rowsMode, "all");
+    const validated = run(["validate", chartFile, "--json"]);
+    assert.equal(validated.status, 0, validated.stderr);
+    assert.equal(JSON.parse(validated.stdout).ok, true);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("CLI refuses to overwrite without --force", () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "stitchwright-"));
   const chartFile = path.join(dir, "chart.strickschrift.json");

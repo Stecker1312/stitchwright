@@ -32,7 +32,7 @@
 - Chart-Modell, Validierung, JSON-Schema
 - SVG-Export und Node-CLI (`validate`, `render`, `new`, `legend`)
 - Canvas-Editor: Raster, Pan/Zoom, Stifte, Radierer, Auswahl, Gruppen,
-  Farben, Undo/Redo, Rückreihen-Umschalter, Rapport, Legende
+  Farben, Undo/Redo, Rückreihen-Umschalter, Runden, Rapport, Legende
 - Speichern/Laden in IndexedDB, JSON-Export, SVG/PNG, Druck
 - Leer-Hinweis schließbar und persistent; Schnell-Buttons für Reihen/Spalten
 - Reihen- und Spaltennummern anklickbar; Papierkorb löscht die ausgewählte
@@ -71,7 +71,7 @@
 - Englisch (britisch) als Standardsprache in Oberfläche, Startseite,
   Validierungsmeldungen, CLI, Manifest und README; Beispiel-Charts englisch
 - PWA mit Service Worker, offline getestet
-- 154 Node-Tests grün; Browserprüfung mit Chromium/Playwright
+- 165 Node-Tests grün; Browserprüfung mit Chromium/Playwright
 - Englische Projektseite `about.html` mit Browser-first-Schnellstart, Preisvergleich, Clear-Symbolpack und Planned-Liste
 - Englischer Screenshot, Version 0.6.4 (beidseitige Randnummern)
 - Audit-Pakete A, B und C umgesetzt: Dokument-/Speichersicherheit, valide
@@ -94,6 +94,9 @@
 - Farbige Hilfslinien zwischen Maschen (D012): Klick setzt eine Linie über die
   ganze Höhe, Ziehen begrenzt sie auf Reihen; eigene Farbe pro Linie,
   Klick/Rechtsklick entfernt, Canvas/SVG/CLI teilen dasselbe Modell
+- Charts sind flach oder in Runden (D013): `options.construction` ist
+  additiv, Rundcharts zeigen alle Runden und nummerieren 1 … n, der
+  Rückreihen-Umschalter bleibt flach; CLI `new --round`
 
 ## In Arbeit / offen
 
@@ -129,8 +132,8 @@
 
 ## Tests
 
-`npm test`: 154 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
-Einheiten, Viewport, Hilfslinien, CLI, Performance).
+`npm test`: 165 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
+Einheiten, Viewport, Hilfslinien, Runden, CLI, Performance).
 `npm run check`: Syntax- und JSON-Prüfung plus Tests grün.
 Browser: Zeichnen, Farben, Zöpfe, Rückreihen, Undo, Export, Scrollbalken,
 eigene Gruppen mit Legendentext, PWA offline manuell mit Playwright geprüft.
@@ -148,6 +151,10 @@ Rahmen wählt Reihe 12 und malt keine Zelle. Hell und dunkel geprüft.
 Scrollbalken: bei 286 % Zoom zeigt Home die linke Musterkante und die
 äußerste Masche vollständig mit Rand, End die rechte Kante und Masche 1;
 40 px Überweg an beiden Seiten.
+Runden: neues 12 × 6-Chart in Runden, alle Runden sichtbar, Status/Tabelle/
+Einstellungen sagen „Runde“, der Rückreihen-Umschalter ist ausgeblendet,
+Wechsel zurück auf flach funktioniert; Englisch und Deutsch, hell und dunkel.
+Autosave und Neuladen behalten `construction: "round"` und `rowsMode: "all"`.
 Hilfslinien: Linie über die ganze Höhe, Teil-Linie über Ziehen, zwei Farben,
 Klick- und Rechtsklick-Löschen, Alle-löschen, Rückgängig sowie Autosave und
 Neuladen mit 42 × 26-Chart geprüft.

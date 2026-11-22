@@ -4,6 +4,10 @@
 - Status: Gültig
 - Betrifft: Stitchwright
 
+> Ergänzt durch D013: Charts können zusätzlich als Runden ausgezeichnet werden.
+> Der Kern bleibt ein Editor; Runden sind eine Chart-Eigenschaft, keine
+> Anleitungsfunktion.
+
 ## Zusammenhang
 
 Daniel will Strickschriften nicht mehr auf Kästchenpapier zeichnen. Ein
