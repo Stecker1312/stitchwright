@@ -17,7 +17,7 @@ import { formatLength } from "./units.js";
 const CELL = 24;
 const MARGIN_LEFT = 44;
 const MARGIN_RIGHT = 44;
-const MARGIN_TOP = 56;
+const MARGIN_TOP = 72;
 const MARGIN_BOTTOM = 38;
 const LEGEND_ROW = 28;
 const LEGEND_ICON = 34;
@@ -345,13 +345,17 @@ export function renderSvg(chart, {
   }
 
   // Stitch numbers are read right-to-left. That is the knitting direction.
+  // They sit above and below the grid so long charts stay readable when one
+  // edge is scrolled away on screen or folded on paper.
   if (chart.options?.showStitchNumbers !== false) {
     const stitchStep = chart.width > 120 ? 5 : chart.width > 60 ? 2 : 1;
     for (let col = 1; col <= chart.width; col += 1) {
       const stitch = chart.width - col + 1;
       if (stitch % stitchStep !== 0 && stitch !== 1 && stitch !== chart.width) continue;
       const x = chartX + (col - 1) * cellPx + cellPx / 2;
-      parts.push(text(String(stitch), x, chartY + chartH + 18, { size: 10, anchor: "middle", fill: "#555555" }));
+      const label = String(stitch);
+      parts.push(text(label, x, chartY - 8, { size: 10, anchor: "middle", fill: "#555555" }));
+      parts.push(text(label, x, chartY + chartH + 18, { size: 10, anchor: "middle", fill: "#555555" }));
     }
   }
 

@@ -51,6 +51,14 @@ test("row numbers appear on both sides", () => {
   assert.match(svg, /x="340"[^>]*>8<\/text>/);
 });
 
+test("stitch numbers appear above and below the grid", () => {
+  const chart = sample();
+  const svg = renderSvg(chart);
+  // chartY is 72, chartH is 8 * 24 = 192.
+  assert.match(svg, /y="64"[^>]*>12<\/text>/);
+  assert.match(svg, /y="282"[^>]*>12<\/text>/);
+});
+
 test("legend can be disabled", () => {
   const chart = sample();
   const svg = renderSvg(chart, { includeLegend: false });

@@ -596,6 +596,32 @@ gerade dann der Bezug zur Reihe wichtig ist. Außerdem standen sie nur links.
   geheftet und rechts am Papierrand; nach dem Scrollen umgekehrt. Klick auf
   die rechte Nummer wählt Reihe 17.
 
-**Offen:** Spaltennummern bleiben nur unten. Ob sie bei sehr breiten Charts
-ebenfalls geheftet werden sollen, entscheidet Daniel nach der nächsten
-Strickschrift.
+**Nachtrag:** Spaltennummern stehen seit demselben Tag ebenfalls oben und
+unten und heften sich beim Zoomen an den Viewport. Siehe den nächsten
+Eintrag.
+
+## 2026-11-22 – Spaltennummern oben und unten
+
+**Anlass:** Nach den Reihennummern fehlten die Spaltennummern oben. Beim
+Arbeiten in der Mitte eines großen Charts ist die untere Nummernzeile weit
+weg; Daniel möchte die Spalten jederzeit ablesen können.
+
+**Getan:**
+
+- Canvas: Die Stichnummern stehen jetzt oben und unten am Papier. Liegt die
+  Papierkante außerhalb des Viewports, heftet sich die jeweilige Nummernzeile
+  an den oberen oder unteren Bildschirmrand. Beide Zeilen sind anklickbar und
+  wählen dieselbe Spalte; Ziehen erweitert die Auswahl wie bisher.
+- `columnNumberLayout` teilt die Geometrie zwischen Renderer und Trefferprüfung.
+  `headerAt` nimmt dafür zusätzlich die Viewport-Höhe entgegen.
+- Die Zahlen nutzen denselben Hintergrund-Halo wie die Reihennummern und
+  bleiben dadurch auch über Maschen lesbar.
+- SVG-Export und CLI drucken die Stichnummern ebenfalls oben und unten. Der
+  obere Rand wuchs von 56 auf 72 px; Beispiel-SVGs neu erzeugt.
+- Der Editor-Screenshot zeigt den Beispielchart mit Nummern an allen vier
+  Rändern und den farbigen Hilfslinien.
+- Tests: neue Trefferprüfungen für obere/unten geheftete Spaltennummern und
+  ein SVG-Test für beide Nummernzeilen; insgesamt 152 Tests grün.
+- Browser: 32 × 20-Beispiel bei 105 % und 286 % Zoom, hell und dunkel. Oben
+  und unten sichtbar; Klick auf die obere Nummer wählt Spalte 24, Klick auf
+  die untere Spalte 21.

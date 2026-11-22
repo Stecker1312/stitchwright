@@ -14,7 +14,7 @@ import { backgroundFor, contrastColor, groupBackground, groupContrast, withAlpha
 import { GUIDE_WIDTH_CELLS, guideLine } from "./guides.js";
 import { stitchCountRuns } from "./run-lengths.js";
 import { glyphFor } from "./symbols.js";
-import { cellRect, rowNumberLayout, visibleColumns } from "./viewport.js";
+import { cellRect, columnNumberLayout, rowNumberLayout, visibleColumns } from "./viewport.js";
 
 export const LIGHT_THEME = {
   background: "#eef0f3",
@@ -138,11 +138,11 @@ function rowY(chart, view, row, visible) {
 }
 
 /**
- * Draw a row number with a background-coloured halo. Pinned numbers can sit
- * on top of stitches, so the halo keeps them readable without hiding a whole
- * strip of the chart.
+ * Draw a number with a background-coloured halo. Pinned numbers can sit on
+ * top of stitches, so the halo keeps them readable without hiding a whole
+ * strip of the chart. Callers set the font and text baseline once.
  */
-function drawRowNumber(ctx, value, x, y, align, theme) {
+function drawNumber(ctx, value, x, y, align, theme) {
   ctx.textAlign = align;
   ctx.strokeStyle = theme.background;
   ctx.lineWidth = 3;
@@ -440,23 +440,6 @@ export function drawChart(ctx, chart, view, {
   ctx.lineWidth = 1.5;
   ctx.strokeRect(view.offsetX + 0.75, view.offsetY + 0.75, chartW - 1.5, chartH - 1.5);
 
-  // Stitch numbers live below the paper, so they use the UI text colour.
-  if (showNumbers && showDetail && chart.options?.showStitchNumbers !== false) {
-    const step = scale < 14 ? 5 : scale < 22 ? 2 : 1;
-    ctx.fillStyle = theme.muted;
-    ctx.font = "10px system-ui, sans-serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "top";
-    const y = view.offsetY + chartH + 6;
-    if (y < height) {
-      for (let col = start + 1; col <= end + 1; col += 1) {
-        const stitch = chart.width - col + 1;
-        if (stitch % step !== 0 && stitch !== 1 && stitch !== chart.width) continue;
-        ctx.fillText(String(stitch), view.offsetX + (col - 0.5) * scale, y);
-      }
-    }
-  }
-
   // Hover highlight and keyboard cursor.
   if (hover) {
     const rect = cellRect(chart, view, hover.row, hover.col);
@@ -479,22 +462,42 @@ export function drawChart(ctx, chart, view, {
 
   drawSelection(ctx, chart, view, selection, theme, rows);
 
-  // Row numbers are UI, not part of the paper. Draw them last so they stay
-  // readable even when a pinned number sits on a stitch or a selection.
-  const numbers = showNumbers && showDetail ? rowNumberLayout(chart, view, width) : null;
-  if (numbers) {
+  // Column numbers are UI, not part of the paper. Draw them above and below
+  // the grid; when the chart is zoomed they stick to the viewport edge.
+  const columnNumbers = showNumbers && showDetail
+    ? columnNumberLayout(chart, view, width, height)
+    : null;
+  if (columnNumbers) {
     const step = scale < 14 ? 5 : scale < 22 ? 2 : 1;
     ctx.font = "10px system-ui, sans-serif";
     ctx.textBaseline = "middle";
-    const showRight = numbers.right.x - numbers.left.x > 12;
+    const showBottom = columnNumbers.bottom.y - columnNumbers.top.y > 12;
+    for (let col = start + 1; col <= end + 1; col += 1) {
+      const stitch = chart.width - col + 1;
+      if (stitch % step !== 0 && stitch !== 1 && stitch !== chart.width) continue;
+      const x = view.offsetX + (col - 0.5) * scale;
+      const label = String(stitch);
+      drawNumber(ctx, label, x, columnNumbers.top.y, "center", theme);
+      if (showBottom) drawNumber(ctx, label, x, columnNumbers.bottom.y, "center", theme);
+    }
+  }
+
+  // Row numbers are UI, not part of the paper. Draw them last so they stay
+  // readable even when a pinned number sits on a stitch or a selection.
+  const rowNumbers = showNumbers && showDetail ? rowNumberLayout(chart, view, width) : null;
+  if (rowNumbers) {
+    const step = scale < 14 ? 5 : scale < 22 ? 2 : 1;
+    ctx.font = "10px system-ui, sans-serif";
+    ctx.textBaseline = "middle";
+    const showRight = rowNumbers.right.x - rowNumbers.left.x > 12;
     for (let visibleIndex = Math.max(0, firstVisibleRow); visibleIndex <= lastVisibleRow; visibleIndex += 1) {
       if (visibleIndex % step !== 0 && visibleIndex !== 0 && visibleIndex !== rowCount - 1) continue;
       const row = rows[visibleIndex];
       const y = view.offsetY + (rowCount - 1 - visibleIndex) * scale + scale * 0.5;
       if (y < 0 || y > height) continue;
       const label = String(row);
-      drawRowNumber(ctx, label, numbers.left.x, y, numbers.left.align, theme);
-      if (showRight) drawRowNumber(ctx, label, numbers.right.x, y, numbers.right.align, theme);
+      drawNumber(ctx, label, rowNumbers.left.x, y, rowNumbers.left.align, theme);
+      if (showRight) drawNumber(ctx, label, rowNumbers.right.x, y, rowNumbers.right.align, theme);
     }
   }
 }

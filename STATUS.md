@@ -1,7 +1,7 @@
 # Status
 
 - Stand: 2026-11-22
-- Version: **0.6.1-alpha.1**
+- Version: **0.6.2-alpha.1**
 - Phase: Öffentliche Vorabversion (Alpha)
 - Sichtbarkeit: öffentlich, GitHub Pages:
   <https://stecker1312.github.io/stitchwright/>
@@ -39,6 +39,8 @@
   Reihe oder Spalte nach Bestätigung
 - Reihennummern stehen links und rechts. Beim Hineinzoomen bleiben sie am
   Viewport-Rand sichtbar; die Nummernspalten sind auf beiden Seiten anklickbar
+- Spaltennummern stehen oben und unten. Auch sie heften sich beim Zoomen an
+  den Viewport-Rand und sind oben und unten anklickbar
 - Maschenmarker als gestrichelte Zeichenhilfe, einzeln oder alle N Maschen;
   nicht Teil der Strickanleitung
 - Bereiche auswählen, kopieren und einfügen, inklusive Farben und Gruppen
@@ -64,9 +66,9 @@
 - Englisch (britisch) als Standardsprache in Oberfläche, Startseite,
   Validierungsmeldungen, CLI, Manifest und README; Beispiel-Charts englisch
 - PWA mit Service Worker, offline getestet
-- 150 Node-Tests grün; Browserprüfung mit Chromium/Playwright
+- 152 Node-Tests grün; Browserprüfung mit Chromium/Playwright
 - Englische Projektseite `about.html` mit Browser-first-Schnellstart, Preisvergleich, Clear-Symbolpack und Planned-Liste
-- Englischer Screenshot, Version 0.6.1 (Legende „2 held front“)
+- Englischer Screenshot, Version 0.6.2 (beidseitige Randnummern)
 - Audit-Pakete A, B und C umgesetzt: Dokument-/Speichersicherheit, valide
   UI-Kommandos, Rohvalidierung, sichere Symbol-Lookups und CLI-Vertrag;
   zentrale Teile von D, E und F folgen mit den verbleibenden P2-Punkten
@@ -122,7 +124,7 @@
 
 ## Tests
 
-`npm test`: 150 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
+`npm test`: 152 Tests grün (Modell, Validierung, Symbole, SVG, i18n,
 Einheiten, Viewport, Hilfslinien, CLI, Performance).
 `npm run check`: Syntax- und JSON-Prüfung plus Tests grün.
 Browser: Zeichnen, Farben, Zöpfe, Rückreihen, Undo, Export, Scrollbalken,
@@ -133,6 +135,9 @@ Properties-Legende zeigt „Cable 2/1 · 1 held back“.
 Reihennummern: bei 286 % Zoom auf einem 42 × 26-Chart links und rechts
 sichtbar; links angeheftet und rechts am Papierrand, nach dem Scrollen
 umgekehrt; Klick auf die rechte Nummer wählt Reihe 17.
+Spaltennummern: bei 105 % und 286 % Zoom oben und unten sichtbar; im
+Zoom oben und unten angeheftet, Klick auf die obere Nummer wählt Spalte 24,
+Klick auf die untere Spalte 21.
 Hilfslinien: Linie über die ganze Höhe, Teil-Linie über Ziehen, zwei Farben,
 Klick- und Rechtsklick-Löschen, Alle-löschen, Rückgängig sowie Autosave und
 Neuladen mit 42 × 26-Chart geprüft.

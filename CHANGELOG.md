@@ -1,9 +1,18 @@
 # Changelog
 
-## Unreleased
+## 0.6.2-alpha.1 – 22 November 2026
+
+Readable margins while zoomed, plus coloured reading guides.
 
 ### New
 
+- Row numbers now appear on both sides of the chart. When a paper edge leaves
+  the viewport, its numbers stick to the screen edge; when the edge is visible,
+  they sit beside the paper. Both number strips can be clicked to select a row.
+- Stitch numbers now appear above and below the chart. They follow the paper
+  edge and stick to the top or bottom of the viewport when zoomed, so columns
+  stay identifiable deep inside a large chart. The SVG export and CLI print
+  them above and below as well.
 - Coloured guide lines between stitches. Click a stitch boundary for a
   full-height line, or drag along it to limit the line to chosen rows. Each
   line keeps its own colour, can be removed with a click or right-click, and
@@ -16,8 +25,11 @@
 
 ### Checks
 
-- 148 Node tests green.
-- Browser check: full-height and partial lines in two colours, click and
+- 152 Node tests green.
+- Browser check: row and stitch numbers at fit, 286 % zoom and in dark mode;
+  both margins pin to the viewport, and clicks on the right row numbers and
+  the top column numbers select the correct row or column.
+- Browser check: full-height and partial guide lines in two colours, click and
   right-click removal, clear, undo, autosave and reload, and the guide
   controls in the tool panel.
 
