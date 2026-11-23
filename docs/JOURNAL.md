@@ -844,3 +844,21 @@ der Gruppe sahen wie rechte Maschen aus.
   ssk-Glyphe deckt zwei Zellen und schließt direkt an die „keine Masche“-Zellen
   an. Service-Worker-Cache im Testbrowser vorher geleert, damit die neuen
   Module geladen werden.
+
+## 2026-11-22 – 0.6.7-alpha.1 veröffentlicht
+
+**Anlass:** Die Reihennummern an der Startseite und die Abnahmen in voller
+Maschenbreite waren fertig; Release und GitHub Pages sollten live gehen.
+
+**Getan:**
+
+- Version 0.6.7-alpha.1 und Datum 2026-11-22 in `package.json`,
+  `src/version.js`, STATUS, README, Projektseite, How-tos, AGENTS, D009 und
+  SOP-004 gesetzt.
+- Service-Worker-Cache auf `stitchwright-v0.6.7`; der Regressionstest löscht
+  die alten Caches bis v0.6.6.
+- Changelog, Status, Screenshot und Symbol-Doku aktualisiert; 167 Tests und
+  `npm run check` grün.
+- Commit `7adc730`, Tag `v0.6.7-alpha.1`, Push und GitHub Release.
+- GitHub Pages gebaut; live geprüft: `APP_VERSION = "0.6.7-alpha.1"`, Cache
+  `stitchwright-v0.6.7`, Screenshot-Hash stimmt mit dem Repository überein.
